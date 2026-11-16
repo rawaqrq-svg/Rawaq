@@ -1,4 +1,3 @@
-import 'server-only';
 import { S3Client } from '@aws-sdk/client-s3';
 
 export const uploadsBucket = process.env.S3_UPLOAD_BUCKET || 'uploads';

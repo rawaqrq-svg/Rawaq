@@ -16,16 +16,18 @@ const connectionString = (process.env.NODE_ENV === 'test' && process.env.TEST_DA
 
 const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
 
-// إعداد Connection Pool لتحمل أكبر عدد من المستخدمين بنفس الوقت
+// إعداد Connection Pool سريع ومناسب للبيئات السحابية Serverless
 const poolConfig = {
   connectionString,
   // الحد الأقصى للاتصالات المتزامنة
   max: parseInt(process.env.DB_POOL_MAX || '20'),
-  // إغلاق الاتصال الخامل بعد 30 ثانية
-  idleTimeoutMillis: 30000,
-  // الحد الأقصى للانتظار على اتصال جديد (5 ثواني)
-  connectionTimeoutMillis: 5000,
-  min: 2,
+  // مهلة الاتصال الخامل
+  idleTimeoutMillis: 15000,
+  // الحد الأقصى للانتظار على اتصال جديد (3 ثواني لتسريع الاستجابة)
+  connectionTimeoutMillis: 3000,
+  min: 0,
+  allowExitOnIdle: true,
+  keepAlive: true,
   ...(!isLocal && { ssl: { rejectUnauthorized: false } }),
 };
 
@@ -37,15 +39,19 @@ let prismaClient: PrismaClient;
 
 function getClient(): PrismaClient {
   if (process.env.NODE_ENV === 'production') {
-    if (!prismaClient) {
-      pool = new Pool(poolConfig);
-      pool.on('error', (err) => {
+    if (!global.__prismaPool) {
+      global.__prismaPool = new Pool(poolConfig);
+      global.__prismaPool.on('error', (err) => {
         console.error('[DB Pool] Unexpected error on idle client:', err.message);
       });
-      const adapter = new PrismaPg(pool);
-      prismaClient = new PrismaClient({ adapter });
     }
-    return prismaClient;
+    pool = global.__prismaPool;
+
+    if (!global.__prismaClient) {
+      const adapter = new PrismaPg(pool);
+      global.__prismaClient = new PrismaClient({ adapter, log: ['error', 'warn'] });
+    }
+    return global.__prismaClient;
   }
 
   // In development, ensure pool and fresh client
