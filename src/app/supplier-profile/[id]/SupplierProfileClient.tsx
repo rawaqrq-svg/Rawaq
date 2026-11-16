@@ -48,8 +48,13 @@ export interface ProductData {
   sizesString: string;
   colors: string[];
   colorsString: string;
+  grades: string[];
+  gradesString: string;
   scents: string[];
   scentsString: string;
+  optionsString: string;
+  customAttributes: Array<{ name: string; values: string[]; valuesString: string }>;
+  attributesString: string;
   fullDisplayName: string;
   minCostFils: number;
   maxCostFils: number;
@@ -92,7 +97,10 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
       p.sku.toLowerCase().includes(q) ||
       p.sizesString.toLowerCase().includes(q) ||
       p.colorsString.toLowerCase().includes(q) ||
-      p.scentsString.toLowerCase().includes(q);
+      p.gradesString.toLowerCase().includes(q) ||
+      p.scentsString.toLowerCase().includes(q) ||
+      p.optionsString.toLowerCase().includes(q) ||
+      p.attributesString.toLowerCase().includes(q);
 
     if (!matchesQuery) return false;
 
@@ -336,7 +344,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
               </h3>
             </div>
             <span className="text-xs text-zinc-500 font-mono">
-              أسعار التكلفة وسعر البيع والروائح وحالة العرض في المتجر
+              أسعار التكلفة والبيع والمقاسات والألوان والدرجات والروائح وباقي الخصائص
             </span>
           </div>
 
@@ -347,7 +355,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                   <tr>
                     <th className="py-3 px-3 text-center w-12">#</th>
                     <th className="py-3 px-3 text-center w-20">صورة المنتج</th>
-                    <th className="py-3 px-4">اسم الصنف ومواصفاته (المقاسات والألوان والروائح)</th>
+                    <th className="py-3 px-4">اسم الصنف ومواصفاته</th>
                     <th className="py-3 px-3">سعر التكلفة للمحل</th>
                     <th className="py-3 px-3">سعر البيع في المتجر</th>
                     <th className="py-3 px-3 text-center">حالة الصنف في المتجر</th>
@@ -393,11 +401,26 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                               الألوان: {prod.colorsString}
                             </span>
                           )}
+                          {prod.gradesString && (
+                            <span className="inline-flex items-center gap-1 font-bold text-violet-900 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
+                              الدرجات: {prod.gradesString}
+                            </span>
+                          )}
                           {prod.scentsString && (
                             <span className="inline-flex items-center gap-1 font-bold text-rose-900 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
                               الروائح: {prod.scentsString}
                             </span>
                           )}
+                          {prod.optionsString && (
+                            <span className="inline-flex items-center gap-1 font-bold text-blue-900 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
+                              الخيارات: {prod.optionsString}
+                            </span>
+                          )}
+                          {prod.customAttributes.map((attribute) => (
+                            <span key={`${attribute.name}-${attribute.valuesString}`} className="inline-flex items-center gap-1 font-bold text-zinc-700 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
+                              {attribute.name}: {attribute.valuesString}
+                            </span>
+                          ))}
                         </div>
                         {prod.productNameEn && (
                           <span className="text-[10px] text-zinc-400 block font-normal mt-0.5">

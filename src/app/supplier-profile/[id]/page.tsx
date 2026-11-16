@@ -43,6 +43,11 @@ export default async function SupplierProfilePage({ params }: Props) {
               },
               shade: true,
               images: true,
+              attributeValues: {
+                include: {
+                  attributeDefinition: { select: { key: true, nameAr: true, nameEn: true } },
+                },
+              },
             },
           },
         },
