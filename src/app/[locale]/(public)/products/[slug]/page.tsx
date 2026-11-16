@@ -16,7 +16,7 @@ function customerFacingProductCopy(value: string | null | undefined) {
 
   return value
     .split(/\r?\n/)
-    .filter((line) => !/(سعر\s*التكلفة|التكلفة|تكلفة\s*(?:الشراء|المنتج)|سعر\s*(?:الشراء|الجملة|المورد)|نسبة\s*الربح|هامش\s*الربح|حصة\s*المحل|unit\s*cost|cost\s*price|purchase\s*cost|acquisition\s*cost|wholesale\s*price|supplier\s*price|profit\s*(?:margin|share))/i.test(line))
+    .filter((line) => !/(سعر\s*التكلفة|التكلفة|تكلفة\s*(?:الشراء|المنتج)|سعر\s*(?:الشراء|الجملة|المورد)|نسبة\s*الربح|هامش\s*الربح|حصة\s*المحل|unit\s*cost|cost\s*price|purchase\s*cost|acquisition\s*cost|wholesale\s*price|supplier\s*price|profit\s*(?:margin|share)|صورة\s*المنتج\s*:|المصدر\s*:|GHAZ-[A-Z0-9-]+)/i.test(line))
     .join('\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -166,7 +166,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const isAr = locale === 'ar';
   const productName = isAr ? product.nameAr : product.nameEn;
   const shortDescription = customerFacingProductCopy(product.shortDescription);
-  const longDescription = customerFacingProductCopy(product.longDescription);
   const isScentProduct = /(body|hair|perfume|fragrance|scent|splash|mist|shower)/i.test(product.category?.slug || '');
   const scentNames = variants
     .map((variant) => variant.shadeName || (variant.name !== variant.size ? variant.name : ''))
@@ -305,10 +304,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               )}
             </div>
 
-            <p className="text-[#746A64] leading-relaxed mb-10 text-base sm:text-lg">
-              {shortDescription || (isAr ? 'عززي جمالك الطبيعي مع هذا المنتج الاستثنائي الذي يوفر لك مظهراً مثالياً وجذاباً طوال اليوم.' : 'Enhance your natural beauty with this exceptional product that provides a perfect and attractive look all day long.')}
-            </p>
-
             <ProductVariantSelector
               variants={variants}
               locale={locale}
@@ -317,23 +312,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               optionKind={/(splash|lotion|gel|butter|perfume|fragrance|body|mist)/i.test(product.category?.slug || '') ? 'scent' : 'shade'}
             />
 
-            {longDescription && (
-              <div className="mt-12 space-y-2 border-t border-[#E9DDCC] pt-8">
-                <details className="group rounded-2xl border border-[#E9DDCC] bg-white overflow-hidden shadow-sm hover:shadow-[0_4px_16px_rgba(139,30,45,.03)] transition-all">
-                  <summary className="flex justify-between items-center font-bold cursor-pointer list-none text-[#2B2B2B] p-5">
-                    <span className="flex items-center gap-3">
-                      <span className="text-[#B7935F]">✦</span>
-                      {isAr ? 'تفاصيل المنتج' : 'Product Details'}
-                    </span>
-                    <span className="transition-transform duration-300 group-open:rotate-180 text-[#B7935F]">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                    </span>
-                  </summary>
-                  <div className="px-5 pb-5 text-[#746A64] leading-relaxed border-t border-[#E9DDCC]/50 mt-1 pt-4">
-                    {longDescription}
-                  </div>
-                </details>
-              </div>
+            {shortDescription && (
+              <section className="mt-8 border-t border-[#E9DDCC] pt-6" aria-labelledby="product-description-title">
+                <h2 id="product-description-title" className="mb-2 text-sm font-bold text-[#2B2B2B]">
+                  {isAr ? 'تفاصيل المنتج' : 'Product details'}
+                </h2>
+                <p className="max-w-2xl text-sm leading-7 text-[#746A64]">{shortDescription}</p>
+              </section>
             )}
           </div>
         </div>
