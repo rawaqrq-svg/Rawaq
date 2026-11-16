@@ -16,7 +16,7 @@ function customerFacingProductCopy(value: string | null | undefined) {
 
   return value
     .split(/\r?\n/)
-    .filter((line) => !/(سعر\s*التكلفة|التكلفة|تكلفة\s*(?:الشراء|المنتج)|unit\s*cost|cost\s*price|purchase\s*cost|acquisition\s*cost)/i.test(line))
+    .filter((line) => !/(سعر\s*التكلفة|التكلفة|تكلفة\s*(?:الشراء|المنتج)|سعر\s*(?:الشراء|الجملة|المورد)|نسبة\s*الربح|هامش\s*الربح|حصة\s*المحل|unit\s*cost|cost\s*price|purchase\s*cost|acquisition\s*cost|wholesale\s*price|supplier\s*price|profit\s*(?:margin|share))/i.test(line))
     .join('\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -167,6 +167,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const productName = isAr ? product.nameAr : product.nameEn;
   const shortDescription = customerFacingProductCopy(product.shortDescription);
   const longDescription = customerFacingProductCopy(product.longDescription);
+  const isScentProduct = /(body|hair|perfume|fragrance|scent|splash|mist|shower)/i.test(product.category?.slug || '');
+  const scentNames = variants
+    .map((variant) => variant.shadeName || (variant.name !== variant.size ? variant.name : ''))
+    .map((name) => name?.trim())
+    .filter((name): name is string => Boolean(name));
+  const hasMultipleScents = isScentProduct && new Set(scentNames).size > 1;
   const rawMainImageUrl = mainImage?.url?.replace('local://', '/');
   const mainImageUrl = rawMainImageUrl
     ? (BASE_URL && rawMainImageUrl.startsWith('/') ? `${BASE_URL}${rawMainImageUrl}` : rawMainImageUrl)
@@ -292,6 +298,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-heading text-[#2B2B2B] leading-tight drop-shadow-sm">
                 {isAr ? product.nameAr : product.nameEn}
               </h1>
+              {hasMultipleScents && (
+                <p className="-mt-2 rounded-full border border-[#D9C6A8] bg-white px-3 py-1 text-xs font-semibold text-[#746A64]">
+                  {isAr ? 'متوفر بعدة روائح' : 'Available in multiple fragrances'}
+                </p>
+              )}
             </div>
 
             <p className="text-[#746A64] leading-relaxed mb-10 text-base sm:text-lg">

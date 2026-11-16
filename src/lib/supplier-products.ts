@@ -27,6 +27,7 @@ export interface RawOfferForGrouping {
       sku?: string | null;
       isVisible: boolean;
       images?: Array<{ url: string }>;
+      category?: { slug?: string | null } | null;
     };
   };
 }
@@ -41,6 +42,8 @@ export interface GroupedSupplierProduct {
   sizesString: string;
   colors: string[];
   colorsString: string;
+  scents: string[];
+  scentsString: string;
   fullDisplayName: string;
   minCostFils: number;
   maxCostFils: number;
@@ -170,6 +173,18 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
     const colors = Array.from(rawColorsSet);
     const colorsString = colors.join('، ');
 
+    // Product variants can use `name` for fragrance choices such as Rose, Moon, or Sweet.
+    const rawScentsSet = new Set<string>();
+    if (/(body|hair|perfume|fragrance|scent|splash|mist|shower)/i.test(product.category?.slug || '')) {
+      for (const o of offers) {
+        const name = o.variant.name?.trim();
+        const size = o.variant.size?.trim();
+        if (name && name !== size && !DUMMY_SIZES.has(name.toUpperCase())) rawScentsSet.add(name);
+      }
+    }
+    const scents = Array.from(rawScentsSet);
+    const scentsString = scents.join('، ');
+
     // 4. كود الصنف الأساسي (SKU)
     // الأولوية: كود المورد الموحد -> كود المنتج في النظام -> كود أول تنوع بعد إزالة لاحقة المقاس
     const supplierSkus = offers.map((o) => o.supplierSku?.trim()).filter(Boolean) as string[];
@@ -192,6 +207,7 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
     const specTags: string[] = [];
     if (sizesString) specTags.push(`المقاسات: ${sizesString}`);
     if (colorsString) specTags.push(`الألوان: ${colorsString}`);
+    if (scentsString) specTags.push(`الروائح: ${scentsString}`);
     const specsSuffix = specTags.length > 0 ? ` — ${specTags.join(' · ')}` : '';
     const fullDisplayName = `${product.nameAr}${specsSuffix}`;
 
@@ -236,6 +252,8 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
       sizesString,
       colors,
       colorsString,
+      scents,
+      scentsString,
       fullDisplayName,
       minCostFils,
       maxCostFils,

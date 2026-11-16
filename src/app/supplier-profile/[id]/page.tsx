@@ -38,6 +38,7 @@ export default async function SupplierProfilePage({ params }: Props) {
               product: {
                 include: {
                   images: { orderBy: { order: 'asc' } },
+                  category: true,
                 },
               },
               shade: true,

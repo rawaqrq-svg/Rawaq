@@ -48,6 +48,8 @@ export interface ProductData {
   sizesString: string;
   colors: string[];
   colorsString: string;
+  scents: string[];
+  scentsString: string;
   fullDisplayName: string;
   minCostFils: number;
   maxCostFils: number;
@@ -89,7 +91,8 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
       (p.fullDisplayName && p.fullDisplayName.toLowerCase().includes(q)) ||
       p.sku.toLowerCase().includes(q) ||
       p.sizesString.toLowerCase().includes(q) ||
-      p.colorsString.toLowerCase().includes(q);
+      p.colorsString.toLowerCase().includes(q) ||
+      p.scentsString.toLowerCase().includes(q);
 
     if (!matchesQuery) return false;
 
@@ -333,7 +336,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
               </h3>
             </div>
             <span className="text-xs text-zinc-500 font-mono">
-              أسعار التكلفة وسعر البيع وحالة العرض في المتجر
+              أسعار التكلفة وسعر البيع والروائح وحالة العرض في المتجر
             </span>
           </div>
 
@@ -344,7 +347,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                   <tr>
                     <th className="py-3 px-3 text-center w-12">#</th>
                     <th className="py-3 px-3 text-center w-20">صورة المنتج</th>
-                    <th className="py-3 px-4">اسم الصنف والمنتج والمواصفات (المقاسات والألوان)</th>
+                    <th className="py-3 px-4">اسم الصنف ومواصفاته (المقاسات والألوان والروائح)</th>
                     <th className="py-3 px-3">سعر التكلفة للمحل</th>
                     <th className="py-3 px-3">سعر البيع في المتجر</th>
                     <th className="py-3 px-3 text-center">حالة الصنف في المتجر</th>
@@ -388,6 +391,11 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                           {prod.colorsString && (
                             <span className="inline-flex items-center gap-1 font-bold text-stone-800 bg-stone-100 border border-stone-200 px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
                               الألوان: {prod.colorsString}
+                            </span>
+                          )}
+                          {prod.scentsString && (
+                            <span className="inline-flex items-center gap-1 font-bold text-rose-900 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
+                              الروائح: {prod.scentsString}
                             </span>
                           )}
                         </div>

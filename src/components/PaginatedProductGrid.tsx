@@ -67,6 +67,14 @@ export function PaginatedProductGrid({
             ? Math.min(...product.variants.map((v: any) => v.price))
             : 0;
           const totalStock = product.variants?.filter((variant: { isActive: boolean }) => variant.isActive).length ?? 0;
+          const isScentProduct = /(body|hair|perfume|fragrance|scent|splash|mist|shower)/i.test(product.category?.slug || '');
+          const scentNames = new Set<string>(
+            (product.variants || [])
+              .map((variant: any) => variant.shade?.name || variant.colorName || (variant.name !== variant.size ? variant.name : ''))
+              .map((name: string | null | undefined) => name?.trim())
+              .filter((name: string | undefined): name is string => Boolean(name))
+          );
+          const hasMultipleScents = isScentProduct && scentNames.size > 1;
 
           return (
             <article key={product.id} className="group relative flex h-full flex-col hover:-translate-y-1 transition-all duration-300 rounded-[1.5rem] rounded-tr-[2.5rem] rounded-bl-[2.5rem] border border-[#E9DDCC] bg-white shadow-sm hover:shadow-md hover:border-[#B7935F]/60 overflow-hidden">
@@ -104,6 +112,11 @@ export function PaginatedProductGrid({
                   <h3 className="line-clamp-2 min-h-[3rem] text-sm md:text-[15px] font-medium leading-[1.6] text-[#242424] transition-colors group-hover:text-[#B7935F]">
                     {isAr ? product.nameAr : product.nameEn}
                   </h3>
+                  {hasMultipleScents && (
+                    <p className="mt-1 text-[11px] font-semibold text-[#8A7257]">
+                      {isAr ? 'متوفر بعدة روائح' : 'Available in multiple fragrances'}
+                    </p>
+                  )}
                   <div className="mt-auto pt-4 flex items-center justify-center gap-1.5">
                     {product.variants?.length > 0 ? (
                       <>
