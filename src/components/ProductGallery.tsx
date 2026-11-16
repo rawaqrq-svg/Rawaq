@@ -6,9 +6,21 @@ import { X } from 'lucide-react';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
 
 export function ProductGallery({ images, productName, isAr }: { images: { id?: string; url: string; isMain?: boolean }[]; productName: string; isAr: boolean; categorySlug?: string }) {
-  const uploadedImages = images.filter(image => image.url && !image.url.includes('/images/templates/'));
+  const [variantImages, setVariantImages] = useState<{ id?: string; url: string; isMain?: boolean }[]>([]);
+  const uploadedImages = [...images, ...variantImages].filter(image => image.url && !image.url.includes('/images/templates/'));
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  useEffect(() => {
+    const handleVariantChange = (event: Event) => {
+      const detail = (event as CustomEvent<{ imageUrl?: string | null; images?: { id?: string; url: string; isMain?: boolean }[] }>).detail;
+      const nextImages = detail?.images || [];
+      setVariantImages(nextImages);
+      setSelectedUrl(detail?.imageUrl || null);
+    };
+    window.addEventListener('variant-changed', handleVariantChange);
+    return () => window.removeEventListener('variant-changed', handleVariantChange);
+  }, []);
   
   const current = uploadedImages.find(image => image.url === selectedUrl) || uploadedImages.find(image => image.isMain) || uploadedImages[0];
   const imageUrl = current?.url.replace('local://', '/');

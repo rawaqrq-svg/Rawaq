@@ -13,6 +13,7 @@ type VariantInput = {
   id?: string;
   size?: string;
   name?: string;
+  mainImage?: string | null;
   sku?: string;
   price: number;
   compareAt?: number | null;
@@ -72,7 +73,7 @@ function parseVariants(formData: FormData, productSku: string): Array<VariantInp
   if (!Array.isArray(value) || value.length === 0) throw new Error('أضف خياراً واحداً على الأقل للمنتج.');
   return value.map((raw, index) => {
     const item = raw as Partial<VariantInput>;
-    const size = String(item.size || item.name || '').trim();
+    const size = String(item.size || 'Standard').trim();
     // SKU is automatically generated and guaranteed unique, non-editable by admins or customers
     const sku = item.sku && String(item.sku).trim() ? String(item.sku).trim() : generateVariantSku(productSku, index);
     const price = Number(item.price);
@@ -177,6 +178,8 @@ export async function createProduct(formData: FormData) {
           variants: {
             create: variants.map(v => ({
               size: v.size,
+              name: v.name || '',
+              mainImage: v.mainImage || null,
               sku: v.sku,
               price: v.price,
               stock: 0,
@@ -312,6 +315,8 @@ export async function updateProduct(productId: string, formData: FormData) {
 
         const variantData = {
           size: variant.size,
+          name: variant.name || '',
+          mainImage: variant.mainImage || null,
           sku: variantSku,
           price: variant.price,
           compareAt: variant.compareAt !== undefined ? variant.compareAt : null,

@@ -104,7 +104,38 @@ export const rawaqDefaultTaxonomy: CategoryNodeSeed[] = [
         children: [
           { slug: 'women-edp', name: 'عطور نسائية (EDP)', templateCode: 'PERFUME' },
           { slug: 'men-edp', name: 'عطور رجالية (EDP)', templateCode: 'PERFUME' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'body-care',
+    name: 'العناية بالجسم',
+    description: 'منتجات العناية اليومية بالجسم بروائح متنوعة',
+    children: [
+      {
+        slug: 'scented-body-care',
+        name: 'منتجات الجسم المعطرة',
+        children: [
           { slug: 'body-splash', name: 'معطرات جسم وبودي سبلاش', templateCode: 'PERFUME' },
+          { slug: 'body-lotion', name: 'لوشن الجسم' },
+          { slug: 'shower-gel', name: 'جل الاستحمام' },
+          { slug: 'body-butter', name: 'زبدة الجسم' },
+          { slug: 'hair-mist', name: 'معطرات الشعر' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'hair-care',
+    name: 'العناية بالشعر',
+    description: 'منتجات العناية بالشعر وتعطيره',
+    children: [
+      {
+        slug: 'hair-fragrance',
+        name: 'تعطير الشعر',
+        children: [
+          { slug: 'hair-mist', name: 'معطرات الشعر' },
         ],
       },
     ],

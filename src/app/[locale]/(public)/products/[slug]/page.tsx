@@ -114,6 +114,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         where: { isActive: true },
         include: {
           shade: true,
+          images: { orderBy: { order: 'asc' } },
           supplierOffers: {
             where: { isActive: true, supplier: { isActive: true } },
             select: { stock: true },
@@ -145,6 +146,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     name: variant.name || variant.size,
     shadeName: variant.shade?.name || variant.colorName || (variant.shadeId ? 'درجة' : null),
     colorHex: variant.colorHex || variant.shade?.hexCode || null,
+    mainImage: variant.mainImage,
     stock: variant.inventorySource === 'SUPPLIER'
       ? variant.supplierOffers.reduce((total, offer) => total + offer.stock, 0)
       : variant.stock,
@@ -288,6 +290,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               locale={locale}
               product={{ id: product.id, nameAr: product.nameAr, nameEn: product.nameEn }}
               mainImage={mainImage?.url}
+              optionKind={/(splash|lotion|gel|butter|perfume|fragrance|body|mist)/i.test(product.category?.slug || '') ? 'scent' : 'shade'}
             />
 
             {product.longDescription && (

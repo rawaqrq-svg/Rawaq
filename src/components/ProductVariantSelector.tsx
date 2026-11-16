@@ -15,18 +15,22 @@ export interface ProductVariantItem {
   compareAt?: number | null;
   stock?: number;
   isActive?: boolean;
+  mainImage?: string | null;
+  images?: { url: string; isMain?: boolean; order?: number }[];
 }
 
 export function ProductVariantSelector({ 
   variants = [], 
   locale,
   product,
-  mainImage
+  mainImage,
+  optionKind = 'shade'
 }: { 
   variants: ProductVariantItem[], 
   locale: string,
   product: { id: string; nameAr: string; nameEn: string },
-  mainImage?: string
+  mainImage?: string,
+  optionKind?: 'scent' | 'shade'
 }) {
   const isAr = locale === 'ar';
 
@@ -110,9 +114,21 @@ export function ProductVariantSelector({
   // Dispatch event when variant changes so ProductGallery can react
   useEffect(() => {
     if (selectedVariant) {
-      window.dispatchEvent(new CustomEvent('variant-changed', { detail: selectedVariant }));
+      const image = selectedVariant.mainImage || selectedVariant.images?.find(item => item.isMain)?.url || selectedVariant.images?.[0]?.url;
+      const images = [...(selectedVariant.images || [])];
+      if (image && !images.some(item => item.url === image)) images.unshift({ url: image, isMain: true });
+      window.dispatchEvent(new CustomEvent('variant-changed', {
+        detail: {
+          imageUrl: image || null,
+          images,
+        },
+      }));
     }
   }, [selectedVariant]);
+
+  const optionLabel = optionKind === 'scent'
+    ? (isAr ? 'الرائحة' : 'Fragrance')
+    : (isAr ? 'الدرجة / اللون' : 'Shade / Color');
 
   const handleSelectSize = (size: string) => {
     setSelectedSize(size);
@@ -141,14 +157,14 @@ export function ProductVariantSelector({
         return;
       }
       if (!selectedShade) {
-        setValidationError(isAr ? 'يرجى اختيار الدرجة أولاً' : 'Please choose a shade first');
+        setValidationError(isAr ? `يرجى اختيار ${optionLabel} أولاً` : `Please choose ${optionLabel.toLowerCase()} first`);
         return;
       }
     } else if (hasMultipleSizes && !selectedSize) {
       setValidationError(isAr ? 'يرجى اختيار المقاس أولاً' : 'Please choose a size first');
       return;
     } else if (hasMultipleShades && !selectedShade) {
-      setValidationError(isAr ? 'يرجى اختيار الدرجة أولاً' : 'Please choose a shade first');
+      setValidationError(isAr ? `يرجى اختيار ${optionLabel} أولاً` : `Please choose ${optionLabel.toLowerCase()} first`);
       return;
     } else if (!selectedVariant && variants.length > 1) {
       setValidationError(isAr ? 'يرجى تحديد الخيار المطلوب أولاً' : 'Please select an option first');
@@ -157,6 +173,11 @@ export function ProductVariantSelector({
 
     if (!selectedVariant) {
       setValidationError(isAr ? 'يرجى اختيار المواصفات المطلوبة أولاً' : 'Please choose options first');
+      return;
+    }
+
+    if (selectedVariant.stock !== undefined && selectedVariant.stock <= 0) {
+      setValidationError(isAr ? 'هذا الخيار غير متوفر حالياً' : 'This option is currently out of stock');
       return;
     }
 
@@ -185,7 +206,7 @@ export function ProductVariantSelector({
           colorHex: selectedVariant.colorHex || null,
           price: selectedVariant.price,
           quantity: quantity,
-          image: mainImage || null
+          image: selectedVariant.mainImage || selectedVariant.images?.find(item => item.isMain)?.url || selectedVariant.images?.[0]?.url || mainImage || null
         });
       }
       
@@ -229,11 +250,11 @@ export function ProductVariantSelector({
             </span>
             <span className="text-xs text-stone-500 font-medium">
               {hasBoth
-                ? (isAr ? 'حددي المقاس والدرجة لعرض السعر الدقيق' : 'Select size and shade to view price')
+                ? (isAr ? `حددي المقاس و${optionLabel} لعرض السعر الدقيق` : `Select size and ${optionLabel.toLowerCase()} to view price`)
                 : hasMultipleSizes
                 ? (isAr ? 'حددي المقاس لعرض السعر الدقيق' : 'Select size to view price')
                 : hasMultipleShades
-                ? (isAr ? 'حددي الدرجة لعرض السعر الدقيق' : 'Select shade to view price')
+                ? (isAr ? `حددي ${optionLabel} لعرض السعر الدقيق` : `Select ${optionLabel.toLowerCase()} to view price`)
                 : (isAr ? 'حددي الخيار لعرض السعر' : 'Select option to view price')}
             </span>
           </div>
@@ -285,7 +306,7 @@ export function ProductVariantSelector({
           <div className="space-y-2.5">
             <div className="flex items-center justify-between">
               <label className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
-                <span>{isAr ? 'الدرجة / اللون:' : 'Shade / Color:'}</span>
+                <span>{optionLabel}:</span>
                 <span className="text-rose-600 font-bold">*</span>
               </label>
               {selectedShade ? (
@@ -375,7 +396,7 @@ export function ProductVariantSelector({
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
             <label className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
-              <span>{isAr ? 'الدرجة / اللون:' : 'Shade / Color:'}</span>
+              <span>{optionLabel}:</span>
               <span className="text-rose-600 font-bold">*</span>
             </label>
             {selectedShade ? (
@@ -499,9 +520,12 @@ export function ProductVariantSelector({
         <button
           type="button"
           onClick={handleAddToCart}
+          disabled={Boolean(selectedVariant && selectedVariant.stock !== undefined && selectedVariant.stock <= 0)}
           className={`flex-1 py-3.5 px-6 rounded-2xl font-bold text-sm sm:text-base transition-all duration-300 flex items-center justify-center gap-2 shadow-sm ${
             added 
               ? 'bg-emerald-700 text-white shadow-emerald-700/20' 
+              : selectedVariant && selectedVariant.stock !== undefined && selectedVariant.stock <= 0
+              ? 'bg-stone-300 text-stone-600 cursor-not-allowed shadow-none'
               : selectedVariant
               ? 'btn-rawaq-primary hover:shadow-lg'
               : 'bg-stone-800 text-white hover:bg-stone-900'
@@ -512,14 +536,16 @@ export function ProductVariantSelector({
               <Check className="w-5 h-5" />
               <span>{isAr ? 'تمت الإضافة إلى السلة بنجاح!' : 'Added Successfully!'}</span>
             </>
+          ) : selectedVariant && selectedVariant.stock !== undefined && selectedVariant.stock <= 0 ? (
+            <span>{isAr ? 'غير متوفر حالياً' : 'Currently unavailable'}</span>
           ) : !selectedVariant && variants.length > 1 ? (
             <span>
               {hasBoth
-                ? (isAr ? 'اختاري المقاس والدرجة للإضافة' : 'Select Size & Shade to Add')
+                ? (isAr ? `اختاري المقاس و${optionLabel} للإضافة` : `Select Size & ${optionLabel} to Add`)
                 : hasMultipleSizes
                 ? (isAr ? 'اختاري المقاس للإضافة' : 'Select Size to Add')
                 : hasMultipleShades
-                ? (isAr ? 'اختاري الدرجة للإضافة' : 'Select Shade to Add')
+                ? (isAr ? `اختاري ${optionLabel} للإضافة` : `Select ${optionLabel} to Add`)
                 : (isAr ? 'اختاري الخيار المطلوب للإضافة' : 'Select Option to Add')}
             </span>
           ) : (
