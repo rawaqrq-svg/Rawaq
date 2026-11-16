@@ -126,6 +126,25 @@ export function ProductVariantSelector({
     }
   }, [selectedVariant]);
 
+  useEffect(() => {
+    const handleGalleryImageSelected = (event: Event) => {
+      const url = (event as CustomEvent<{ url?: string }>).detail?.url;
+      if (!url) return;
+      const match = variants.find(variant =>
+        variant.mainImage === url || variant.images?.some(image => image.url === url)
+      );
+      if (!match) return;
+
+      setSelectedVariant(match);
+      if (hasMultipleSizes) setSelectedSize(match.size);
+      if (hasMultipleShades) setSelectedShade(match.shadeName || match.name || '');
+      setValidationError(null);
+    };
+
+    window.addEventListener('gallery-image-selected', handleGalleryImageSelected);
+    return () => window.removeEventListener('gallery-image-selected', handleGalleryImageSelected);
+  }, [hasMultipleShades, hasMultipleSizes, variants]);
+
   const optionLabel = optionKind === 'scent'
     ? (isAr ? 'الرائحة' : 'Fragrance')
     : (isAr ? 'الدرجة / اللون' : 'Shade / Color');
