@@ -195,11 +195,6 @@ export function ProductVariantSelector({
       return;
     }
 
-    if (selectedVariant.stock !== undefined && selectedVariant.stock <= 0) {
-      setValidationError(isAr ? 'هذا الخيار غير متوفر حالياً' : 'This option is currently out of stock');
-      return;
-    }
-
     setValidationError(null);
 
     try {
@@ -539,12 +534,9 @@ export function ProductVariantSelector({
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={Boolean(selectedVariant && selectedVariant.stock !== undefined && selectedVariant.stock <= 0)}
           className={`flex-1 py-3.5 px-6 rounded-2xl font-bold text-sm sm:text-base transition-all duration-300 flex items-center justify-center gap-2 shadow-sm ${
             added 
               ? 'bg-emerald-700 text-white shadow-emerald-700/20' 
-              : selectedVariant && selectedVariant.stock !== undefined && selectedVariant.stock <= 0
-              ? 'bg-stone-300 text-stone-600 cursor-not-allowed shadow-none'
               : selectedVariant
               ? 'btn-rawaq-primary hover:shadow-lg'
               : 'bg-stone-800 text-white hover:bg-stone-900'
@@ -555,8 +547,6 @@ export function ProductVariantSelector({
               <Check className="w-5 h-5" />
               <span>{isAr ? 'تمت الإضافة إلى السلة بنجاح!' : 'Added Successfully!'}</span>
             </>
-          ) : selectedVariant && selectedVariant.stock !== undefined && selectedVariant.stock <= 0 ? (
-            <span>{isAr ? 'غير متوفر حالياً' : 'Currently unavailable'}</span>
           ) : !selectedVariant && variants.length > 1 ? (
             <span>
               {hasBoth

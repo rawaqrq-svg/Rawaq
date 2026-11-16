@@ -11,6 +11,17 @@ import type { Metadata } from 'next';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '');
 
+function customerFacingProductCopy(value: string | null | undefined) {
+  if (!value) return '';
+
+  return value
+    .split(/\r?\n/)
+    .filter((line) => !/(سعر\s*التكلفة|التكلفة|تكلفة\s*(?:الشراء|المنتج)|unit\s*cost|cost\s*price|purchase\s*cost|acquisition\s*cost)/i.test(line))
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
@@ -47,7 +58,7 @@ export async function generateMetadata({
   if (!product) return {};
 
   const name = isAr ? product.nameAr : product.nameEn;
-  const description = product.shortDescription || (isAr
+  const description = customerFacingProductCopy(product.shortDescription) || (isAr
     ? `${product.nameAr} من رَواق.`
     : `${product.nameEn} from Rawaq.`);
   const rawImageUrl = product.images[0]?.url?.replace('local://', '/');
@@ -154,6 +165,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const isAr = locale === 'ar';
   const productName = isAr ? product.nameAr : product.nameEn;
+  const shortDescription = customerFacingProductCopy(product.shortDescription);
+  const longDescription = customerFacingProductCopy(product.longDescription);
   const rawMainImageUrl = mainImage?.url?.replace('local://', '/');
   const mainImageUrl = rawMainImageUrl
     ? (BASE_URL && rawMainImageUrl.startsWith('/') ? `${BASE_URL}${rawMainImageUrl}` : rawMainImageUrl)
@@ -191,7 +204,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: productName,
-    description: product.shortDescription || productName,
+    description: shortDescription || productName,
     image: mainImageUrl,
     brand: {
       '@type': 'Brand',
@@ -282,7 +295,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
 
             <p className="text-[#746A64] leading-relaxed mb-10 text-base sm:text-lg">
-              {product.shortDescription || (isAr ? 'عززي جمالك الطبيعي مع هذا المنتج الاستثنائي الذي يوفر لك مظهراً مثالياً وجذاباً طوال اليوم.' : 'Enhance your natural beauty with this exceptional product that provides a perfect and attractive look all day long.')}
+              {shortDescription || (isAr ? 'عززي جمالك الطبيعي مع هذا المنتج الاستثنائي الذي يوفر لك مظهراً مثالياً وجذاباً طوال اليوم.' : 'Enhance your natural beauty with this exceptional product that provides a perfect and attractive look all day long.')}
             </p>
 
             <ProductVariantSelector
@@ -293,7 +306,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               optionKind={/(splash|lotion|gel|butter|perfume|fragrance|body|mist)/i.test(product.category?.slug || '') ? 'scent' : 'shade'}
             />
 
-            {product.longDescription && (
+            {longDescription && (
               <div className="mt-12 space-y-2 border-t border-[#E9DDCC] pt-8">
                 <details className="group rounded-2xl border border-[#E9DDCC] bg-white overflow-hidden shadow-sm hover:shadow-[0_4px_16px_rgba(139,30,45,.03)] transition-all">
                   <summary className="flex justify-between items-center font-bold cursor-pointer list-none text-[#2B2B2B] p-5">
@@ -306,7 +319,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     </span>
                   </summary>
                   <div className="px-5 pb-5 text-[#746A64] leading-relaxed border-t border-[#E9DDCC]/50 mt-1 pt-4">
-                    {product.longDescription}
+                    {longDescription}
                   </div>
                 </details>
               </div>
