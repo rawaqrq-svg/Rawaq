@@ -1550,7 +1550,7 @@ export function UnifiedProductManager({
             >
               <span className="text-4xl block mb-3">🖼️</span>
               <p className="text-sm font-bold text-zinc-700">اضغط لرفع صور المنتج أو اسحبها إلى هنا</p>
-              <p className="text-xs text-zinc-400 mt-1">يدعم صيغ JPG, PNG, WEBP (الحد الأقصى 5 ميجابايت لكل صورة)</p>
+              <p className="text-xs text-emerald-700 mt-1 font-medium">يدعم جميع الصيغ (JPG, PNG, HEIC, WebP) — تحويل وضغط تلقائي إلى WebP من تطوير Google بحجم فائق الخفة</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

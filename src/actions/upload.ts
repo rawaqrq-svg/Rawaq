@@ -1,21 +1,34 @@
 'use server';
 
-import { requirePermission } from '@/lib/dal';
+import { requireAuth, getEmployeePermissions } from '@/lib/dal';
 import { createClient } from '@supabase/supabase-js';
-import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { getObjectStorageClient, hasObjectStorageConfig, mediaUrlForKey, uploadsBucket } from '@/lib/object-storage';
+import { uploadAndOptimizeFile } from '@/lib/storage/image-service';
 import path from 'path';
 
-// Setup Supabase admin client to bypass RLS and create buckets if needed
+async function requireUploadPermission() {
+  const session = await requireAuth();
+  const roleName = session.employee.role.name.trim().toUpperCase().replace(/[_-]+/g, ' ');
+  if (roleName === 'ADMIN' || roleName === 'SUPER ADMIN' || roleName === 'أدمن رئيسي' || roleName === 'ادمن رئيسي') {
+    return session;
+  }
+  const granted = await getEmployeePermissions(session.employeeId);
+  const allowed = ['manage:settings', 'manage:products', 'manage:categories', 'manage:brands', 'manage:cms'];
+  if (allowed.some(p => granted.includes(p))) {
+    return session;
+  }
+  throw new Error(`Unauthorized Access: ${roleName} does not have upload permission`);
+}
+
+// Setup Supabase admin client for direct signed URL generation if needed
 const getSupabaseAdmin = () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || 
               process.env.SUPABASE_SECRET_KEY || 
-              process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
-              process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || '';
+              process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 
+              process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-  if (!url || !key) {
-    throw new Error('مفاتيح Supabase مفقودة. يرجى إضافة مفتاح SUPABASE_SERVICE_ROLE_KEY أو NEXT_PUBLIC_SUPABASE_ANON_KEY في ملف .env');
+  if (!url || !key || url === 'https://dummy.supabase.co') {
+    throw new Error('مفاتيح Supabase غير مهيأة.');
   }
 
   return createClient(url, key, { auth: { persistSession: false } });
@@ -23,7 +36,7 @@ const getSupabaseAdmin = () => {
 
 export async function generateUploadUrl(filename: string): Promise<{ success: boolean; token?: string; path?: string; publicUrl?: string; error?: string }> {
   try {
-    await requirePermission('manage:settings');
+    await requireUploadPermission();
 
     let ext = '';
     const lastDot = filename.lastIndexOf('.');
@@ -37,14 +50,6 @@ export async function generateUploadUrl(filename: string): Promise<{ success: bo
     }
 
     const newFilename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}${ext}`;
-    
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-    const isDummy = url === 'https://dummy.supabase.co' || !url;
-    
-    if (isDummy) {
-      return { success: false, error: 'الرفع المباشر غير مدعوم محلياً بدون إعداد Supabase حقيقي. يرجى استخدام دالة uploadMedia للرفع المحلي.' };
-    }
-
     const bucketName = 'uploads';
     const supabaseAdmin = getSupabaseAdmin();
 
@@ -55,7 +60,7 @@ export async function generateUploadUrl(filename: string): Promise<{ success: bo
     if (!buckets?.find(b => b.name === bucketName)) {
       const { error: createError } = await supabaseAdmin.storage.createBucket(bucketName, { public: true });
       if (createError) {
-        throw new Error(`الرجاء إنشاء Bucket باسم '${bucketName}' من لوحة تحكم Supabase وتعيينه كـ Public. فشل الإنشاء التلقائي: ` + createError.message);
+        throw new Error(`فشل إنشاء الحاوية: ` + createError.message);
       }
     }
 
@@ -76,87 +81,57 @@ export async function generateUploadUrl(filename: string): Promise<{ success: bo
     };
   } catch (error: any) {
     console.error('Upload Error:', error);
-    return { success: false, error: 'حدث خطأ' };
+    return { success: false, error: error?.message || 'حدث خطأ أثناء إعداد رابط الرفع' };
   }
 }
 
-// Keep this for backwards compatibility for small files if needed, but rewrite to use Supabase
-export async function uploadMedia(formData: FormData): Promise<{ success: boolean; url?: string; error?: string }> {
+/**
+ * Universal media upload server action.
+ * Automatically converts raster images to .webp (quality: 80) via Sharp,
+ * saving 25-34%+ bandwidth and optimizing page speed.
+ */
+export async function uploadMedia(formData: FormData): Promise<{ 
+  success: boolean; 
+  url?: string; 
+  error?: string;
+  format?: string;
+  savedPercentage?: number;
+}> {
   try {
-    await requirePermission('manage:settings');
+    await requireUploadPermission();
 
-    const file = formData.get('file') as File | null;
+    const file = (formData.get('file') || formData.get('image')) as File | null;
     if (!file) return { success: false, error: 'لم يتم العثور على أي ملف' };
 
     const ext = path.extname(file.name).toLowerCase();
-    const allowedExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.mp4', '.webm', '.ogg'];
+    const allowedExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.mp4', '.webm', '.ogg', '.heic', '.heif', '.tiff', '.bmp', '.svg'];
     if (!allowedExts.includes(ext)) {
       return { success: false, error: 'صيغة الملف غير مدعومة' };
     }
 
-    const newFilename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}${ext}`;
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const bucket = (formData.get('bucket') as string) || 'uploads';
 
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-    const isDummy = url === 'https://dummy.supabase.co' || !url;
-
-    // A Vercel deployment has a read-only filesystem. When Supabase is not
-    // configured, use the project's S3-compatible Neon object storage.
-    if (isDummy) {
-      if (hasObjectStorageConfig()) {
-        const key = `uploads/${newFilename}`;
-        await getObjectStorageClient().send(new PutObjectCommand({
-          Bucket: uploadsBucket,
-          Key: key,
-          Body: buffer,
-          ContentType: file.type || 'application/octet-stream',
-          CacheControl: 'public, max-age=31536000, immutable',
-        }));
-        return { success: true, url: mediaUrlForKey(key) };
-      }
-
-      if (process.env.NODE_ENV === 'production') {
-        return { success: false, error: 'إعدادات تخزين الملفات غير مكتملة.' };
-      }
-
-      // Local development fallback only.
-      const fs = require('fs');
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-      
-      fs.writeFileSync(path.join(uploadDir, newFilename), buffer);
-      return { success: true, url: `/uploads/${newFilename}` };
-    }
-
-    // Supabase Upload
-    const bucketName = 'uploads';
-    const supabaseAdmin = getSupabaseAdmin();
-
-    const { data: buckets, error: listError } = await supabaseAdmin.storage.listBuckets();
-    if (listError) throw new Error('فشل جلب الحاويات: ' + listError.message);
-
-    if (!buckets?.find(b => b.name === bucketName)) {
-      const { error: createError } = await supabaseAdmin.storage.createBucket(bucketName, { public: true });
-      if (createError) {
-        throw new Error(`الرجاء إنشاء Bucket باسم '${bucketName}' من لوحة تحكم Supabase وتعيينه كـ Public. فشل الإنشاء التلقائي: ` + createError.message);
-      }
-    }
-    
-    const { error } = await supabaseAdmin.storage.from(bucketName).upload(newFilename, buffer, {
-      contentType: file.type,
-      upsert: true
+    // Upload with automated Sharp WebP conversion
+    const result = await uploadAndOptimizeFile({
+      file,
+      filename: file.name,
+      bucket,
+      quality: 80,
+      forceWebp: true,
     });
 
-    if (error) throw new Error(error.message);
+    if (!result.success || !result.url) {
+      return { success: false, error: result.error || 'حدث خطأ أثناء معالجة ورفع الصورة' };
+    }
 
-    const { data: publicData } = supabaseAdmin.storage.from(bucketName).getPublicUrl(newFilename);
-
-    return { success: true, url: publicData.publicUrl };
+    return { 
+      success: true, 
+      url: result.url,
+      format: result.format,
+      savedPercentage: result.savedPercentage,
+    };
   } catch (error: any) {
     console.error('Upload Error:', error);
-    return { success: false, error: 'حدث خطأ أثناء الرفع' };
+    return { success: false, error: error?.message || 'حدث خطأ أثناء الرفع' };
   }
 }

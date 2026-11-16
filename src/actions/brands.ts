@@ -8,6 +8,7 @@ import { uploadMedia } from '@/actions/upload';
 async function saveUploadedImage(imageFile: File): Promise<string> {
   const formData = new FormData();
   formData.append('file', imageFile);
+  formData.append('bucket', 'brand-assets');
   const result = await uploadMedia(formData);
   if (!result.success || !result.url) {
     throw new Error(result.error || 'فشل رفع الصورة');

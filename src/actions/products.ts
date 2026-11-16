@@ -88,6 +88,7 @@ async function uploadedImages(formData: FormData) {
   for (const file of files) {
     const payload = new FormData();
     payload.set('file', file);
+    payload.set('bucket', 'product-images');
     const result = await uploadMedia(payload);
     if (!result.success || !result.url) throw new Error(result.error || 'فشل رفع الصورة.');
     urls.push(result.url);

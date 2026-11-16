@@ -390,7 +390,7 @@ export function ProductNewForm({
             <Plus className="w-8 h-8 mx-auto mb-2 text-zinc-400" />
             <p className="text-sm font-medium">اضغط أو اسحب الصور هنا</p>
           </div>
-          <p className="text-xs text-zinc-400 pointer-events-none">PNG, JPG up to 5MB</p>
+          <p className="text-xs text-emerald-600 font-medium pointer-events-none">تحويل وضغط تلقائي إلى WebP (JPG, PNG, HEIC)</p>
         </div>
         
         {newImages.length > 0 && (
