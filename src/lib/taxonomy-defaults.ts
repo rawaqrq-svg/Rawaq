@@ -104,7 +104,69 @@ export const rawaqDefaultTaxonomy: CategoryNodeSeed[] = [
         children: [
           { slug: 'women-edp', name: 'عطور نسائية (EDP)', templateCode: 'PERFUME' },
           { slug: 'men-edp', name: 'عطور رجالية (EDP)', templateCode: 'PERFUME' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'body-care',
+    name: 'العناية بالجسم',
+    description: 'منتجات العناية اليومية بالجسم بروائح متنوعة',
+    children: [
+      {
+        slug: 'scented-body-care',
+        name: 'منتجات الجسم المعطرة',
+        children: [
           { slug: 'body-splash', name: 'معطرات جسم وبودي سبلاش', templateCode: 'PERFUME' },
+          { slug: 'body-lotion', name: 'لوشن الجسم' },
+          { slug: 'shower-gel', name: 'جل الاستحمام' },
+          { slug: 'body-butter', name: 'زبدة الجسم' },
+          { slug: 'hair-mist', name: 'معطرات الشعر' },
+        ],
+      },
+      {
+        slug: 'body-exfoliation',
+        name: 'تقشير وتنظيف الجسم',
+        children: [
+          { slug: 'body-scrub', name: 'مقشرات الجسم' },
+        ],
+      },
+      {
+        slug: 'body-powders',
+        name: 'بودرة الجسم المعطرة',
+        children: [
+          { slug: 'body-powder', name: 'بودرة ومعطرات الجسم الجافة' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'hair-care',
+    name: 'العناية بالشعر',
+    description: 'منتجات العناية بالشعر وتعطيره',
+    children: [
+      {
+        slug: 'hair-fragrance',
+        name: 'تعطير الشعر',
+        children: [
+          { slug: 'hair-mist', name: 'معطرات الشعر' },
+        ],
+      },
+      {
+        slug: 'hair-treatments',
+        name: 'علاجات وسيرومات الشعر',
+        children: [
+          { slug: 'hair-serum', name: 'زيوت وسيرومات الشعر' },
+          { slug: 'hair-mask', name: 'حمام الزيت وعلاجات الشعر' },
+          { slug: 'hair-color-care', name: 'علاجات الشعر المصبوغ' },
+        ],
+      },
+      {
+        slug: 'hair-cleansing-styling',
+        name: 'تنظيف وتصفيف الشعر',
+        children: [
+          { slug: 'hair-shampoo-conditioner', name: 'شامبو وبلسم الشعر' },
+          { slug: 'curly-hair-styling', name: 'تصفيف الشعر الكيرلي' },
         ],
       },
     ],
@@ -173,8 +235,15 @@ export const rawaqDefaultTaxonomy: CategoryNodeSeed[] = [
  * linking Level 3 specialized types to their default ProductTemplate without timing out.
  */
 export async function ensureDefaultTaxonomyInstalled() {
-  const rootCount = await prisma.category.count({ where: { parentId: null } }).catch(() => 0);
-  if (rootCount >= rawaqDefaultTaxonomy.length) {
+  const expectedSlugs = rawaqDefaultTaxonomy.flatMap(root => [
+    root.slug,
+    ...(root.children || []).flatMap(sub => [
+      sub.slug,
+      ...(sub.children || []).map(leaf => leaf.slug),
+    ]),
+  ]);
+  const existingCount = await prisma.category.count({ where: { slug: { in: expectedSlugs } } }).catch(() => 0);
+  if (existingCount >= expectedSlugs.length) {
     return; // Already initialized
   }
 
@@ -190,7 +259,6 @@ export async function ensureDefaultTaxonomyInstalled() {
         description: rootNode.description || null,
         imagePath: rootNode.imagePath || null,
         sortOrder: rootOrder,
-        isVisible: true,
       },
       create: {
         slug: rootNode.slug,
@@ -211,7 +279,6 @@ export async function ensureDefaultTaxonomyInstalled() {
           name: subNode.name,
           parentId: rootCat.id,
           sortOrder: subOrder,
-          isVisible: true,
         },
         create: {
           slug: subNode.slug,
@@ -232,7 +299,6 @@ export async function ensureDefaultTaxonomyInstalled() {
             name: leafNode.name,
             parentId: subCat.id,
             sortOrder: leafOrder,
-            isVisible: true,
             defaultTemplateId,
           },
           create: {

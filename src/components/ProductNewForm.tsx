@@ -7,7 +7,9 @@ import { createProduct } from '@/actions/products';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 
 interface Variant {
+  size: string;
   name: string;
+  mainImage?: string;
   sku: string;
   price: string;
   colorHex?: string;
@@ -66,7 +68,7 @@ export function ProductNewForm({
   const [preview, setPreview] = useState<string | null>(null);
   
   const [variants, setVariants] = useState<Variant[]>([
-    { name: 'Standard', sku: '', price: '25.000', colorHex: '', isActive: true, shadeId: null, supplierId: '', supplierUnitCost: '' }
+    { size: 'Standard', name: 'Standard', mainImage: '', sku: '', price: '25.000', colorHex: '', isActive: true, shadeId: null, supplierId: '', supplierUnitCost: '' }
   ]);
   const [attributes, setAttributes] = useState<ProductAttribute[]>([]);
   const [catalogType, setCatalogType] = useState('MAKEUP');
@@ -105,7 +107,7 @@ export function ProductNewForm({
   };
 
   const addVariant = () => {
-    setVariants(prev => [...prev, { name: '', sku: '', price: '', colorHex: '', isActive: true, shadeId: null, supplierId: '', supplierUnitCost: '' }]);
+    setVariants(prev => [...prev, { size: 'Standard', name: '', mainImage: '', sku: '', price: '', colorHex: '', isActive: true, shadeId: null, supplierId: '', supplierUnitCost: '' }]);
   };
 
   const removeVariant = (index: number) => {
@@ -138,7 +140,9 @@ export function ProductNewForm({
       formData.set('sku', autoSku);
 
       const variantsForAction = variants.map(v => ({
+        size: v.size || 'Standard',
         name: v.name,
+        mainImage: v.mainImage || null,
         sku: `${autoSku}-${v.name.toUpperCase().replace(/\s+/g, '')}`,
         price: Math.round(parseFloat(v.price) * 1000),
         colorHex: v.colorHex || null,
@@ -289,24 +293,25 @@ export function ProductNewForm({
       {/* Variants / Shades */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <label className="text-sm font-bold text-zinc-700">{isFashion ? 'المقاسات أو الألوان' : 'الدرجات أو الأحجام (Variants / Shades)'} *</label>
+          <label className="text-sm font-bold text-zinc-700">{isFashion ? 'المقاسات أو الألوان' : 'خيارات المنتج: الحجم والرائحة أو اللون'} *</label>
           <button type="button" onClick={addVariant} className="flex items-center gap-1 text-xs font-bold text-[var(--color-rose-600)] border border-[var(--color-rose-600)] px-3 py-1.5 rounded hover:bg-[var(--color-rose-50)] transition-colors">
-            <Plus className="w-3 h-3" /> إضافة درجة
+            <Plus className="w-3 h-3" /> إضافة خيار
           </button>
         </div>
 
         <div className="border rounded-lg divide-y divide-zinc-100 overflow-hidden">
           <div className="bg-zinc-50 grid grid-cols-12 gap-2 px-4 py-2 text-xs font-bold text-zinc-500">
-            <div className="col-span-3">الاسم (الدرجة)</div>
-            <div className="col-span-3">الدرجة (Shade)</div>
+            <div className="col-span-3">اسم الخيار</div>
+            <div className="col-span-3">اللون (اختياري)</div>
             <div className="col-span-4">السعر (د.أ)</div>
             <div className="col-span-2 text-center">لون / حالة التوفر</div>
             <div className="col-span-1 text-center">إجراء</div>
           </div>
           {variants.map((v, i) => (
-            <div key={i} className="grid grid-cols-12 gap-2 px-4 py-3 items-center">
+            <React.Fragment key={`variant-${i}`}>
+            <div className="grid grid-cols-12 gap-2 px-4 py-3 items-center">
               <div className="col-span-3">
-                <input type="text" value={v.name} onChange={e => updateVariant(i, 'name', e.target.value)} required placeholder="Ruby Red" className="w-full border rounded p-1.5 text-xs outline-none focus:border-[var(--color-rose-600)]" />
+                <input type="text" value={v.name} onChange={e => updateVariant(i, 'name', e.target.value)} required placeholder="روز / Rose" className="w-full border rounded p-1.5 text-xs outline-none focus:border-[var(--color-rose-600)]" />
               </div>
               <div className="col-span-3">
                 <select value={v.shadeId || ''} onChange={e => updateVariant(i, 'shadeId', e.target.value)} className="w-full border rounded p-1.5 text-xs outline-none focus:border-[var(--color-rose-600)]">
@@ -329,6 +334,11 @@ export function ProductNewForm({
                 )}
               </div>
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 px-4 pb-3">
+              <label className="space-y-1 text-xs"><span className="block text-zinc-600">الحجم / العبوة</span><input type="text" value={v.size} onChange={e => updateVariant(i, 'size', e.target.value)} required aria-label="حجم الخيار" placeholder="مثال: 250 مل" className="w-full border rounded p-1.5 outline-none focus:border-[var(--color-rose-600)]" /></label>
+              <label className="space-y-1 text-xs"><span className="block text-zinc-600">صورة هذا الخيار (اختياري)</span><input type="text" value={v.mainImage || ''} onChange={e => updateVariant(i, 'mainImage', e.target.value)} aria-label="رابط صورة الخيار" placeholder="/images/products/rose.webp" dir="ltr" className="w-full border rounded p-1.5 outline-none focus:border-[var(--color-rose-600)]" /></label>
+            </div>
+            </React.Fragment>
           ))}
         </div>
         <div className="mt-3 space-y-2">

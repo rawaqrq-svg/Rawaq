@@ -11,6 +11,17 @@ import type { Metadata } from 'next';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '');
 
+function customerFacingProductCopy(value: string | null | undefined) {
+  if (!value) return '';
+
+  return value
+    .split(/\r?\n/)
+    .filter((line) => !/(سعر\s*التكلفة|التكلفة|تكلفة\s*(?:الشراء|المنتج)|سعر\s*(?:الشراء|الجملة|المورد)|نسبة\s*الربح|هامش\s*الربح|حصة\s*المحل|unit\s*cost|cost\s*price|purchase\s*cost|acquisition\s*cost|wholesale\s*price|supplier\s*price|profit\s*(?:margin|share)|صورة\s*المنتج\s*:|المصدر\s*:|GHAZ-[A-Z0-9-]+)/i.test(line))
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
@@ -47,7 +58,7 @@ export async function generateMetadata({
   if (!product) return {};
 
   const name = isAr ? product.nameAr : product.nameEn;
-  const description = product.shortDescription || (isAr
+  const description = customerFacingProductCopy(product.shortDescription) || (isAr
     ? `${product.nameAr} من رَواق.`
     : `${product.nameEn} from Rawaq.`);
   const rawImageUrl = product.images[0]?.url?.replace('local://', '/');
@@ -114,6 +125,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         where: { isActive: true },
         include: {
           shade: true,
+          images: { orderBy: { order: 'asc' } },
           supplierOffers: {
             where: { isActive: true, supplier: { isActive: true } },
             select: { stock: true },
@@ -145,6 +157,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     name: variant.name || variant.size,
     shadeName: variant.shade?.name || variant.colorName || (variant.shadeId ? 'درجة' : null),
     colorHex: variant.colorHex || variant.shade?.hexCode || null,
+    mainImage: variant.mainImage,
     stock: variant.inventorySource === 'SUPPLIER'
       ? variant.supplierOffers.reduce((total, offer) => total + offer.stock, 0)
       : variant.stock,
@@ -152,6 +165,18 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const isAr = locale === 'ar';
   const productName = isAr ? product.nameAr : product.nameEn;
+  const shortDescription = customerFacingProductCopy(product.shortDescription);
+  const isScentProduct = /(body|hair|perfume|fragrance|scent|splash|mist|shower)/i.test(product.category?.slug || '');
+  const scentNames = variants
+    .map((variant) => variant.shadeName || (variant.name !== variant.size ? variant.name : ''))
+    .map((name) => name?.trim())
+    .filter((name): name is string => Boolean(name));
+  const hasMultipleScents = isScentProduct && new Set(scentNames).size > 1;
+  const optionKind = /(lotion|hair.*(?:serum|treatment|oil|drops?|mask))/i.test(product.category?.slug || '')
+    ? 'formula' as const
+    : /(splash|gel|butter|perfume|fragrance|body|mist|shower)/i.test(product.category?.slug || '')
+      ? 'scent' as const
+      : 'shade' as const;
   const rawMainImageUrl = mainImage?.url?.replace('local://', '/');
   const mainImageUrl = rawMainImageUrl
     ? (BASE_URL && rawMainImageUrl.startsWith('/') ? `${BASE_URL}${rawMainImageUrl}` : rawMainImageUrl)
@@ -189,7 +214,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: productName,
-    description: product.shortDescription || productName,
+    description: shortDescription || productName,
     image: mainImageUrl,
     brand: {
       '@type': 'Brand',
@@ -277,36 +302,28 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-heading text-[#2B2B2B] leading-tight drop-shadow-sm">
                 {isAr ? product.nameAr : product.nameEn}
               </h1>
+              {hasMultipleScents && (
+                <p className="-mt-2 rounded-full border border-[#D9C6A8] bg-white px-3 py-1 text-xs font-semibold text-[#746A64]">
+                  {isAr ? 'متوفر بعدة خيارات' : 'Available in multiple options'}
+                </p>
+              )}
             </div>
-
-            <p className="text-[#746A64] leading-relaxed mb-10 text-base sm:text-lg">
-              {product.shortDescription || (isAr ? 'عززي جمالك الطبيعي مع هذا المنتج الاستثنائي الذي يوفر لك مظهراً مثالياً وجذاباً طوال اليوم.' : 'Enhance your natural beauty with this exceptional product that provides a perfect and attractive look all day long.')}
-            </p>
 
             <ProductVariantSelector
               variants={variants}
               locale={locale}
               product={{ id: product.id, nameAr: product.nameAr, nameEn: product.nameEn }}
               mainImage={mainImage?.url}
+              optionKind={optionKind}
             />
 
-            {product.longDescription && (
-              <div className="mt-12 space-y-2 border-t border-[#E9DDCC] pt-8">
-                <details className="group rounded-2xl border border-[#E9DDCC] bg-white overflow-hidden shadow-sm hover:shadow-[0_4px_16px_rgba(139,30,45,.03)] transition-all">
-                  <summary className="flex justify-between items-center font-bold cursor-pointer list-none text-[#2B2B2B] p-5">
-                    <span className="flex items-center gap-3">
-                      <span className="text-[#B7935F]">✦</span>
-                      {isAr ? 'تفاصيل المنتج' : 'Product Details'}
-                    </span>
-                    <span className="transition-transform duration-300 group-open:rotate-180 text-[#B7935F]">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                    </span>
-                  </summary>
-                  <div className="px-5 pb-5 text-[#746A64] leading-relaxed border-t border-[#E9DDCC]/50 mt-1 pt-4">
-                    {product.longDescription}
-                  </div>
-                </details>
-              </div>
+            {shortDescription && (
+              <section className="mt-8 border-t border-[#E9DDCC] pt-6" aria-labelledby="product-description-title">
+                <h2 id="product-description-title" className="mb-2 text-sm font-bold text-[#2B2B2B]">
+                  {isAr ? 'تفاصيل المنتج' : 'Product details'}
+                </h2>
+                <p className="max-w-2xl text-sm leading-7 text-[#746A64]">{shortDescription}</p>
+              </section>
             )}
           </div>
         </div>

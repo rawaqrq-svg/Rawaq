@@ -31,7 +31,7 @@ export async function getPaginatedProducts({
       skip,
       take,
       include: {
-        variants: { orderBy: { price: 'asc' } },
+        variants: { where: { isActive: true }, orderBy: { price: 'asc' } },
         images: { orderBy: { order: 'asc' } },
         category: true,
       },
@@ -40,8 +40,5 @@ export async function getPaginatedProducts({
     prisma.product.count({ where })
   ]);
 
-  for (const product of products) for (const variant of product.variants) {
-    variant.stock = variant.isActive ? 1 : 0;
-  }
   return { success: true, products, total };
 }

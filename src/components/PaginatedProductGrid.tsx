@@ -67,11 +67,19 @@ export function PaginatedProductGrid({
             ? Math.min(...product.variants.map((v: any) => v.price))
             : 0;
           const totalStock = product.variants?.filter((variant: { isActive: boolean }) => variant.isActive).length ?? 0;
+          const isScentProduct = /(body|hair|perfume|fragrance|scent|splash|mist|shower)/i.test(product.category?.slug || '');
+          const scentNames = new Set<string>(
+            (product.variants || [])
+              .map((variant: any) => variant.shade?.name || variant.colorName || (variant.name !== variant.size ? variant.name : ''))
+              .map((name: string | null | undefined) => name?.trim())
+              .filter((name: string | undefined): name is string => Boolean(name))
+          );
+          const hasMultipleScents = isScentProduct && scentNames.size > 1;
 
           return (
             <article key={product.id} className="group relative flex h-full flex-col hover:-translate-y-1 transition-all duration-300 rounded-[1.5rem] rounded-tr-[2.5rem] rounded-bl-[2.5rem] border border-[#E9DDCC] bg-white shadow-sm hover:shadow-md hover:border-[#B7935F]/60 overflow-hidden">
               <Link href={`/${locale}/products/${product.slug}`} className="flex h-full w-full outline-none flex-col group">
-                <div className="relative w-full aspect-square bg-[#F7F3EA] shrink-0 border-b border-[#E9DDCC]/40">
+                <div className="relative w-full aspect-square bg-white shrink-0 border-b border-[#E9DDCC]/40">
                   <div className="absolute top-3 right-3 z-20">
                     <WishlistHeart product={{
                       id: product.id,
@@ -90,7 +98,7 @@ export function PaginatedProductGrid({
                       alt={isAr ? product.nameAr : product.nameEn}
                       fill
                       sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
-                      className={`object-contain p-5 transition duration-700 group-hover:scale-[1.03] ${totalStock === 0 ? 'opacity-50 grayscale-[0.3]' : ''}`}
+                      className={`object-cover transition duration-700 group-hover:scale-[1.03] ${totalStock === 0 ? 'opacity-50 grayscale-[0.3]' : ''}`}
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-4xl text-[#3F4832]/20">✦</div>
@@ -104,6 +112,11 @@ export function PaginatedProductGrid({
                   <h3 className="line-clamp-2 min-h-[3rem] text-sm md:text-[15px] font-medium leading-[1.6] text-[#242424] transition-colors group-hover:text-[#B7935F]">
                     {isAr ? product.nameAr : product.nameEn}
                   </h3>
+                  {hasMultipleScents && (
+                    <p className="mt-1 text-[11px] font-semibold text-[#8A7257]">
+                      {isAr ? 'متوفر بعدة روائح' : 'Available in multiple fragrances'}
+                    </p>
+                  )}
                   <div className="mt-auto pt-4 flex items-center justify-center gap-1.5">
                     {product.variants?.length > 0 ? (
                       <>

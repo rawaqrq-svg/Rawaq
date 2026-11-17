@@ -193,6 +193,16 @@ export async function getPublicInvoiceDataByToken(token: string) {
 
   const order = invoice.order;
 
+  const agreementMatch = order.notes?.match(/\[إقرار وموافقة إلكترونية موثقة\]:?[^\n]+/);
+  const termsAcceptedNote = agreementMatch
+    ? agreementMatch[0].trim()
+    : `[إقرار وموافقة إلكترونية موثقة]: تم قبول الشروط والأحكام وسياسة الإرجاع والاستبدال (إصدار JO-2026-v1.0) في ${order.createdAt.toISOString()}`;
+
+  const cleanAddress = (order.deliveryJob?.addressDetails || order.notes || '—')
+    .replace(/\[إقرار وموافقة إلكترونية موثقة\]:?[^\n]*/gi, '')
+    .replace(/العنوان:\s*/g, '')
+    .trim() || '—';
+
   return {
     invoiceNumber: invoice.number,
     issueDate: invoice.createdAt,
@@ -205,7 +215,8 @@ export async function getPublicInvoiceDataByToken(token: string) {
     customerName: order.customerName,
     customerPhone: order.customerPhone,
     city: order.deliveryJob?.city || order.shippingZoneNameSnapshot || 'عمان',
-    addressDetails: order.deliveryJob?.addressDetails || order.notes || '—',
+    addressDetails: cleanAddress,
+    termsAcceptedNote,
     paymentMethod: 'الدفع عند الاستلام (COD)',
     grossTotalFils: invoice.grossTotalFils,
     netSubtotalFils: invoice.netSubtotalFils,

@@ -17,7 +17,7 @@ export function RawaqProductFrame({
   className = '',
 }: RawaqProductFrameProps) {
   return (
-    <div className={`relative overflow-hidden aspect-[4/5] rounded-[1.5rem] rounded-tr-[2.5rem] rounded-bl-[2.5rem] border-[4px] border-[#F7F3EA] ring-1 ring-[#E9DDCC] bg-[#F7F3EA] shadow-sm transition-all duration-300 hover:shadow-md hover:ring-[#B7935F]/50 ${className}`}>
+    <div className={`relative aspect-square overflow-hidden rounded-[1.5rem] rounded-tr-[2.5rem] rounded-bl-[2.5rem] border-[4px] border-[#F7F3EA] ring-1 ring-[#E9DDCC] bg-white shadow-sm transition-all duration-300 hover:shadow-md hover:ring-[#B7935F]/50 ${className}`}>
       {children}
     </div>
   );

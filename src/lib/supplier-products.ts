@@ -20,6 +20,10 @@ export interface RawOfferForGrouping {
     mainImage?: string | null;
     images?: Array<{ url: string }>;
     shade?: { id?: string; name: string } | null;
+    attributeValues?: Array<{
+      valueJson: string;
+      attributeDefinition: { key: string; nameAr: string; nameEn?: string | null };
+    }>;
     product: {
       id: string;
       nameAr: string;
@@ -27,6 +31,7 @@ export interface RawOfferForGrouping {
       sku?: string | null;
       isVisible: boolean;
       images?: Array<{ url: string }>;
+      category?: { slug?: string | null } | null;
     };
   };
 }
@@ -41,6 +46,13 @@ export interface GroupedSupplierProduct {
   sizesString: string;
   colors: string[];
   colorsString: string;
+  grades: string[];
+  gradesString: string;
+  scents: string[];
+  scentsString: string;
+  optionsString: string;
+  customAttributes: Array<{ name: string; values: string[]; valuesString: string }>;
+  attributesString: string;
   fullDisplayName: string;
   minCostFils: number;
   maxCostFils: number;
@@ -90,7 +102,7 @@ const DUMMY_SIZES = new Set([
 
 /**
  * يجمع عروض المورد التابعة لنفس المنتج الأساسي في سطر واحد
- * بحيث تظهر المقاسات والألوان معاً في نفس السطر وبنفس كود المنتج الأساسي
+ * بحيث تظهر المقاسات والألوان والدرجات والروائح وباقي الخصائص معاً في نفس السطر
  */
 export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): GroupedSupplierProduct[] {
   const productMap = new Map<
@@ -159,16 +171,66 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
     });
     const sizesString = sizes.join(', ');
 
-    // 3. استخراج الألوان
+    // 3. استخراج الألوان والدرجات كلٌّ على حدة
     const rawColorsSet = new Set<string>();
+    const rawGradesSet = new Set<string>();
     for (const o of offers) {
       const c = o.variant.colorName?.trim();
       const s = o.variant.shade?.name?.trim();
       if (c && !DUMMY_SIZES.has(c.toUpperCase())) rawColorsSet.add(c);
-      if (s && !DUMMY_SIZES.has(s.toUpperCase())) rawColorsSet.add(s);
+      if (s && !DUMMY_SIZES.has(s.toUpperCase())) rawGradesSet.add(s);
     }
     const colors = Array.from(rawColorsSet);
     const colorsString = colors.join('، ');
+    const grades = Array.from(rawGradesSet);
+    const gradesString = grades.join('، ');
+
+    // Product variants can use `name` for fragrance choices or other selectable options.
+    const rawScentsSet = new Set<string>();
+    const scentProduct = /(body|hair|perfume|fragrance|scent|splash|mist|shower)/i.test(product.category?.slug || '');
+    const rawOptionsSet = new Set<string>();
+    for (const o of offers) {
+      const name = o.variant.name?.trim();
+      const size = o.variant.size?.trim();
+      if (!name || name === size || DUMMY_SIZES.has(name.toUpperCase())) continue;
+      if (scentProduct) rawScentsSet.add(name);
+      else if (!rawColorsSet.has(name) && !rawGradesSet.has(name)) rawOptionsSet.add(name);
+    }
+    const scents = Array.from(rawScentsSet);
+    const scentsString = scents.join('، ');
+    const optionsString = Array.from(rawOptionsSet).join('، ');
+
+    const customAttributeMap = new Map<string, { name: string; values: Set<string> }>();
+    for (const offer of offers) {
+      for (const attribute of offer.variant.attributeValues || []) {
+        const name = attribute.attributeDefinition.nameAr?.trim() || attribute.attributeDefinition.nameEn?.trim();
+        if (!name) continue;
+
+        let value: unknown;
+        try {
+          value = JSON.parse(attribute.valueJson);
+        } catch {
+          value = attribute.valueJson;
+        }
+        const valueText = Array.isArray(value)
+          ? value.map((item) => String(item).trim()).filter(Boolean).join('، ')
+          : value && typeof value === 'object'
+            ? Object.values(value as Record<string, unknown>).map((item) => String(item).trim()).filter(Boolean).join('، ')
+            : typeof value === 'boolean'
+              ? (value ? 'نعم' : 'لا')
+              : String(value ?? '').trim();
+        if (!valueText) continue;
+
+        const key = attribute.attributeDefinition.key || name.toLocaleLowerCase('ar');
+        if (!customAttributeMap.has(key)) customAttributeMap.set(key, { name, values: new Set<string>() });
+        customAttributeMap.get(key)!.values.add(valueText);
+      }
+    }
+    const customAttributes = Array.from(customAttributeMap.values()).map(({ name, values }) => {
+      const list = Array.from(values);
+      return { name, values: list, valuesString: list.join('، ') };
+    });
+    const attributesString = customAttributes.map((attribute) => `${attribute.name}: ${attribute.valuesString}`).join('، ');
 
     // 4. كود الصنف الأساسي (SKU)
     // الأولوية: كود المورد الموحد -> كود المنتج في النظام -> كود أول تنوع بعد إزالة لاحقة المقاس
@@ -192,6 +254,10 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
     const specTags: string[] = [];
     if (sizesString) specTags.push(`المقاسات: ${sizesString}`);
     if (colorsString) specTags.push(`الألوان: ${colorsString}`);
+    if (gradesString) specTags.push(`الدرجات: ${gradesString}`);
+    if (scentsString) specTags.push(`الروائح: ${scentsString}`);
+    if (optionsString) specTags.push(`الخيارات: ${optionsString}`);
+    if (attributesString) specTags.push(attributesString);
     const specsSuffix = specTags.length > 0 ? ` — ${specTags.join(' · ')}` : '';
     const fullDisplayName = `${product.nameAr}${specsSuffix}`;
 
@@ -236,6 +302,13 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
       sizesString,
       colors,
       colorsString,
+      grades,
+      gradesString,
+      scents,
+      scentsString,
+      optionsString,
+      customAttributes,
+      attributesString,
       fullDisplayName,
       minCostFils,
       maxCostFils,

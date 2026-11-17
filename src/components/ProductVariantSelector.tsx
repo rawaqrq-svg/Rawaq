@@ -15,24 +15,30 @@ export interface ProductVariantItem {
   compareAt?: number | null;
   stock?: number;
   isActive?: boolean;
+  mainImage?: string | null;
+  images?: { url: string; isMain?: boolean; order?: number }[];
 }
 
 export function ProductVariantSelector({ 
   variants = [], 
   locale,
   product,
-  mainImage
+  mainImage,
+  optionKind = 'shade'
 }: { 
   variants: ProductVariantItem[], 
   locale: string,
   product: { id: string; nameAr: string; nameEn: string },
-  mainImage?: string
+  mainImage?: string,
+  optionKind?: 'scent' | 'shade' | 'formula'
 }) {
   const isAr = locale === 'ar';
 
   // Distinct sizes
   const distinctSizes = useMemo(() => {
-    const raw = variants.map(v => v.size?.trim()).filter(Boolean);
+    const raw = variants
+      .map(v => v.size?.trim())
+      .filter((size): size is string => Boolean(size) && !/^(غير مذكور|غير محدد|unknown|n\/?a|-)$/i.test(size));
     return Array.from(new Set(raw));
   }, [variants]);
 
@@ -110,9 +116,42 @@ export function ProductVariantSelector({
   // Dispatch event when variant changes so ProductGallery can react
   useEffect(() => {
     if (selectedVariant) {
-      window.dispatchEvent(new CustomEvent('variant-changed', { detail: selectedVariant }));
+      const image = selectedVariant.mainImage || selectedVariant.images?.find(item => item.isMain)?.url || selectedVariant.images?.[0]?.url;
+      const images = [...(selectedVariant.images || [])];
+      if (image && !images.some(item => item.url === image)) images.unshift({ url: image, isMain: true });
+      window.dispatchEvent(new CustomEvent('variant-changed', {
+        detail: {
+          imageUrl: image || null,
+          images,
+        },
+      }));
     }
   }, [selectedVariant]);
+
+  useEffect(() => {
+    const handleGalleryImageSelected = (event: Event) => {
+      const url = (event as CustomEvent<{ url?: string }>).detail?.url;
+      if (!url) return;
+      const match = variants.find(variant =>
+        variant.mainImage === url || variant.images?.some(image => image.url === url)
+      );
+      if (!match) return;
+
+      setSelectedVariant(match);
+      if (hasMultipleSizes) setSelectedSize(match.size);
+      if (hasMultipleShades) setSelectedShade(match.shadeName || match.name || '');
+      setValidationError(null);
+    };
+
+    window.addEventListener('gallery-image-selected', handleGalleryImageSelected);
+    return () => window.removeEventListener('gallery-image-selected', handleGalleryImageSelected);
+  }, [hasMultipleShades, hasMultipleSizes, variants]);
+
+  const optionLabel = optionKind === 'scent'
+    ? (isAr ? 'الرائحة' : 'Fragrance')
+    : optionKind === 'formula'
+      ? (isAr ? 'التركيبة / الخيار' : 'Formula / option')
+      : (isAr ? 'الدرجة / اللون' : 'Shade / Color');
 
   const handleSelectSize = (size: string) => {
     setSelectedSize(size);
@@ -141,14 +180,14 @@ export function ProductVariantSelector({
         return;
       }
       if (!selectedShade) {
-        setValidationError(isAr ? 'يرجى اختيار الدرجة أولاً' : 'Please choose a shade first');
+        setValidationError(isAr ? `يرجى اختيار ${optionLabel} أولاً` : `Please choose ${optionLabel.toLowerCase()} first`);
         return;
       }
     } else if (hasMultipleSizes && !selectedSize) {
       setValidationError(isAr ? 'يرجى اختيار المقاس أولاً' : 'Please choose a size first');
       return;
     } else if (hasMultipleShades && !selectedShade) {
-      setValidationError(isAr ? 'يرجى اختيار الدرجة أولاً' : 'Please choose a shade first');
+      setValidationError(isAr ? `يرجى اختيار ${optionLabel} أولاً` : `Please choose ${optionLabel.toLowerCase()} first`);
       return;
     } else if (!selectedVariant && variants.length > 1) {
       setValidationError(isAr ? 'يرجى تحديد الخيار المطلوب أولاً' : 'Please select an option first');
@@ -168,9 +207,10 @@ export function ProductVariantSelector({
       
       const existingItem = cartItems.find((item: any) => item.variantId === selectedVariant.id);
       
-      const displayVariantTitle = selectedVariant.shadeName 
-        ? `${selectedVariant.size} - ${selectedVariant.shadeName}` 
-        : (selectedVariant.name || selectedVariant.size);
+      const optionLabels = [selectedVariant.size, selectedVariant.name, selectedVariant.shadeName]
+        .map(value => typeof value === 'string' ? value.trim() : '')
+        .filter((value, index, all) => value && all.indexOf(value) === index);
+      const displayVariantTitle = optionLabels.join(' · ') || selectedVariant.size || selectedVariant.name;
 
       if (existingItem) {
         existingItem.quantity += quantity;
@@ -185,7 +225,7 @@ export function ProductVariantSelector({
           colorHex: selectedVariant.colorHex || null,
           price: selectedVariant.price,
           quantity: quantity,
-          image: mainImage || null
+          image: selectedVariant.mainImage || selectedVariant.images?.find(item => item.isMain)?.url || selectedVariant.images?.[0]?.url || mainImage || null
         });
       }
       
@@ -229,11 +269,11 @@ export function ProductVariantSelector({
             </span>
             <span className="text-xs text-stone-500 font-medium">
               {hasBoth
-                ? (isAr ? 'حددي المقاس والدرجة لعرض السعر الدقيق' : 'Select size and shade to view price')
+                ? (isAr ? `حددي المقاس و${optionLabel} لعرض السعر الدقيق` : `Select size and ${optionLabel.toLowerCase()} to view price`)
                 : hasMultipleSizes
                 ? (isAr ? 'حددي المقاس لعرض السعر الدقيق' : 'Select size to view price')
                 : hasMultipleShades
-                ? (isAr ? 'حددي الدرجة لعرض السعر الدقيق' : 'Select shade to view price')
+                ? (isAr ? `حددي ${optionLabel} لعرض السعر الدقيق` : `Select ${optionLabel.toLowerCase()} to view price`)
                 : (isAr ? 'حددي الخيار لعرض السعر' : 'Select option to view price')}
             </span>
           </div>
@@ -285,7 +325,7 @@ export function ProductVariantSelector({
           <div className="space-y-2.5">
             <div className="flex items-center justify-between">
               <label className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
-                <span>{isAr ? 'الدرجة / اللون:' : 'Shade / Color:'}</span>
+                <span>{optionLabel}:</span>
                 <span className="text-rose-600 font-bold">*</span>
               </label>
               {selectedShade ? (
@@ -375,7 +415,7 @@ export function ProductVariantSelector({
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
             <label className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
-              <span>{isAr ? 'الدرجة / اللون:' : 'Shade / Color:'}</span>
+              <span>{optionLabel}:</span>
               <span className="text-rose-600 font-bold">*</span>
             </label>
             {selectedShade ? (
@@ -515,11 +555,11 @@ export function ProductVariantSelector({
           ) : !selectedVariant && variants.length > 1 ? (
             <span>
               {hasBoth
-                ? (isAr ? 'اختاري المقاس والدرجة للإضافة' : 'Select Size & Shade to Add')
+                ? (isAr ? `اختاري المقاس و${optionLabel} للإضافة` : `Select Size & ${optionLabel} to Add`)
                 : hasMultipleSizes
                 ? (isAr ? 'اختاري المقاس للإضافة' : 'Select Size to Add')
                 : hasMultipleShades
-                ? (isAr ? 'اختاري الدرجة للإضافة' : 'Select Shade to Add')
+                ? (isAr ? `اختاري ${optionLabel} للإضافة` : `Select ${optionLabel} to Add`)
                 : (isAr ? 'اختاري الخيار المطلوب للإضافة' : 'Select Option to Add')}
             </span>
           ) : (
