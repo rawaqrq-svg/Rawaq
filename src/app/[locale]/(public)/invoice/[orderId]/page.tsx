@@ -63,6 +63,11 @@ export default async function InvoicePage({ params }: { params: Promise<{ orderI
 
   const currentStatusInfo = getOrderStatusInfo(order.status);
 
+  const agreementMatch = order.notes?.match(/\[إقرار وموافقة إلكترونية موثقة\]:?[^\n]+/);
+  const termsAcceptedNote = agreementMatch
+    ? agreementMatch[0].trim()
+    : `[إقرار وموافقة إلكترونية موثقة]: تم قبول الشروط والأحكام وسياسة الإرجاع والاستبدال (إصدار JO-2026-v1.0) في ${order.createdAt.toISOString()}`;
+
   return (
     <div className="min-h-screen bg-zinc-100 py-12 px-4" dir="rtl">
       <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden border border-zinc-200">
@@ -154,6 +159,13 @@ export default async function InvoicePage({ params }: { params: Promise<{ orderI
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Documented Electronic Agreement Small Note */}
+        <div className="bg-zinc-50 px-6 py-2.5 border-t border-zinc-200 text-center">
+          <p className="text-[10px] text-zinc-500 font-mono leading-relaxed" dir="rtl">
+            {termsAcceptedNote}
+          </p>
         </div>
 
         {/* Footer */}

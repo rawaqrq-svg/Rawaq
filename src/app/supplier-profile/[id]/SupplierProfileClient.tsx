@@ -143,6 +143,15 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
     }
   };
 
+  const isDummyPhone = !supplier.phone || supplier.phone.replace(/\D/g, '') === '0790000000' || supplier.phone.replace(/\D/g, '').endsWith('000000');
+
+  const formatCleanAmount = (fils: number) => {
+    if (!fils || fils <= 0) return '0 د.أ';
+    const jod = fils / 1000;
+    if (fils % 1000 === 0) return `${jod} د.أ`;
+    return `${jod.toFixed(3).replace(/\.?0+$/, '')} د.أ`;
+  };
+
   const shareText = encodeURIComponent(
     `مرحباً ${supplier.ownerName || supplier.name}،\nإليك رابط بيانات المحل والأصناف والأسعار المعتمدة على منصة رَواق:\n${typeof window !== 'undefined' ? window.location.href : ''}\n\nإجمالي الأصناف: ${products.length} صنف\nنسبة الربح: ${supplier.profitMargin}%`
   );
@@ -251,7 +260,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
 
               {/* Contact and Location */}
               <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-600 pt-2">
-                {supplier.phone && (
+                {supplier.phone && !isDummyPhone && (
                   <div className="flex items-center gap-1.5 font-mono">
                     <Phone className="w-3.5 h-3.5 text-zinc-400" />
                     <span dir="ltr">{supplier.phone}</span>
@@ -282,25 +291,25 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
               <div className="rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 text-right">
                 <span className="text-[10px] font-bold text-zinc-500 block">إجمالي المبيعات</span>
                 <strong className="text-sm font-black text-zinc-900 font-mono block mt-0.5">
-                  {filsToDisplay(supplier.totalSalesFils)} د.أ
+                  {formatCleanAmount(supplier.totalSalesFils)}
                 </strong>
               </div>
               <div className="rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 text-right">
                 <span className="text-[10px] font-bold text-zinc-500 block">المستحق المحاسبي</span>
                 <strong className="text-sm font-black text-zinc-900 font-mono block mt-0.5">
-                  {filsToDisplay(supplier.obligationFils)} د.أ
+                  {formatCleanAmount(supplier.obligationFils)}
                 </strong>
               </div>
               <div className="rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 text-right">
                 <span className="text-[10px] font-bold text-zinc-500 block">إجمالي المسدد</span>
                 <strong className="text-sm font-black text-emerald-800 font-mono block mt-0.5">
-                  {filsToDisplay(supplier.paidFils)} د.أ
+                  {formatCleanAmount(supplier.paidFils)}
                 </strong>
               </div>
               <div className="rounded-xl border border-amber-300 bg-amber-50/60 p-3 text-right">
                 <span className="text-[10px] font-bold text-amber-900 block">الرصيد المتبقي</span>
                 <strong className="text-sm font-black text-amber-950 font-mono block mt-0.5">
-                  {filsToDisplay(supplier.remainingBalanceFils)} د.أ
+                  {formatCleanAmount(supplier.remainingBalanceFils)}
                 </strong>
               </div>
             </div>

@@ -37,6 +37,7 @@ interface Props {
     hasAdjustment?: boolean;
     previousTotalAmount?: number | null;
     adjustmentNotes?: string | null;
+    termsAcceptedNote?: string | null;
     items: Array<{
       name: string;
       size: string;
@@ -415,6 +416,15 @@ export default function InvoiceViewClient({ invoice }: Props) {
             </div>
           </div>
         </div>
+
+        {/* Documented Electronic Agreement Small Note */}
+        {invoice.termsAcceptedNote && (
+          <div className="bg-stone-50/90 px-6 py-2.5 border-t border-stone-200 text-center sm:text-start">
+            <p className="text-[10px] text-stone-500 font-mono leading-relaxed" dir="rtl">
+              {invoice.termsAcceptedNote}
+            </p>
+          </div>
+        )}
 
         {/* Read-Only Notice */}
         <div className="bg-stone-100/60 p-3.5 border-t border-stone-200 text-center space-y-0.5">

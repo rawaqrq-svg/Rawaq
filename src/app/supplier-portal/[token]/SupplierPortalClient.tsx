@@ -145,7 +145,7 @@ export default function SupplierPortalClient({ token, initialData }: Props) {
           <div>
             <h2 className="text-lg font-bold">طلبات التجهيز المسندة لمحلكم</h2>
             <p className="text-xs text-amber-100 mt-1">
-              إجمالي الطلبات المطلوب متابعتها: {orders.length}
+              {orders.length > 0 ? `إجمالي الطلبات المطلوب متابعتها: ${orders.length}` : 'كافة الطلبات مكتملة ولا توجد طلبات معلقة'}
             </p>
           </div>
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -368,23 +368,6 @@ export default function SupplierPortalClient({ token, initialData }: Props) {
                       </div>
                     </div>
                   )}
-
-                  {/* Packages generated notice */}
-                  {f.packages && f.packages.length > 0 && (
-                    <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-xs">
-                      <span className="font-bold text-zinc-600">رمز الطرد للتسليم:</span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {f.packages.map((pkg: any) => (
-                          <span
-                            key={pkg.id}
-                            className="text-xs font-mono bg-purple-50 text-purple-800 border border-purple-200 px-2.5 py-0.5 rounded-md font-bold"
-                          >
-                            {pkg.packageCode}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* Actions Footer */}
@@ -480,7 +463,7 @@ export default function SupplierPortalClient({ token, initialData }: Props) {
                   {f.status === 'PICKED_UP' ? (
                     <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-xs font-bold text-emerald-800">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                      <span>تم تسليم الطرد للمندوب وتوثيق الخروج بنجاح ✅</span>
+                      <span>تم تسليم الطلب للمندوب وتوثيق الخروج بنجاح ✅</span>
                     </div>
                   ) : null}
                 </div>
