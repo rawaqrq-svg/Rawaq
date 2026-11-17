@@ -42,7 +42,8 @@ async function buildOrderWhatsAppResponse(order: any, itemsOverride?: any[], isD
 
   const items = itemsOverride || order.items || [];
   for (const it of items) {
-    msg += `- ${it.name} (${it.size}) x${it.quantity} = ${(it.total / 1000).toFixed(3)} د.أ\n`;
+    const option = it.variantName || it.size;
+    msg += `- ${it.name}${option ? ` — ${option}` : ''} x${it.quantity} = ${(it.total / 1000).toFixed(3)} د.أ\n`;
   }
 
   if (order.discountAmount > 0) {
@@ -165,6 +166,7 @@ export async function processCheckout(prevState: any, formData: FormData) {
     where: { id: { in: variantIds }, isActive: true },
     include: {
       product: { select: { nameAr: true, nameEn: true, id: true, categoryId: true } },
+      shade: { select: { name: true } },
       supplierOffers: {
         include: { supplier: { select: { id: true, name: true, isActive: true } } },
         orderBy: [{ unitCost: 'asc' }, { createdAt: 'asc' }],
@@ -182,6 +184,7 @@ export async function processCheckout(prevState: any, formData: FormData) {
     sku: string;
     name: string;
     size: string;
+    variantName: string;
       quantity: number;
       unitPrice: number;
       total: number;
@@ -220,12 +223,17 @@ export async function processCheckout(prevState: any, formData: FormData) {
     const productMargin = supplierSplit?.profitBeforeShare ?? null;
     const supplierAmount = offer && supplierSplit ? supplierSplit.supplierProfitShare : null;
 
+    const optionTitle = [variant.size, variant.name, variant.shade?.name]
+      .map((value) => value?.trim())
+      .filter((value, index, all) => value && all.indexOf(value) === index)
+      .join(' · ');
     orderItemsData.push({
       productId: variant.productId,
       variantId: variant.id,
       sku: variant.sku,
       name: variant.product.nameAr,
-      size: variant.size,
+      size: optionTitle || variant.size,
+      variantName: optionTitle || variant.size,
       quantity,
       unitPrice,
       total,
@@ -449,7 +457,7 @@ export async function processCheckout(prevState: any, formData: FormData) {
           }
         },
         items: {
-          create: orderItemsData
+          create: orderItemsData.map(({ variantName, ...item }) => item)
         },
         statusHistory: {
           create: {
@@ -505,6 +513,7 @@ export async function processCheckout(prevState: any, formData: FormData) {
       items: orderItemsData.map((it) => ({
         name: it.name,
         size: it.size,
+        variantName: it.variantName,
         quantity: it.quantity,
         total: it.total,
       })),

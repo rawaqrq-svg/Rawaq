@@ -402,12 +402,22 @@ export default function CheckoutPage({ params }: { params: Promise<{ locale: str
             ) : (
               <div className="space-y-4">
                 {cartItems.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center border-b border-zinc-100 pb-4">
-                    <div>
+                  <div key={idx} className="flex justify-between items-center gap-3 border-b border-zinc-100 pb-4">
+                    <div className="flex min-w-0 items-center gap-3">
+                      {item.image && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={item.image.startsWith('local://') ? item.image.replace('local://', '/') : item.image}
+                          alt={item.name}
+                          className="h-12 w-12 shrink-0 rounded-lg border border-zinc-200 object-cover"
+                        />
+                      )}
+                      <div>
                       <h4 className="font-bold text-zinc-900">{item.name}</h4>
                       <p className="text-xs text-zinc-500">
-                        {item.size} × {item.quantity}
+                        {item.variantName || item.size} × {item.quantity}
                       </p>
+                      </div>
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       <span className="font-bold text-zinc-700">

@@ -188,6 +188,13 @@ export async function getSupplierPortalData(rawToken: string) {
                   images: {
                     orderBy: { order: 'asc' },
                   },
+                  variants: {
+                    select: {
+                      id: true,
+                      mainImage: true,
+                      images: { orderBy: { order: 'asc' } },
+                    },
+                  },
                 },
               },
             },
@@ -226,7 +233,14 @@ export async function getSupplierPortalData(rawToken: string) {
       },
       items: f.items.map((it: any) => {
         const productImages = it.orderItem?.product?.images || [];
-        const mainImg = productImages.find((img: any) => img.isMain) || productImages[0];
+        const variant = it.orderItem?.product?.variants?.find((candidate: any) => candidate.id === it.variantId);
+        const variantImages = variant?.images || [];
+        const orderedImages = [
+          ...(variant?.mainImage ? [{ url: variant.mainImage, isMain: true }] : []),
+          ...variantImages,
+        ];
+        const selectedImages = orderedImages.length ? orderedImages : productImages;
+        const mainImg = selectedImages.find((img: any) => img.isMain) || selectedImages[0];
         const imageUrl = mainImg?.url ? mainImg.url.replace('local://', '/') : null;
         return {
           id: it.id,
@@ -239,7 +253,7 @@ export async function getSupplierPortalData(rawToken: string) {
           outOfStockQuantity: it.outOfStockQuantity,
           outOfStockReason: it.outOfStockReason,
           imageUrl,
-          images: productImages.map((img: any) => img.url?.replace('local://', '/')).filter(Boolean),
+          images: selectedImages.map((img: any) => img.url?.replace('local://', '/')).filter(Boolean),
         };
       }),
       packages: f.packages.map((p) => ({

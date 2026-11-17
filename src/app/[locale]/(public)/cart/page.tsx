@@ -148,7 +148,7 @@ export default function CartPage({ params }: { params: Promise<{ locale: string 
                               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
                             </button>
                           </div>
-                          <p className="text-sm text-[#746A64] mt-1">{item.size}</p>
+                          <p className="text-sm text-[#746A64] mt-1">{item.variantName || item.size}</p>
                         </div>
 
                         <div className="flex justify-between items-end mt-4">

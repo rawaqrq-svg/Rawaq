@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { filsToDisplay } from '@/lib/money';
+import { toggleProductVisibilityFromSupplierAction } from '@/actions/suppliers';
 import {
   Store,
   User,
@@ -82,12 +83,30 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
   const [filterVisibility, setFilterVisibility] = useState<'ALL' | 'VISIBLE' | 'HIDDEN'>('ALL');
   const [copiedLink, setCopiedLink] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [visibilityOverrides, setVisibilityOverrides] = useState<Record<string, boolean>>({});
+  const [isSavingVisibility, startVisibilityTransition] = useTransition();
+
+  const getProductVisibility = (product: ProductData) =>
+    (visibilityOverrides[product.productId] ?? product.isProductVisible) && product.isAnyOfferActive;
+  const toggleProductVisibility = (product: ProductData) => {
+    const next = !getProductVisibility(product);
+    startVisibilityTransition(async () => {
+      try {
+        await toggleProductVisibilityFromSupplierAction(product.productId, next);
+        setVisibilityOverrides((current) => ({ ...current, [product.productId]: next }));
+      } catch (error) {
+        console.error('Product visibility update failed', error);
+        window.alert('تعذر تحديث ظهور المنتج. تحقق من صلاحيات الحساب ثم أعد المحاولة.');
+        return;
+      }
+    });
+  };
 
   const filteredProducts = products.filter((p) => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) {
-      if (filterVisibility === 'VISIBLE') return p.isVisibleInStore;
-      if (filterVisibility === 'HIDDEN') return !p.isVisibleInStore;
+    if (filterVisibility === 'VISIBLE') return getProductVisibility(p);
+    if (filterVisibility === 'HIDDEN') return !getProductVisibility(p);
       return true;
     }
 
@@ -105,8 +124,8 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
 
     if (!matchesQuery) return false;
 
-    if (filterVisibility === 'VISIBLE') return p.isVisibleInStore;
-    if (filterVisibility === 'HIDDEN') return !p.isVisibleInStore;
+      if (filterVisibility === 'VISIBLE') return getProductVisibility(p);
+      if (filterVisibility === 'HIDDEN') return !getProductVisibility(p);
     return true;
   });
 
@@ -319,7 +338,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                     : 'hover:text-zinc-900'
                 }`}
               >
-                👁️ ظاهر في المتجر ({products.filter((p) => p.isVisibleInStore).length})
+                👁️ ظاهر في المتجر ({products.filter((p) => getProductVisibility(p)).length})
               </button>
               <button
                 onClick={() => setFilterVisibility('HIDDEN')}
@@ -329,7 +348,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                     : 'hover:text-zinc-900'
                 }`}
               >
-                🔒 مخفي من المتجر ({products.filter((p) => !p.isVisibleInStore).length})
+                🔒 مخفي من المتجر ({products.filter((p) => !getProductVisibility(p)).length})
               </button>
             </div>
           </div>
@@ -436,7 +455,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                         {prod.priceDisplay}
                       </td>
                       <td className="py-3 px-3 text-center">
-                        {prod.isVisibleInStore ? (
+                        {getProductVisibility(prod) ? (
                           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 px-2.5 py-0.5 text-[11px] font-bold">
                             <Eye className="w-3 h-3 text-emerald-700" />
                             <span>ظاهر في المتجر</span>
@@ -447,6 +466,16 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                             <span>مخفي من المتجر</span>
                           </span>
                         )}
+                        <button
+                          type="button"
+                          disabled={isSavingVisibility}
+                          onClick={() => toggleProductVisibility(prod)}
+                          title="تغيير الظهور يطبق على المنتج بجميع روائحه وخياراته."
+                          className={`mt-1 inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[10px] font-bold transition disabled:opacity-50 ${getProductVisibility(prod) ? 'bg-rose-50 text-rose-800 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'}`}
+                        >
+                          {getProductVisibility(prod) ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                          {getProductVisibility(prod) ? 'إخفاء بسبب النقص' : 'إعادة إظهاره'}
+                        </button>
                       </td>
                       <td className="py-3 px-3 text-center font-mono font-semibold text-zinc-700">
                         {prod.profitShareDisplay}

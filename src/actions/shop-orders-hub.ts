@@ -86,6 +86,20 @@ export async function getShopOperationsHubDataAction(): Promise<ShopOperationsDa
             select: {
               name: true,
               size: true,
+              variantId: true,
+              productId: true,
+              product: {
+                select: {
+                  images: { orderBy: { order: 'asc' } },
+                  variants: {
+                    select: {
+                      id: true,
+                      mainImage: true,
+                      images: { orderBy: { order: 'asc' } },
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -126,12 +140,22 @@ export async function getShopOperationsHubDataAction(): Promise<ShopOperationsDa
 
     const shop = shopsMap.get(supplier.id);
 
-    const mappedItems = fOrder.items.map((it: any) => ({
-      ...it,
-      productTitle: it.productTitle || it.orderItem?.name || it.orderItem?.product?.title || 'منتج',
-      productName: it.productTitle || it.orderItem?.name || it.orderItem?.product?.title || 'منتج',
-      variantTitle: it.variantTitle || (it.orderItem?.size && it.orderItem.size !== 'DEFAULT' && it.orderItem.size !== 'STANDARD' ? it.orderItem.size : null),
-    }));
+    const mappedItems = fOrder.items.map((it: any) => {
+      const variant = it.orderItem?.product?.variants?.find((candidate: any) => candidate.id === it.variantId);
+      const variantImages = [
+        ...(variant?.mainImage ? [{ url: variant.mainImage, isMain: true }] : []),
+        ...(variant?.images || []),
+      ];
+      const images = variantImages.length ? variantImages : it.orderItem?.product?.images || [];
+      const image = images.find((entry: any) => entry.isMain)?.url || images[0]?.url || null;
+      return {
+        ...it,
+        productTitle: it.productTitle || it.orderItem?.name || 'منتج',
+        productName: it.productTitle || it.orderItem?.name || 'منتج',
+        variantTitle: it.variantTitle || (it.orderItem?.size && it.orderItem.size !== 'DEFAULT' && it.orderItem.size !== 'STANDARD' ? it.orderItem.size : null),
+        imageUrl: image?.replace('local://', '/') || null,
+      };
+    });
 
     shop.fulfillmentOrders.push({
       ...fOrder,

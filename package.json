@@ -6,6 +6,7 @@
     "dev": "NODE_OPTIONS='--max-old-space-size=4096' next dev",
     "build": "prisma generate && next build --webpack",
     "start": "next start",
+    "deploy:vercel": "vercel deploy --prod -y",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "typecheck:e2e": "tsc --noEmit -p tsconfig.e2e.json",

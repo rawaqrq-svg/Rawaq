@@ -907,6 +907,10 @@ export default function ShopOperationsClient({ initialData }: Props) {
                                     : 'bg-white border-stone-200 text-stone-800'
                                 }`}
                               >
+                                {it.imageUrl && (
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img src={it.imageUrl} alt={displayName} className="w-12 h-12 rounded-lg object-cover border border-stone-200 bg-white shrink-0" />
+                                )}
                                 <div className="flex flex-col gap-0.5">
                                   <div className="flex flex-wrap items-center gap-2">
                                     <span className="font-extrabold text-stone-900 text-xs sm:text-sm">
@@ -1575,7 +1579,7 @@ export default function ShopOperationsClient({ initialData }: Props) {
                           <span className="font-bold text-stone-800 block">{prod.productName}</span>
                           {prod.variantTitle && prod.variantTitle !== 'افتراضي' && (
                             <span className="text-[10px] text-stone-500">
-                              المقاس: {prod.variantTitle}
+                              الخيار: {prod.variantTitle}
                             </span>
                           )}
                         </div>
@@ -1714,7 +1718,7 @@ export default function ShopOperationsClient({ initialData }: Props) {
                         <div className="font-bold text-stone-900">{prod.productName}</div>
                         <div className="text-stone-500 text-[11px] flex items-center gap-2 mt-0.5">
                           {prod.variantTitle && prod.variantTitle !== 'افتراضي' && (
-                            <span>المقاس: {prod.variantTitle}</span>
+                            <span>الخيار: {prod.variantTitle}</span>
                           )}
                           <span className="text-[10px] bg-stone-100 text-stone-600 px-1.5 py-0.5 rounded font-sans">
                             {prod.supplierName}

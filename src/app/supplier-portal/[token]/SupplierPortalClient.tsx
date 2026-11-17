@@ -234,7 +234,7 @@ export default function SupplierPortalClient({ token, initialData }: Props) {
                               </div>
                               {item.variantTitle && (
                                 <div className="text-xs text-zinc-500 mt-0.5">
-                                  المقاس / المتغير: {item.variantTitle}
+                                  الرائحة / الخيار: {item.variantTitle}
                                 </div>
                               )}
                             </div>

@@ -207,9 +207,10 @@ export function ProductVariantSelector({
       
       const existingItem = cartItems.find((item: any) => item.variantId === selectedVariant.id);
       
-      const displayVariantTitle = selectedVariant.shadeName 
-        ? `${selectedVariant.size} - ${selectedVariant.shadeName}` 
-        : (selectedVariant.name || selectedVariant.size);
+      const optionLabels = [selectedVariant.size, selectedVariant.name, selectedVariant.shadeName]
+        .map(value => typeof value === 'string' ? value.trim() : '')
+        .filter((value, index, all) => value && all.indexOf(value) === index);
+      const displayVariantTitle = optionLabels.join(' · ') || selectedVariant.size || selectedVariant.name;
 
       if (existingItem) {
         existingItem.quantity += quantity;
