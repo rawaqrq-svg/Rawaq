@@ -30,13 +30,15 @@ export function ProductVariantSelector({
   locale: string,
   product: { id: string; nameAr: string; nameEn: string },
   mainImage?: string,
-  optionKind?: 'scent' | 'shade'
+  optionKind?: 'scent' | 'shade' | 'formula'
 }) {
   const isAr = locale === 'ar';
 
   // Distinct sizes
   const distinctSizes = useMemo(() => {
-    const raw = variants.map(v => v.size?.trim()).filter(Boolean);
+    const raw = variants
+      .map(v => v.size?.trim())
+      .filter((size): size is string => Boolean(size) && !/^(غير مذكور|غير محدد|unknown|n\/?a|-)$/i.test(size));
     return Array.from(new Set(raw));
   }, [variants]);
 
@@ -147,7 +149,9 @@ export function ProductVariantSelector({
 
   const optionLabel = optionKind === 'scent'
     ? (isAr ? 'الرائحة' : 'Fragrance')
-    : (isAr ? 'الدرجة / اللون' : 'Shade / Color');
+    : optionKind === 'formula'
+      ? (isAr ? 'التركيبة / الخيار' : 'Formula / option')
+      : (isAr ? 'الدرجة / اللون' : 'Shade / Color');
 
   const handleSelectSize = (size: string) => {
     setSelectedSize(size);

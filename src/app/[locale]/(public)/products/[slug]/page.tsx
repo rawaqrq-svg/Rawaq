@@ -172,6 +172,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     .map((name) => name?.trim())
     .filter((name): name is string => Boolean(name));
   const hasMultipleScents = isScentProduct && new Set(scentNames).size > 1;
+  const optionKind = /(lotion|hair.*(?:serum|treatment|oil|drops?|mask))/i.test(product.category?.slug || '')
+    ? 'formula' as const
+    : /(splash|gel|butter|perfume|fragrance|body|mist|shower)/i.test(product.category?.slug || '')
+      ? 'scent' as const
+      : 'shade' as const;
   const rawMainImageUrl = mainImage?.url?.replace('local://', '/');
   const mainImageUrl = rawMainImageUrl
     ? (BASE_URL && rawMainImageUrl.startsWith('/') ? `${BASE_URL}${rawMainImageUrl}` : rawMainImageUrl)
@@ -299,7 +304,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </h1>
               {hasMultipleScents && (
                 <p className="-mt-2 rounded-full border border-[#D9C6A8] bg-white px-3 py-1 text-xs font-semibold text-[#746A64]">
-                  {isAr ? 'متوفر بعدة روائح' : 'Available in multiple fragrances'}
+                  {isAr ? 'متوفر بعدة خيارات' : 'Available in multiple options'}
                 </p>
               )}
             </div>
@@ -309,7 +314,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               locale={locale}
               product={{ id: product.id, nameAr: product.nameAr, nameEn: product.nameEn }}
               mainImage={mainImage?.url}
-              optionKind={/(splash|lotion|gel|butter|perfume|fragrance|body|mist)/i.test(product.category?.slug || '') ? 'scent' : 'shade'}
+              optionKind={optionKind}
             />
 
             {shortDescription && (
