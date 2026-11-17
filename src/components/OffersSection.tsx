@@ -107,14 +107,14 @@ export async function OffersSection({ locale }: { locale: string }) {
                         -{discountPct}%
                       </span>
                     )}
-                    <div className="relative aspect-square overflow-hidden bg-[#fdf7f5]">
+                    <div className="relative aspect-square overflow-hidden bg-white">
                       {image ? (
                         <Image
                           src={image.startsWith('local://') ? image.replace('local://', '/') : image}
                           alt={name}
                           fill
                           sizes="(max-width: 640px) 48vw, 270px"
-                          className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center text-4xl text-[#C9A89E]/30">✦</div>
@@ -172,7 +172,7 @@ export async function OffersSection({ locale }: { locale: string }) {
                           src={image.startsWith('local://') ? image.replace('local://', '/') : image}
                           alt={name} fill
                           sizes="(max-width: 640px) 48vw, 270px"
-                          className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center text-4xl text-[#C9A89E]/30">✦</div>

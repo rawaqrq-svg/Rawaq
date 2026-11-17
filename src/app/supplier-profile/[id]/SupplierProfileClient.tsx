@@ -18,6 +18,7 @@ import {
   Sparkles,
   ShoppingBag,
   Image as ImageIcon,
+  ArrowRight,
   X,
 } from 'lucide-react';
 
@@ -482,8 +483,19 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
         >
           <div className="relative max-w-lg w-full bg-white rounded-2xl overflow-hidden p-3 shadow-2xl">
             <button
+              type="button"
               onClick={() => setSelectedImage(null)}
-              className="absolute top-4 left-4 w-8 h-8 rounded-full bg-zinc-900/70 text-white flex items-center justify-center hover:bg-black transition z-10"
+              aria-label="رجوع إلى صفحة المحل"
+              className="absolute top-4 start-4 z-20 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-2 text-xs font-bold text-zinc-800 shadow-md ring-1 ring-zinc-200 transition hover:bg-white"
+            >
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <span>رجوع</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedImage(null)}
+              aria-label="إغلاق معاينة الصورة"
+              className="absolute top-4 end-4 w-8 h-8 rounded-full bg-zinc-900/70 text-white flex items-center justify-center hover:bg-black transition z-20"
             >
               <X className="w-4 h-4" />
             </button>

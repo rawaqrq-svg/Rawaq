@@ -79,7 +79,7 @@ export function PaginatedProductGrid({
           return (
             <article key={product.id} className="group relative flex h-full flex-col hover:-translate-y-1 transition-all duration-300 rounded-[1.5rem] rounded-tr-[2.5rem] rounded-bl-[2.5rem] border border-[#E9DDCC] bg-white shadow-sm hover:shadow-md hover:border-[#B7935F]/60 overflow-hidden">
               <Link href={`/${locale}/products/${product.slug}`} className="flex h-full w-full outline-none flex-col group">
-                <div className="relative w-full aspect-square bg-[#F7F3EA] shrink-0 border-b border-[#E9DDCC]/40">
+                <div className="relative w-full aspect-square bg-white shrink-0 border-b border-[#E9DDCC]/40">
                   <div className="absolute top-3 right-3 z-20">
                     <WishlistHeart product={{
                       id: product.id,
@@ -98,7 +98,7 @@ export function PaginatedProductGrid({
                       alt={isAr ? product.nameAr : product.nameEn}
                       fill
                       sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
-                      className={`object-contain p-5 transition duration-700 group-hover:scale-[1.03] ${totalStock === 0 ? 'opacity-50 grayscale-[0.3]' : ''}`}
+                      className={`object-cover transition duration-700 group-hover:scale-[1.03] ${totalStock === 0 ? 'opacity-50 grayscale-[0.3]' : ''}`}
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-4xl text-[#3F4832]/20">✦</div>

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
 
 type GalleryImage = { id?: string; url: string; isMain?: boolean; alt?: string | null };
@@ -87,7 +87,7 @@ export function ProductGallery({ images, productName, isAr }: { images: GalleryI
         >
           <RawaqProductFrame variant="gallery" className="w-full shadow-[0_8px_30px_rgba(139,30,45,.06)] transition-shadow duration-500 group-hover:shadow-[0_12px_40px_rgba(139,30,45,.12)]">
             {imageUrl ? (
-              <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-[var(--surface-secondary)]">
+              <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-white">
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.4)_0%,transparent_100%)]" />
                 <Image
                   src={imageUrl}
@@ -163,6 +163,10 @@ export function ProductGallery({ images, productName, isAr }: { images: GalleryI
 
       {isLightboxOpen && imageUrl && (
         <div role="dialog" aria-modal="true" aria-label={productName} className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1F1B1A]/95 backdrop-blur-md" onClick={() => setIsLightboxOpen(false)}>
+          <button type="button" onClick={() => setIsLightboxOpen(false)} className="absolute start-4 top-4 z-30 flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/20 px-4 py-2 text-sm font-bold text-white shadow-2xl backdrop-blur-md transition-all hover:bg-white/30 active:scale-95 sm:start-6 sm:top-6 sm:px-5 sm:py-2.5 sm:text-base" aria-label={isAr ? 'الرجوع إلى صفحة المنتج' : 'Back to product page'}>
+            {isAr ? <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" /> : <ChevronLeft size={20} strokeWidth={2.5} aria-hidden="true" />}
+            <span>{isAr ? 'رجوع' : 'Back'}</span>
+          </button>
           <button type="button" autoFocus onClick={() => setIsLightboxOpen(false)} className="absolute end-4 top-4 z-30 flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/20 px-4 py-2 text-sm font-bold text-white shadow-2xl backdrop-blur-md transition-all hover:bg-white/30 active:scale-95 sm:end-6 sm:top-6 sm:px-5 sm:py-2.5 sm:text-base" aria-label={isAr ? 'إغلاق' : 'Close'}>
             <X size={20} strokeWidth={2.5} />
             <span>{isAr ? 'إغلاق' : 'Close'}</span>

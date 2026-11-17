@@ -322,14 +322,14 @@ function ProductSection({
                   href={`/${locale}/products/${product.slug}`}
                   className="group relative flex h-full flex-col outline-none transition-all duration-300 hover:-translate-y-1 rounded-[1.25rem] rounded-tr-[2.5rem] rounded-bl-[2.5rem] border border-[#E9DDCC] bg-white shadow-sm hover:shadow-lg hover:border-[#B7935F]/60 overflow-hidden"
                 >
-                  <div className="relative w-full aspect-square bg-[#F7F3EA] shrink-0 overflow-hidden">
+                  <div className="relative w-full aspect-square bg-white shrink-0 overflow-hidden">
                     {image ? (
                       <Image
                         src={image.startsWith('local://') ? image.replace('local://', '/') : image}
                         alt={name}
                         fill
                         sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
-                        className="object-contain p-4 transition-transform duration-500 group-hover:scale-[1.04]"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center text-4xl text-[#B7935F]/25">✦</div>
