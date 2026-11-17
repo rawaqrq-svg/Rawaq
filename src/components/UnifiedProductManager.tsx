@@ -33,6 +33,10 @@ export type ProductTemplateItem = {
 export type VariantRow = {
   id?: string;
   size: string;
+  name?: string;
+  colorName?: string;
+  colorHex?: string | null;
+  mainImage?: string | null;
   sku?: string;
   price: number; // in fils
   compareAt?: number | null; // in fils
@@ -255,8 +259,9 @@ export function UnifiedProductManager({
   const [variants, setVariants] = useState<VariantRow[]>(
     initialData?.variants?.length
       ? initialData.variants
-      : [{ size: 'قياسي', price: 25000, compareAt: null, isActive: true, inventorySource: 'INTERNAL', supplierId: '', supplierUnitCost: '' }]
+      : [{ size: 'قياسي', name: 'افتراضي', price: 25000, compareAt: null, isActive: true, inventorySource: 'INTERNAL', supplierId: '', supplierUnitCost: '' }]
   );
+  const [matrixScents, setMatrixScents] = useState('');
   const [matrixSizes, setMatrixSizes] = useState('');
   const [matrixColors, setMatrixColors] = useState('');
   const [bulkPriceJOD, setBulkPriceJOD] = useState('');
@@ -408,18 +413,33 @@ export function UnifiedProductManager({
     setVariants(curr => curr.map((v, i) => (i === index ? { ...v, ...patch } : v)));
   }
 
-  function addVariant() {
+  function addVariant(type: 'scent' | 'color' | 'size' | 'general' = 'general') {
     setIsDirty(true);
+    let defaultName = '';
+    let defaultSize = variants[0]?.size || 'قياسي';
+
+    if (type === 'scent') {
+      defaultName = `رائحة جديدة ${variants.length + 1}`;
+    } else if (type === 'color') {
+      defaultName = `درجة / لون جديد ${variants.length + 1}`;
+    } else if (type === 'size') {
+      defaultSize = `مقاس ${variants.length + 1}`;
+      defaultName = '';
+    } else {
+      defaultName = `خيار ${variants.length + 1}`;
+    }
+
     setVariants(curr => [
       ...curr,
       {
-        size: `خيار ${curr.length + 1}`,
-        price: curr[0]?.price || 25000,
+        size: defaultSize,
+        name: defaultName,
+        price: curr[0]?.price || 4000,
         compareAt: null,
         isActive: true,
         inventorySource: 'INTERNAL',
-        supplierId: '',
-        supplierUnitCost: '',
+        supplierId: curr[0]?.supplierId || '',
+        supplierUnitCost: curr[0]?.supplierUnitCost || '',
       },
     ]);
   }
@@ -435,31 +455,67 @@ export function UnifiedProductManager({
 
   // Matrix Generator
   function generateMatrix() {
-    const rawSizes = matrixSizes.split(',').map(s => s.trim()).filter(Boolean);
+    const rawScents = matrixScents.split(',').map(s => s.trim()).filter(Boolean);
     const rawColors = matrixColors.split(',').map(c => c.trim()).filter(Boolean);
+    const rawSizes = matrixSizes.split(',').map(s => s.trim()).filter(Boolean);
 
-    if (!rawSizes.length && !rawColors.length) {
-      setError('أدخل مقاسات أو ألوان مفصولة بفواصل لتوليد المصفوفة.');
+    if (!rawScents.length && !rawColors.length && !rawSizes.length) {
+      setError('أدخل روائح أو ألوان أو مقاسات مفصولة بفواصل لتوليد الخيارات.');
       return;
     }
 
-    const sizes = rawSizes.length ? rawSizes : ['قياسي'];
-    const colors = rawColors.length ? rawColors : [''];
-
+    const defaultPrice = bulkPriceJOD ? Math.round(parseFloat(bulkPriceJOD) * 1000) : (variants[0]?.price || 4000);
+    const defaultCost = bulkCostJOD || (variants[0]?.supplierUnitCost || '');
     const newVariants: VariantRow[] = [];
-    const defaultPrice = bulkPriceJOD ? Math.round(parseFloat(bulkPriceJOD) * 1000) : (variants[0]?.price || 25000);
-    const defaultCost = bulkCostJOD || '';
 
-    for (const size of sizes) {
-      for (const color of colors) {
-        const label = color ? `${size} - ${color}` : size;
+    // 1. إذا تم إدخال روائح
+    if (rawScents.length > 0) {
+      const sizes = rawSizes.length ? rawSizes : ['قياسي'];
+      for (const scent of rawScents) {
+        for (const size of sizes) {
+          newVariants.push({
+            name: scent,
+            size: size,
+            price: defaultPrice,
+            compareAt: null,
+            isActive: true,
+            inventorySource: 'INTERNAL',
+            supplierId: variants[0]?.supplierId || '',
+            supplierUnitCost: defaultCost,
+          });
+        }
+      }
+    }
+    // 2. إذا تم إدخال ألوان فقط أو ألوان مع مقاسات
+    else if (rawColors.length > 0) {
+      const sizes = rawSizes.length ? rawSizes : ['قياسي'];
+      for (const color of rawColors) {
+        for (const size of sizes) {
+          newVariants.push({
+            name: color,
+            colorName: color,
+            size: size,
+            price: defaultPrice,
+            compareAt: null,
+            isActive: true,
+            inventorySource: 'INTERNAL',
+            supplierId: variants[0]?.supplierId || '',
+            supplierUnitCost: defaultCost,
+          });
+        }
+      }
+    }
+    // 3. إذا تم إدخال مقاسات فقط
+    else if (rawSizes.length > 0) {
+      for (const size of rawSizes) {
         newVariants.push({
-          size: label,
+          name: size,
+          size: size,
           price: defaultPrice,
           compareAt: null,
           isActive: true,
           inventorySource: 'INTERNAL',
-          supplierId: '',
+          supplierId: variants[0]?.supplierId || '',
           supplierUnitCost: defaultCost,
         });
       }
@@ -468,7 +524,7 @@ export function UnifiedProductManager({
     if (newVariants.length > 0) {
       setVariants(newVariants);
       setIsDirty(true);
-      setSuccessMessage(`تم توليد ${newVariants.length} خيار بنجاح!`);
+      setSuccessMessage(`تم توليد ${newVariants.length} خيار داخل هذا المنتج بنجاح!`);
       setTimeout(() => setSuccessMessage(''), 4000);
     }
   }
@@ -585,7 +641,11 @@ export function UnifiedProductManager({
       // Prepare variants payload
       const variantsPayload = variants.map(v => ({
         id: v.id,
-        size: v.size.trim(),
+        size: v.size?.trim() || 'قياسي',
+        name: v.name?.trim() || v.size?.trim() || '',
+        colorName: v.colorName?.trim() || null,
+        colorHex: v.colorHex?.trim() || null,
+        mainImage: v.mainImage?.trim() || null,
         sku: v.sku,
         price: v.price,
         compareAt: v.compareAt,
@@ -1179,45 +1239,82 @@ export function UnifiedProductManager({
             <div className="flex items-center gap-3">
               <span className="text-2xl">🎛️</span>
               <div>
-                <h2 className="text-lg font-bold font-heading text-zinc-900">المتغيرات والمقاسات ومصفوفة الخيارات</h2>
+                <h2 className="text-lg font-bold font-heading text-zinc-900">خيارات المنتج (الروائح، الألوان، والمقاسات)</h2>
                 <p className="text-xs text-zinc-500">
-                  إدارة المقاسات، الأحجام، والدرجات، مع مولد المصفوفات وتعديل الأسعار والمخزون دفعة واحدة.
+                  إدارة الروائح والتركيبات، الألوان والدرجات، والمقاسات داخل نفس المنتج مع إمكانية تعديلها، إخفائها أو إظهارها بنقرة واحدة، أو إضافة خيارات جديدة.
                 </p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={addVariant}
-              className="text-xs font-bold text-white bg-[#3F4832] hover:bg-[#2d3623] px-4 py-2 rounded-xl transition-colors shadow-sm"
-            >
-              + إضافة خيار يدوي
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => addVariant('scent')}
+                className="text-xs font-bold text-white bg-purple-700 hover:bg-purple-800 px-3.5 py-2 rounded-xl transition-colors shadow-sm flex items-center gap-1.5"
+                title="إضافة رائحة جديدة داخل هذا المنتج"
+              >
+                <span>🌸 + إضافة رائحة</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => addVariant('color')}
+                className="text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 px-3.5 py-2 rounded-xl transition-colors shadow-sm flex items-center gap-1.5"
+                title="إضافة لون أو درجة جديدة"
+              >
+                <span>🎨 + إضافة لون / درجة</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => addVariant('size')}
+                className="text-xs font-bold text-white bg-[#3F4832] hover:bg-[#2d3623] px-3.5 py-2 rounded-xl transition-colors shadow-sm flex items-center gap-1.5"
+                title="إضافة مقاس أو حجم جديد"
+              >
+                <span>📏 + إضافة مقاس</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => addVariant('general')}
+                className="text-xs font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 border border-zinc-300 px-3 py-2 rounded-xl transition-colors shadow-sm"
+                title="إضافة خيار مخصص"
+              >
+                <span>➕ خيار مخصص</span>
+              </button>
+            </div>
           </div>
 
           {/* Quick Matrix Generator Box */}
           <div className="bg-[var(--color-ivory-100)] border border-amber-200/80 rounded-2xl p-4 mb-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-xs font-bold text-zinc-900 flex items-center gap-2">
-                <span>⚡ مولد المصفوفات التلقائي (Color × Size Matrix Generator)</span>
+                <span>⚡ مولد الخيارات والمصفوفات التلقائي داخل المنتج</span>
               </h3>
               <span className="text-[10px] text-zinc-500">فصل القيم بفاصلة (,)</span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
               <div>
-                <label className="text-[10px] font-bold text-zinc-600 block mb-1">المقاسات / الأحجام</label>
+                <label className="text-[10px] font-bold text-zinc-600 block mb-1">🌸 الروائح / النكهات</label>
                 <input
                   type="text"
-                  placeholder="S, M, L, XL أو 50ml, 100ml"
+                  placeholder="عود, مسك, لافندر, ياسمين, كاكاو..."
+                  value={matrixScents}
+                  onChange={e => setMatrixScents(e.target.value)}
+                  className="w-full bg-white rounded-xl border border-zinc-200 p-2 text-xs outline-none focus:border-[#3F4832]"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-zinc-600 block mb-1">📏 المقاسات / الأحجام</label>
+                <input
+                  type="text"
+                  placeholder="400 مل, 100ml أو S, M, L..."
                   value={matrixSizes}
                   onChange={e => setMatrixSizes(e.target.value)}
                   className="w-full bg-white rounded-xl border border-zinc-200 p-2 text-xs outline-none focus:border-[#3F4832]"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold text-zinc-600 block mb-1">الألوان / الدرجات (اختياري)</label>
+                <label className="text-[10px] font-bold text-zinc-600 block mb-1">🎨 الألوان / الدرجات</label>
                 <input
                   type="text"
-                  placeholder="أسود, كحلي, بيج"
+                  placeholder="أحمر, بيج, وردي..."
                   value={matrixColors}
                   onChange={e => setMatrixColors(e.target.value)}
                   className="w-full bg-white rounded-xl border border-zinc-200 p-2 text-xs outline-none focus:border-[#3F4832]"
@@ -1229,15 +1326,16 @@ export function UnifiedProductManager({
                   <input
                     type="number"
                     step="0.001"
-                    placeholder="25.000"
+                    placeholder="4.000"
                     value={bulkPriceJOD}
                     onChange={e => setBulkPriceJOD(e.target.value)}
-                    className="w-full bg-white rounded-xl border border-zinc-200 p-2 text-xs outline-none focus:border-[#3F4832]"
+                    className="w-full bg-white rounded-xl border border-zinc-200 p-2 text-xs outline-none focus:border-[#3F4832] font-mono"
+                    dir="ltr"
                   />
                   <button
                     type="button"
                     onClick={applyBulkPrice}
-                    className="px-2 py-1 bg-zinc-200 text-zinc-700 text-[10px] font-bold rounded-lg hover:bg-zinc-300"
+                    className="px-2 py-1 bg-zinc-200 text-zinc-700 text-[10px] font-bold rounded-lg hover:bg-zinc-300 whitespace-nowrap"
                   >
                     تطبيق
                   </button>
@@ -1247,9 +1345,9 @@ export function UnifiedProductManager({
                 <button
                   type="button"
                   onClick={generateMatrix}
-                  className="w-full bg-[#3F4832] text-white text-xs font-bold py-2.5 rounded-xl hover:bg-[#2d3623] transition-colors"
+                  className="w-full bg-[#3F4832] text-white text-xs font-bold py-2.5 rounded-xl hover:bg-[#2d3623] transition-colors shadow-sm"
                 >
-                  ⚡ توليد الخيارات الآن
+                  ⚡ توليد الخيارات في المنتج
                 </button>
               </div>
             </div>
@@ -1261,12 +1359,13 @@ export function UnifiedProductManager({
               <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-600 font-bold">
                 <tr>
                   <th className="p-3 w-10 text-center">#</th>
-                  <th className="p-3 min-w-[140px]">المقاس / الدرجة <span className="text-red-500">*</span></th>
-                  <th className="p-3 min-w-[120px]">سعر البيع (د.أ) <span className="text-red-500">*</span></th>
-                  <th className="p-3 min-w-[120px]">السعر قبل الخصم (د.أ)</th>
-                  <th className="p-3 min-w-[140px]">مصدر التوريد</th>
-                  <th className="p-3 min-w-[100px]">الكلفة التقديرية</th>
-                  <th className="p-3 w-16 text-center">الحالة</th>
+                  <th className="p-3 min-w-[150px]">الرائحة / اسم الخيار / اللون</th>
+                  <th className="p-3 min-w-[130px]">المقاس / الحجم <span className="text-red-500">*</span></th>
+                  <th className="p-3 min-w-[110px]">سعر البيع (د.أ) <span className="text-red-500">*</span></th>
+                  <th className="p-3 min-w-[110px]">السعر قبل الخصم</th>
+                  <th className="p-3 min-w-[130px]">مصدر التوريد</th>
+                  <th className="p-3 min-w-[90px]">الكلفة (د.أ)</th>
+                  <th className="p-3 w-28 text-center">الحالة (المتجر)</th>
                   <th className="p-3 w-12 text-center">حذف</th>
                 </tr>
               </thead>
@@ -1275,15 +1374,24 @@ export function UnifiedProductManager({
                   const priceJOD = (v.price / 1000).toFixed(3);
                   const compareJOD = v.compareAt ? (v.compareAt / 1000).toFixed(3) : '';
                   return (
-                    <tr key={v.id || index} className="hover:bg-zinc-50/50">
+                    <tr key={v.id || index} className={`hover:bg-zinc-50/50 transition-colors ${!v.isActive ? 'bg-zinc-50/70 opacity-70' : ''}`}>
                       <td className="p-3 text-center text-zinc-400 font-mono">{index + 1}</td>
+                      <td className="p-3">
+                        <input
+                          type="text"
+                          value={v.name || ''}
+                          onChange={e => updateVariant(index, { name: e.target.value })}
+                          placeholder="اسم الرائحة أو الخيار (مثال: ياسمين، فانيليا، عود...)"
+                          className="w-full rounded-lg border border-zinc-200 p-2 text-xs focus:border-[#3F4832] outline-none font-medium text-zinc-800"
+                        />
+                      </td>
                       <td className="p-3">
                         <input
                           type="text"
                           required
                           value={v.size}
                           onChange={e => updateVariant(index, { size: e.target.value })}
-                          placeholder="مثال: Large أو 100ml"
+                          placeholder="مثال: 400 مل، 100ml، Large..."
                           className="w-full rounded-lg border border-zinc-200 p-2 text-xs focus:border-[#3F4832] outline-none"
                         />
                       </td>
@@ -1297,7 +1405,7 @@ export function UnifiedProductManager({
                             const val = parseFloat(e.target.value);
                             updateVariant(index, { price: isNaN(val) ? 0 : Math.round(val * 1000) });
                           }}
-                          className="w-full rounded-lg border border-zinc-200 p-2 text-xs focus:border-[#3F4832] outline-none font-mono"
+                          className="w-full rounded-lg border border-zinc-200 p-2 text-xs focus:border-[#3F4832] outline-none font-mono font-bold text-zinc-900"
                           dir="ltr"
                         />
                       </td>
@@ -1343,20 +1451,25 @@ export function UnifiedProductManager({
                         />
                       </td>
                       <td className="p-3 text-center">
-                        <input
-                          type="checkbox"
-                          checked={v.isActive}
-                          onChange={e => updateVariant(index, { isActive: e.target.checked })}
-                          className="w-4 h-4 text-[#3F4832] rounded focus:ring-0"
-                          title="فعال / معطل"
-                        />
+                        <button
+                          type="button"
+                          onClick={() => updateVariant(index, { isActive: !v.isActive })}
+                          className={`w-full py-1.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-2xs ${
+                            v.isActive
+                              ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100'
+                              : 'bg-zinc-100 text-zinc-500 border border-zinc-300 hover:bg-zinc-200'
+                          }`}
+                          title={v.isActive ? 'مفعّل وظاهر للزبائن في المتجر - انقر للإخفاء' : 'مخفي عن الزبائن في المتجر - انقر للتفعيل والإظهار'}
+                        >
+                          <span>{v.isActive ? '🟢 ظاهر' : '👁️‍🗨️ مخفي'}</span>
+                        </button>
                       </td>
                       <td className="p-3 text-center">
                         <button
                           type="button"
                           onClick={() => removeVariant(index)}
                           className="text-red-500 hover:text-red-700 font-bold text-sm"
-                          title="حذف الخيار"
+                          title="حذف الخيار نهائياً"
                         >
                           ✕
                         </button>

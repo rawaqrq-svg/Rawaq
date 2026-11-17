@@ -4,7 +4,7 @@ export const checkoutSchema = z.object({
   customerName: z.string().min(2),
   customerPhone: z.string().min(8),
   addressStreet: z.string().min(2),
-  addressBuilding: z.string().min(1),
+  addressBuilding: z.string().optional(),
   addressApartment: z.string().optional(),
   shippingZoneId: z.string().optional(),
   couponCode: z.string().trim().max(80).optional(),

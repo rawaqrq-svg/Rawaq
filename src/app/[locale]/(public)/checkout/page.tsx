@@ -222,44 +222,16 @@ export default function CheckoutPage({ params }: { params: Promise<{ locale: str
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="addressStreet" className="block text-sm font-medium text-[#2B2B2B] mb-1.5">
-                    {isAr ? 'الشارع' : 'Street'}
-                  </label>
-                  <input
-                    type="text"
-                    id="addressStreet"
-                    name="addressStreet"
-                    required
-                    placeholder={isAr ? 'اسم الشارع' : 'Street name'}
-                    className="w-full border border-[#E9DDCC] rounded-xl px-4 py-2.5 focus:border-[#3F4832] focus:ring-2 focus:ring-[#3F4832]/20 outline-none transition-all"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="addressBuilding" className="block text-sm font-medium text-[#2B2B2B] mb-1.5">
-                    {isAr ? 'البناية / المنزل' : 'Building / House'}
-                  </label>
-                  <input
-                    type="text"
-                    id="addressBuilding"
-                    name="addressBuilding"
-                    required
-                    placeholder={isAr ? 'رقم البناية أو الاسم' : 'Building number or name'}
-                    className="w-full border border-[#E9DDCC] rounded-xl px-4 py-2.5 focus:border-[#3F4832] focus:ring-2 focus:ring-[#3F4832]/20 outline-none transition-all"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label htmlFor="addressApartment" className="block text-sm font-medium text-[#2B2B2B] mb-1.5">
-                  {isAr ? 'رقم الشقة / الطابق (اختياري)' : 'Apartment / Floor (Optional)'}
+                <label htmlFor="addressStreet" className="block text-sm font-medium text-[#2B2B2B] mb-1.5">
+                  {isAr ? 'العنوان بالتفصيل' : 'Detailed Address'}
                 </label>
                 <input
                   type="text"
-                  id="addressApartment"
-                  name="addressApartment"
-                  placeholder={isAr ? 'الشقة، الطابق، تفاصيل إضافية...' : 'Apartment, floor, extra details...'}
+                  id="addressStreet"
+                  name="addressStreet"
+                  required
+                  placeholder={isAr ? 'المنطقة، اسم الشارع، رقم/اسم البناية، وأي علامة مميزة...' : 'Area, street name, building number/name, landmarks...'}
                   className="w-full border border-[#E9DDCC] rounded-xl px-4 py-2.5 focus:border-[#3F4832] focus:ring-2 focus:ring-[#3F4832]/20 outline-none transition-all"
                 />
               </div>

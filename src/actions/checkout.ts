@@ -411,7 +411,9 @@ export async function processCheckout(prevState: any, formData: FormData) {
 
   const netProductTotal = Math.max(0, totalAmount - totalDiscount);
   const grandTotal = netProductTotal + shippingCost;
-  const detailedAddress = `العنوان: الشارع (${addressStreet})، البناية (${addressBuilding})${addressApartment ? `، الشقة/الطابق (${addressApartment})` : ''}`;
+  const detailedAddress = addressBuilding?.trim()
+    ? `العنوان: ${addressStreet.trim()}، البناية (${addressBuilding.trim()})${addressApartment?.trim() ? `، الشقة/الطابق (${addressApartment.trim()})` : ''}`
+    : addressStreet.trim();
 
   // 2. Create AWAITING_WHATSAPP order inside a transaction
   const reference = `ORD-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;

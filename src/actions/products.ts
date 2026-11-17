@@ -13,6 +13,9 @@ type VariantInput = {
   id?: string;
   size?: string;
   name?: string;
+  colorName?: string | null;
+  colorHex?: string | null;
+  mainImage?: string | null;
   sku?: string;
   price: number;
   compareAt?: number | null;
@@ -62,7 +65,7 @@ function text(formData: FormData, key: string, required = false) {
   return value;
 }
 
-function parseVariants(formData: FormData, productSku: string): Array<VariantInput & { size: string; sku: string }> {
+function parseVariants(formData: FormData, productSku: string): Array<VariantInput & { size: string; sku: string; name?: string; colorName?: string | null; colorHex?: string | null; mainImage?: string | null }> {
   let value: unknown;
   try {
     value = JSON.parse(String(formData.get('variants') ?? '[]'));
@@ -71,14 +74,27 @@ function parseVariants(formData: FormData, productSku: string): Array<VariantInp
   }
   if (!Array.isArray(value) || value.length === 0) throw new Error('أضف خياراً واحداً على الأقل للمنتج.');
   return value.map((raw, index) => {
-    const item = raw as Partial<VariantInput>;
-    const size = String(item.size || item.name || '').trim();
+    const item = raw as Partial<VariantInput> & { name?: string; colorName?: string | null; colorHex?: string | null; mainImage?: string | null };
+    const name = String(item.name || '').trim();
+    const size = String(item.size || '').trim() || (name ? 'قياسي' : `خيار ${index + 1}`);
+    const finalName = name || size;
     // SKU is automatically generated and guaranteed unique, non-editable by admins or customers
     const sku = item.sku && String(item.sku).trim() ? String(item.sku).trim() : generateVariantSku(productSku, index);
     const price = Number(item.price);
     const compareAt = item.compareAt !== undefined && item.compareAt !== null && !isNaN(Number(item.compareAt)) ? Number(item.compareAt) : null;
     if (!size || !Number.isInteger(price) || price < 0) throw new Error('تحقق من المقاس والسعر لكل خيار.');
-    return { ...item, size, sku, price, compareAt };
+    return {
+      ...item,
+      size,
+      name: finalName,
+      colorName: item.colorName?.trim() || null,
+      colorHex: item.colorHex?.trim() || null,
+      mainImage: item.mainImage?.trim() || null,
+      sku,
+      price,
+      compareAt,
+      isActive: item.isActive ?? true,
+    };
   });
 }
 
@@ -177,8 +193,13 @@ export async function createProduct(formData: FormData) {
           variants: {
             create: variants.map(v => ({
               size: v.size,
+              name: v.name || v.size,
+              colorName: v.colorName || null,
+              colorHex: v.colorHex || null,
+              mainImage: v.mainImage || null,
               sku: v.sku,
               price: v.price,
+              compareAt: v.compareAt !== undefined ? v.compareAt : null,
               stock: 0,
               isActive: v.isActive ?? true,
               inventorySource: v.inventorySource === 'SUPPLIER' ? 'SUPPLIER' : 'INTERNAL',
@@ -312,6 +333,10 @@ export async function updateProduct(productId: string, formData: FormData) {
 
         const variantData = {
           size: variant.size,
+          name: variant.name || variant.size,
+          colorName: variant.colorName || null,
+          colorHex: variant.colorHex || null,
+          mainImage: variant.mainImage || null,
           sku: variantSku,
           price: variant.price,
           compareAt: variant.compareAt !== undefined ? variant.compareAt : null,

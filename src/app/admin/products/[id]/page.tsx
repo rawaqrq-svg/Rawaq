@@ -123,6 +123,10 @@ export default async function AdminProductEditPage({
       return {
         id: v.id,
         size: v.size,
+        name: v.name || '',
+        colorName: v.colorName || '',
+        colorHex: v.colorHex || '',
+        mainImage: v.mainImage || '',
         sku: v.sku,
         price: v.price,
         compareAt: v.compareAt,
