@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
 
 type GalleryImage = { id?: string; url: string; isMain?: boolean; alt?: string | null };
@@ -76,7 +76,7 @@ export function ProductGallery({ images, productName, isAr }: { images: GalleryI
   const nextLabel = isAr ? 'الصورة التالية' : 'Next image';
 
   return (
-    <div className="flex w-full flex-col gap-5">
+    <div className="mx-auto flex w-[min(82vw,420px)] max-w-full flex-col gap-5">
       <div className="relative aspect-square w-full">
         <button
           type="button"
@@ -162,32 +162,22 @@ export function ProductGallery({ images, productName, isAr }: { images: GalleryI
       )}
 
       {isLightboxOpen && imageUrl && (
-        <div role="dialog" aria-modal="true" aria-label={productName} className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1F1B1A]/95 backdrop-blur-md" onClick={() => setIsLightboxOpen(false)}>
-          <button type="button" onClick={() => setIsLightboxOpen(false)} className="absolute start-4 top-4 z-30 flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/20 px-4 py-2 text-sm font-bold text-white shadow-2xl backdrop-blur-md transition-all hover:bg-white/30 active:scale-95 sm:start-6 sm:top-6 sm:px-5 sm:py-2.5 sm:text-base" aria-label={isAr ? 'الرجوع إلى صفحة المنتج' : 'Back to product page'}>
-            {isAr ? <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" /> : <ChevronLeft size={20} strokeWidth={2.5} aria-hidden="true" />}
-            <span>{isAr ? 'رجوع' : 'Back'}</span>
-          </button>
-          <button type="button" autoFocus onClick={() => setIsLightboxOpen(false)} className="absolute end-4 top-4 z-30 flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/20 px-4 py-2 text-sm font-bold text-white shadow-2xl backdrop-blur-md transition-all hover:bg-white/30 active:scale-95 sm:end-6 sm:top-6 sm:px-5 sm:py-2.5 sm:text-base" aria-label={isAr ? 'إغلاق' : 'Close'}>
-            <X size={20} strokeWidth={2.5} />
-            <span>{isAr ? 'إغلاق' : 'Close'}</span>
-          </button>
-          {galleryImages.length > 1 && (
-            <>
-              <button type="button" onClick={event => { event.stopPropagation(); navigate(-1); }} aria-label={previousLabel} className="absolute start-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur hover:bg-white/25 sm:start-8">
-                <ArrowPrevious size={26} aria-hidden="true" />
-              </button>
-              <button type="button" onClick={event => { event.stopPropagation(); navigate(1); }} aria-label={nextLabel} className="absolute end-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur hover:bg-white/25 sm:end-8">
-                <ArrowNext size={26} aria-hidden="true" />
-              </button>
-            </>
-          )}
-          <div className="relative h-[85vh] w-full max-w-6xl px-4" onClick={event => event.stopPropagation()}>
-            <Image src={imageUrl} alt={current?.alt || productName} fill sizes="100vw" className="object-contain" quality={100} />
-          </div>
-          <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3 opacity-60">
-            <span className="h-px w-8 bg-[#B7935F]" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#B7935F]">{isAr ? 'رَواق' : 'RAWAQ'}</span>
-            <span className="h-px w-8 bg-[#B7935F]" />
+        <div role="dialog" aria-modal="true" aria-label={productName} className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1F1B1A]/90 p-3 backdrop-blur-sm sm:p-6" onClick={() => setIsLightboxOpen(false)}>
+          <div className="relative aspect-square w-[min(92vw,85vh,760px)] overflow-hidden rounded-2xl bg-white shadow-2xl" onClick={event => event.stopPropagation()}>
+            <Image src={imageUrl} alt={current?.alt || productName} fill sizes="(max-width: 768px) 92vw, 760px" className="object-contain p-2 sm:p-4" quality={100} />
+            <button type="button" autoFocus onClick={() => setIsLightboxOpen(false)} className="absolute end-3 top-3 z-30 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-black/10 bg-white/95 text-stone-900 shadow-lg backdrop-blur transition hover:bg-white active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B7935F]" aria-label={isAr ? 'إغلاق الصورة والعودة للمنتج' : 'Close image and return to product'}>
+              <X size={22} strokeWidth={2.5} aria-hidden="true" />
+            </button>
+            {galleryImages.length > 1 && (
+              <>
+                <button type="button" onClick={() => navigate(-1)} aria-label={previousLabel} className="absolute start-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/90 text-stone-800 shadow-md backdrop-blur transition hover:bg-white">
+                  <ArrowPrevious size={24} aria-hidden="true" />
+                </button>
+                <button type="button" onClick={() => navigate(1)} aria-label={nextLabel} className="absolute end-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/90 text-stone-800 shadow-md backdrop-blur transition hover:bg-white">
+                  <ArrowNext size={24} aria-hidden="true" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
