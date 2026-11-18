@@ -265,21 +265,21 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)] gap-8 lg:gap-14 items-start max-w-6xl mx-auto">
+        <div className="grid grid-cols-[minmax(118px,38%)_minmax(0,1fr)] gap-4 sm:gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)] lg:gap-14 items-start max-w-6xl mx-auto">
           {/* Product Images (Interactive Gallery) - static on mobile so it scrolls naturally, sticky on desktop */}
           <div className="lg:sticky lg:top-28 w-full max-w-[360px] mx-auto lg:mx-0">
             <ProductGallery images={product.images} productName={productName} isAr={isAr} categorySlug={product.category?.slug} />
           </div>
 
           {/* Product Info */}
-          <div className="flex flex-col pt-2 lg:pt-6">
-            <div className="flex flex-col items-start gap-4 mb-6">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-heading text-[#2B2B2B] leading-tight drop-shadow-sm">
+          <div className="flex min-w-0 flex-col pt-0 lg:pt-6">
+            <div className="flex flex-col items-start gap-2 sm:gap-4 mb-4 lg:mb-6">
+              <h1 className="text-lg sm:text-3xl lg:text-5xl font-bold font-heading text-[#2B2B2B] leading-tight drop-shadow-sm">
                 {isAr ? product.nameAr : product.nameEn}
               </h1>
             </div>
 
-            <p className="text-[#746A64] leading-relaxed mb-10 text-base sm:text-lg">
+            <p className="text-[#746A64] leading-6 mb-5 text-xs sm:text-base lg:mb-10 lg:text-lg lg:leading-relaxed">
               {product.shortDescription || (isAr ? 'عززي جمالك الطبيعي مع هذا المنتج الاستثنائي الذي يوفر لك مظهراً مثالياً وجذاباً طوال اليوم.' : 'Enhance your natural beauty with this exceptional product that provides a perfect and attractive look all day long.')}
             </p>
 
@@ -291,7 +291,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             />
 
             {product.longDescription && (
-              <div className="mt-12 space-y-2 border-t border-[#E9DDCC] pt-8">
+              <div className="mt-6 space-y-2 border-t border-[#E9DDCC] pt-5 lg:mt-12 lg:pt-8">
                 <details className="group rounded-2xl border border-[#E9DDCC] bg-white overflow-hidden shadow-sm hover:shadow-[0_4px_16px_rgba(139,30,45,.03)] transition-all">
                   <summary className="flex justify-between items-center font-bold cursor-pointer list-none text-[#2B2B2B] p-5">
                     <span className="flex items-center gap-3">

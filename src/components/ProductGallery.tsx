@@ -57,7 +57,7 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
                 fill
                 priority 
                 sizes="(max-width: 768px) 100vw, 50vw" 
-                className="object-contain p-6 md:p-10 transition-transform duration-700 ease-out group-hover:scale-[1.03]" 
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" 
               />
               
               {/* Zoom hint icon */}
@@ -82,40 +82,28 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
           role="dialog" 
           aria-modal="true" 
           aria-label={productName} 
-          className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1F1B1A]/95 backdrop-blur-md transition-opacity" 
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1F1B1A]/85 p-4 backdrop-blur-md transition-opacity" 
           onClick={() => setIsLightboxOpen(false)}
         >
-          {/* Exit / Close Button */}
-          <button 
-            type="button" 
-            autoFocus 
-            onClick={() => setIsLightboxOpen(false)} 
-            className="absolute top-4 end-4 sm:top-6 sm:end-6 z-30 flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-md shadow-2xl transition-all active:scale-95 text-sm sm:text-base font-bold cursor-pointer" 
-            aria-label={isAr ? 'خروج' : 'Close'}
-          >
-            <X size={20} strokeWidth={2.5} />
-            <span>{isAr ? 'خروج' : 'Close'}</span>
-          </button>
-          
-          <div 
-            className="relative h-[85vh] w-full max-w-6xl px-4" 
-            onClick={event => event.stopPropagation()}
-          >
+          <div className="relative aspect-square w-[min(92vw,680px)] overflow-hidden rounded-2xl border border-white/30 bg-white shadow-2xl" onClick={() => setIsLightboxOpen(false)}>
+            <button
+              type="button"
+              autoFocus
+              onClick={() => setIsLightboxOpen(false)}
+              className="absolute end-3 top-3 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-black/65 text-white shadow-lg transition hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white"
+              aria-label={isAr ? 'إغلاق الصورة' : 'Close image'}
+            >
+              <X size={21} strokeWidth={2.5} />
+            </button>
             <Image 
               src={imageUrl} 
               alt={productName} 
               fill 
-              sizes="100vw" 
-              className="object-contain" 
+              sizes="(max-width: 768px) 92vw, 680px" 
+              className="object-contain p-4" 
               quality={100}
+              onClick={event => event.stopPropagation()}
             />
-          </div>
-          
-          {/* Lightbox brand accent */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 opacity-60">
-            <span className="h-px w-8 bg-[#B7935F]" />
-            <span className="text-xs font-bold tracking-[0.2em] text-[#B7935F] uppercase">{isAr ? 'رَواق' : 'RAWAQ'}</span>
-            <span className="h-px w-8 bg-[#B7935F]" />
           </div>
         </div>
       )}
