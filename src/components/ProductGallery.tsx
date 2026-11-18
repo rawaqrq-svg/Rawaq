@@ -57,7 +57,7 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
                 fill
                 priority 
                 sizes="(max-width: 768px) 100vw, 50vw" 
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" 
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               />
               
               {/* Zoom hint icon */}
@@ -82,7 +82,7 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
           role="dialog" 
           aria-modal="true" 
           aria-label={productName} 
-          className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1F1B1A]/85 p-4 backdrop-blur-md transition-opacity" 
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1F1B1A]/85 p-4 backdrop-blur-md transition-opacity"
           onClick={() => setIsLightboxOpen(false)}
         >
           <div className="relative aspect-square w-[min(92vw,680px)] overflow-hidden rounded-2xl border border-white/30 bg-white shadow-2xl" onClick={() => setIsLightboxOpen(false)}>
@@ -99,8 +99,8 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
               src={imageUrl} 
               alt={productName} 
               fill 
-              sizes="(max-width: 768px) 92vw, 680px" 
-              className="object-contain p-4" 
+              sizes="(max-width: 768px) 92vw, 680px"
+              className="object-contain p-4"
               quality={100}
               onClick={event => event.stopPropagation()}
             />
