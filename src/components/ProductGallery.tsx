@@ -1,17 +1,30 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { X } from 'lucide-react';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
 
-export function ProductGallery({ images, productName, isAr }: { images: { id?: string; url: string; isMain?: boolean }[]; productName: string; isAr: boolean; categorySlug?: string }) {
-  const uploadedImages = images.filter(image => image.url && !image.url.includes('/images/templates/'));
+export function ProductGallery({ images, productName, isAr }: { images: { id?: string; url: string; isMain?: boolean; variantId?: string | null }[]; productName: string; isAr: boolean; categorySlug?: string }) {
+  const uploadedImages = useMemo(
+    () => images.filter(image => image.url && !image.url.includes('/images/templates/')),
+    [images],
+  );
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   
   const current = uploadedImages.find(image => image.url === selectedUrl) || uploadedImages.find(image => image.isMain) || uploadedImages[0];
   const imageUrl = current?.url.replace('local://', '/');
+
+  useEffect(() => {
+    const selectVariantImage = (event: Event) => {
+      const variant = (event as CustomEvent<{ id?: string; mainImage?: string | null }>).detail;
+      const variantUrl = variant?.mainImage || uploadedImages.find(image => image.variantId === variant?.id)?.url;
+      if (variantUrl) setSelectedUrl(variantUrl);
+    };
+    window.addEventListener('variant-changed', selectVariantImage);
+    return () => window.removeEventListener('variant-changed', selectVariantImage);
+  }, [uploadedImages]);
 
   useEffect(() => {
     if (!isLightboxOpen) return;

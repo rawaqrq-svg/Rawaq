@@ -15,6 +15,7 @@ export interface ProductVariantItem {
   compareAt?: number | null;
   stock?: number;
   isActive?: boolean;
+  mainImage?: string | null;
 }
 
 export function ProductVariantSelector({ 
@@ -185,7 +186,7 @@ export function ProductVariantSelector({
           colorHex: selectedVariant.colorHex || null,
           price: selectedVariant.price,
           quantity: quantity,
-          image: mainImage || null
+          image: selectedVariant.mainImage || mainImage || null
         });
       }
       

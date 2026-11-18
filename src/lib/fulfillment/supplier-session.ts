@@ -346,14 +346,49 @@ export async function updateSupplierFulfillmentStatus(
     const packagesCount = Math.max(1, payload?.packagesCount || 1);
 
     await prisma.$transaction(async (tx) => {
+      // Serialize repeated/double READY submissions for the same fulfillment.
+      // Without this lock, two requests can generate the same unique packageCode.
+      await tx.$queryRaw`
+        SELECT id
+        FROM "FulfillmentOrder"
+        WHERE id = ${fulfillmentOrderId}
+        FOR UPDATE
+      `;
+
+      const currentFulfillment = await tx.fulfillmentOrder.findUnique({
+        where: { id: fulfillmentOrderId },
+        include: { packages: true },
+      });
+      if (!currentFulfillment) {
+        throw new Error('أمر التجهيز غير موجود.');
+      }
+
+      const isAlreadyReady =
+        currentFulfillment.status === SUPPLIER_FULFILLMENT_STATUS.READY_FOR_PICKUP &&
+        currentFulfillment.packages.length === packagesCount &&
+        currentFulfillment.packages.every(pkg => pkg.status === PACKAGE_STATUS.READY_FOR_PICKUP);
+
+      // A browser retry or double click should be idempotent.
+      if (isAlreadyReady) return;
+
+      const replaceablePackages = currentFulfillment.packages.filter(
+        pkg => pkg.status === PACKAGE_STATUS.PACKED || pkg.status === PACKAGE_STATUS.READY_FOR_PICKUP,
+      );
+      if (replaceablePackages.length !== currentFulfillment.packages.length) {
+        throw new Error('لا يمكن تعديل عدد الطرود بعد أن بدأ المندوب باستلامها.');
+      }
+
       // 1. توليد الطرود وحزم الأصناف بداخلها
-      // حذف الطرود المؤقتة غير المكتملة إن وجدت
-      await tx.packageItem.deleteMany({
-        where: { package: { fulfillmentOrderId } },
-      });
-      await tx.package.deleteMany({
-        where: { fulfillmentOrderId, status: PACKAGE_STATUS.PACKED },
-      });
+      // استبدال الطرود القابلة للتعديل فقط، مع ترك الطرود المستلمة محمية.
+      const replaceablePackageIds = replaceablePackages.map(pkg => pkg.id);
+      if (replaceablePackageIds.length > 0) {
+        await tx.packageItem.deleteMany({
+          where: { packageId: { in: replaceablePackageIds } },
+        });
+        await tx.package.deleteMany({
+          where: { id: { in: replaceablePackageIds } },
+        });
+      }
 
       // إنشاء طرد أو عدة طرود
       for (let i = 1; i <= packagesCount; i++) {
@@ -426,7 +461,7 @@ export async function updateSupplierFulfillmentStatus(
         data: {
           entityType: 'FULFILLMENT',
           entityId: fulfillmentOrderId,
-          fromStatus: fulfillment.status,
+          fromStatus: currentFulfillment.status,
           toStatus: SUPPLIER_FULFILLMENT_STATUS.READY_FOR_PICKUP,
           actorType: 'SUPPLIER',
           actorId: session.supplierId,
@@ -449,7 +484,7 @@ export async function updateSupplierFulfillmentStatus(
           reason: payload?.supplierNotes || null,
           changes: JSON.stringify({
             packagesCount,
-            status: { before: fulfillment.status, after: 'READY_FOR_PICKUP' },
+            status: { before: currentFulfillment.status, after: 'READY_FOR_PICKUP' },
             itemsCount: fulfillment.items.length,
             shopName: session.supplier.name,
           }),
