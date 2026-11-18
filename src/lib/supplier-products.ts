@@ -41,6 +41,8 @@ export interface GroupedSupplierProduct {
   sizesString: string;
   colors: string[];
   colorsString: string;
+  options: string[];
+  optionsString: string;
   fullDisplayName: string;
   minCostFils: number;
   maxCostFils: number;
@@ -82,6 +84,22 @@ const DUMMY_SIZES = new Set([
   'ONESIZE',
   'عادي',
   'قياسي',
+  '—',
+  '-',
+  'N/A',
+  'NONE',
+]);
+
+const DUMMY_OPTIONS = new Set([
+  '',
+  'STANDARD',
+  'DEFAULT',
+  'ONE SIZE',
+  'OS',
+  'ONESIZE',
+  'عادي',
+  'قياسي',
+  'افتراضي',
   '—',
   '-',
   'N/A',
@@ -170,7 +188,18 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
     const colors = Array.from(rawColorsSet);
     const colorsString = colors.join('، ');
 
-    // 4. كود الصنف الأساسي (SKU)
+    // 4. استخراج أسماء الخيارات مثل الروائح والتركيبات.
+    // اسم التنوع هو الحقل المعتمد لهذه المنتجات، بينما اللون والمقاس يبقيان
+    // منفصلين حتى تكون بيانات المورد واضحة ولا تختلط الروائح بالألوان.
+    const rawOptionsSet = new Set<string>();
+    for (const o of offers) {
+      const option = o.variant.name?.trim();
+      if (option && !DUMMY_OPTIONS.has(option.toUpperCase())) rawOptionsSet.add(option);
+    }
+    const options = Array.from(rawOptionsSet).sort((a, b) => a.localeCompare(b, 'ar'));
+    const optionsString = options.join('، ');
+
+    // 5. كود الصنف الأساسي (SKU)
     // الأولوية: كود المورد الموحد -> كود المنتج في النظام -> كود أول تنوع بعد إزالة لاحقة المقاس
     const supplierSkus = offers.map((o) => o.supplierSku?.trim()).filter(Boolean) as string[];
     const firstSupplierSku = supplierSkus.length > 0 ? supplierSkus[0] : null;
@@ -188,14 +217,15 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
       displaySku = '—';
     }
 
-    // 5. الاسم الشامل في سطر واحد
+    // 6. الاسم الشامل في سطر واحد
     const specTags: string[] = [];
     if (sizesString) specTags.push(`المقاسات: ${sizesString}`);
     if (colorsString) specTags.push(`الألوان: ${colorsString}`);
+    if (optionsString) specTags.push(`الخيارات: ${optionsString}`);
     const specsSuffix = specTags.length > 0 ? ` — ${specTags.join(' · ')}` : '';
     const fullDisplayName = `${product.nameAr}${specsSuffix}`;
 
-    // 6. أسعار التكلفة وأسعار البيع
+    // 7. أسعار التكلفة وأسعار البيع
     const costs = offers.map((o) => o.unitCost);
     const minCostFils = Math.min(...costs);
     const maxCostFils = Math.max(...costs);
@@ -212,7 +242,7 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
         ? filsToDisplay(minPriceFils, 'ar')
         : `${filsToDisplay(minPriceFils, 'ar')} - ${filsToDisplay(maxPriceFils, 'ar')}`;
 
-    // 7. حالة العرض والظهور في المتجر
+    // 8. حالة العرض والظهور في المتجر
     const isProductVisible = Boolean(product.isVisible);
     const isAnyOfferActive = offers.some((o) => o.isActive);
     const isVisibleInStore = isProductVisible && isAnyOfferActive;
@@ -236,6 +266,8 @@ export function groupSupplierOffersByProduct(rawOffers: RawOfferForGrouping[]): 
       sizesString,
       colors,
       colorsString,
+      options,
+      optionsString,
       fullDisplayName,
       minCostFils,
       maxCostFils,

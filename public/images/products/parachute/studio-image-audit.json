@@ -1,0 +1,58 @@
+[
+  {
+    "source": "parachute-skinpure-cocoa-vitamin-b5.png",
+    "target": "parachute-skinpure-cocoa-vitamin-b5.webp",
+    "source_size": [
+      1254,
+      1254
+    ],
+    "published_size": [
+      1200,
+      1200
+    ],
+    "white_corners": true,
+    "duplicate_of": null
+  },
+  {
+    "source": "parachute-skinpure-coconut-vitamin-e.png",
+    "target": "parachute-skinpure-coconut-vitamin-e.webp",
+    "source_size": [
+      1254,
+      1254
+    ],
+    "published_size": [
+      1200,
+      1200
+    ],
+    "white_corners": true,
+    "duplicate_of": null
+  },
+  {
+    "source": "parachute-skinpure-hyaluron.png",
+    "target": "parachute-skinpure-hyaluron.webp",
+    "source_size": [
+      1254,
+      1254
+    ],
+    "published_size": [
+      1200,
+      1200
+    ],
+    "white_corners": true,
+    "duplicate_of": null
+  },
+  {
+    "source": "parachute-skinpure-vitamin-c.png",
+    "target": "parachute-skinpure-vitamin-c.webp",
+    "source_size": [
+      1254,
+      1254
+    ],
+    "published_size": [
+      1200,
+      1200
+    ],
+    "white_corners": true,
+    "duplicate_of": null
+  }
+]

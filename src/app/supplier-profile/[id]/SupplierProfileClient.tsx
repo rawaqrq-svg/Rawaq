@@ -48,6 +48,8 @@ export interface ProductData {
   sizesString: string;
   colors: string[];
   colorsString: string;
+  options: string[];
+  optionsString: string;
   fullDisplayName: string;
   minCostFils: number;
   maxCostFils: number;
@@ -89,7 +91,8 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
       (p.fullDisplayName && p.fullDisplayName.toLowerCase().includes(q)) ||
       p.sku.toLowerCase().includes(q) ||
       p.sizesString.toLowerCase().includes(q) ||
-      p.colorsString.toLowerCase().includes(q);
+      p.colorsString.toLowerCase().includes(q) ||
+      p.optionsString.toLowerCase().includes(q);
 
     if (!matchesQuery) return false;
 
@@ -281,7 +284,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
               <Search className="w-4 h-4 text-zinc-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="بحث باسم المنتج، المقاس، أو اللون..."
+                placeholder="بحث باسم المنتج، الرائحة، المقاس، أو اللون..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-xl border border-zinc-200 pr-9 pl-3 py-2 text-xs focus:ring-1 focus:ring-emerald-800 focus:outline-none"
@@ -344,7 +347,7 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                   <tr>
                     <th className="py-3 px-3 text-center w-12">#</th>
                     <th className="py-3 px-3 text-center w-20">صورة المنتج</th>
-                    <th className="py-3 px-4">اسم الصنف والمنتج والمواصفات (المقاسات والألوان)</th>
+                    <th className="py-3 px-4">اسم المنتج ومعلومات الخيارات</th>
                     <th className="py-3 px-3">سعر التكلفة للمحل</th>
                     <th className="py-3 px-3">سعر البيع في المتجر</th>
                     <th className="py-3 px-3 text-center">حالة الصنف في المتجر</th>
@@ -390,6 +393,14 @@ export default function SupplierProfileClient({ supplier, products }: Props) {
                               الألوان: {prod.colorsString}
                             </span>
                           )}
+                          {prod.optionsString && (
+                            <span className="inline-flex items-center gap-1 font-bold text-violet-950 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded text-[11px] whitespace-normal">
+                              الروائح / الخيارات: {prod.optionsString}
+                            </span>
+                          )}
+                          <span className="inline-flex items-center gap-1 font-bold text-zinc-700 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
+                            عدد الخيارات: {prod.totalVariantsCount}
+                          </span>
                         </div>
                         {prod.productNameEn && (
                           <span className="text-[10px] text-zinc-400 block font-normal mt-0.5">

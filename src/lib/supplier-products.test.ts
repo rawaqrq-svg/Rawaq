@@ -178,4 +178,43 @@ describe('groupSupplierOffersByProduct', () => {
     expect(result[0].sizesString).toBe('');
     expect(result[0].fullDisplayName).toBe('عطر عود ملكي');
   });
+
+  it('shows scent names as product options without treating them as colors', () => {
+    const rawOffers: RawOfferForGrouping[] = [
+      {
+        id: 'offer-rose',
+        unitCost: 2000,
+        supplierProfitShareBps: 5000,
+        isActive: true,
+        variant: {
+          productId: 'body-lotion',
+          name: 'ورد إنجليزي',
+          size: '400 مل',
+          sku: 'BODY-LOTION-ROSE',
+          price: 3000,
+          product: { id: 'body-lotion', nameAr: 'لوشن الجسم', isVisible: true },
+        },
+      },
+      {
+        id: 'offer-berries',
+        unitCost: 2000,
+        supplierProfitShareBps: 5000,
+        isActive: true,
+        variant: {
+          productId: 'body-lotion',
+          name: 'توت مشكل',
+          size: '400 مل',
+          sku: 'BODY-LOTION-BERRIES',
+          price: 3000,
+          product: { id: 'body-lotion', nameAr: 'لوشن الجسم', isVisible: true },
+        },
+      },
+    ];
+
+    const [product] = groupSupplierOffersByProduct(rawOffers);
+    expect(product.options).toEqual(['توت مشكل', 'ورد إنجليزي']);
+    expect(product.optionsString).toBe('توت مشكل، ورد إنجليزي');
+    expect(product.colors).toEqual([]);
+    expect(product.fullDisplayName).toContain('الخيارات: توت مشكل، ورد إنجليزي');
+  });
 });
