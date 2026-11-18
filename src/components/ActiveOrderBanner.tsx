@@ -17,15 +17,29 @@ export function ActiveOrderBanner() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const checkOrder = () => {
+    const checkOrder = async () => {
       try {
         const saved = localStorage.getItem('rawaq_active_order');
         if (saved) {
           const parsed = JSON.parse(saved) as ActiveOrderData;
           // Valid for 48 hours
           if (parsed && parsed.reference && Date.now() - parsed.createdAt < 48 * 60 * 60 * 1000) {
-            setActiveOrder(parsed);
+            try {
+              const response = await fetch(`/api/order-status/${encodeURIComponent(parsed.reference)}`, { cache: 'no-store' });
+              const remote = response.ok ? await response.json() : null;
+              const isFinished = remote?.status === 'DELIVERED' || remote?.status === 'CANCELLED' || remote?.status === 'REFUNDED' || remote?.fulfillmentStatus === 'DELIVERED';
+              if (isFinished) {
+                localStorage.removeItem('rawaq_active_order');
+                setActiveOrder(null);
+              } else {
+                setActiveOrder(parsed);
+              }
+            } catch {
+              // Keep the local banner when the status endpoint is temporarily unavailable.
+              setActiveOrder(parsed);
+            }
           } else {
+            localStorage.removeItem('rawaq_active_order');
             setActiveOrder(null);
           }
         } else {
@@ -38,7 +52,13 @@ export function ActiveOrderBanner() {
 
     checkOrder();
     window.addEventListener('rawaq_order_updated', checkOrder);
-    return () => window.removeEventListener('rawaq_order_updated', checkOrder);
+    window.addEventListener('focus', checkOrder);
+    document.addEventListener('visibilitychange', checkOrder);
+    return () => {
+      window.removeEventListener('rawaq_order_updated', checkOrder);
+      window.removeEventListener('focus', checkOrder);
+      document.removeEventListener('visibilitychange', checkOrder);
+    };
   }, []);
 
   // Do not show on admin pages or on the order-status page itself
