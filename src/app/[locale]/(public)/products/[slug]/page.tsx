@@ -265,9 +265,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)] gap-8 lg:gap-14 items-start max-w-6xl mx-auto">
           {/* Product Images (Interactive Gallery) - static on mobile so it scrolls naturally, sticky on desktop */}
-          <div className="lg:sticky lg:top-28">
+          <div className="lg:sticky lg:top-28 w-full max-w-[360px] mx-auto lg:mx-0">
             <ProductGallery images={product.images} productName={productName} isAr={isAr} categorySlug={product.category?.slug} />
           </div>
 

@@ -145,7 +145,7 @@ export async function BestSellersSection({ locale }: { locale: string }) {
                       alt={name}
                       fill
                       sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
-                      className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-4xl text-[#B7935F]/30">✦</div>

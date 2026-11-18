@@ -74,36 +74,7 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
         </RawaqProductFrame>
       </button>
 
-      {/* Thumbnails */}
-      {uploadedImages.length > 1 && (
-        <div className="flex flex-wrap justify-center gap-3">
-          {uploadedImages.map((image, index) => {
-            const isSelected = current?.url === image.url;
-            return (
-              <button 
-                type="button" 
-                key={image.id || image.url} 
-                onClick={() => setSelectedUrl(image.url)} 
-                aria-label={`${isAr ? 'صورة' : 'Photo'} ${index + 1}`} 
-                aria-pressed={isSelected} 
-                className={`relative h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-xl border-2 transition-all duration-300 ${
-                  isSelected 
-                    ? 'border-[#B7935F] bg-[#F7F3EA] scale-[1.02] shadow-[0_4px_12px_rgba(201,162,77,.2)]' 
-                    : 'border-[#E9DDCC] bg-white hover:border-[#B7935F]/60 hover:bg-[#F7F3EA]'
-                }`}
-              >
-                <Image 
-                  src={image.url.replace('local://', '/')} 
-                  alt={`${productName} thumbnail ${index + 1}`} 
-                  fill 
-                  sizes="(max-width: 640px) 80px, 96px" 
-                  className={`object-cover p-2 transition-transform duration-500 ${isSelected ? 'scale-100' : 'scale-95'}`} 
-                />
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {/* Variant images are intentionally hidden here. Selecting a scent/option changes the main image. */}
 
       {/* Fullscreen Lightbox */}
       {isLightboxOpen && imageUrl && (

@@ -90,7 +90,7 @@ export function PaginatedProductGrid({
                       alt={isAr ? product.nameAr : product.nameEn}
                       fill
                       sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
-                      className={`object-contain p-5 transition duration-700 group-hover:scale-[1.03] ${totalStock === 0 ? 'opacity-50 grayscale-[0.3]' : ''}`}
+                      className={`object-cover transition duration-700 group-hover:scale-[1.03] ${totalStock === 0 ? 'opacity-50 grayscale-[0.3]' : ''}`}
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-4xl text-[#3F4832]/20">✦</div>
