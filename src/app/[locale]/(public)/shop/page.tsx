@@ -1,8 +1,6 @@
 import { prisma } from '@/lib/db';
-import { DynamicCatalogSidebar, type CategoryTreeNode } from '@/components/DynamicCatalogSidebar';
 import { PaginatedProductGrid } from '@/components/PaginatedProductGrid';
 import { OliveBranchDecoration } from '@/components/RawaqMotifs';
-import { getDynamicCatalogFilters } from '@/lib/dynamic-filters';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -40,26 +38,6 @@ export default async function ShopPage({
   const q = typeof sp.q === 'string' ? sp.q.trim() : '';
   const categoryStr = typeof sp.category === 'string' ? sp.category : '';
 
-  const getParamArray = (param: string | string[] | undefined): string[] => {
-    if (!param) return [];
-    if (Array.isArray(param)) return param.filter(Boolean);
-    return [param].filter(Boolean);
-  };
-
-  const selectedBrands = getParamArray(sp.brand);
-  const selectedSizes = getParamArray(sp.size);
-  const selectedColors = getParamArray(sp.color);
-  const minPrice = sp.minPrice ? Number(sp.minPrice) : null;
-  const maxPrice = sp.maxPrice ? Number(sp.maxPrice) : null;
-
-  // استخراج فلاتر السمات الديناميكية (attr_*)
-  const attrFilters: Record<string, string[]> = {};
-  for (const [key, value] of Object.entries(sp)) {
-    if (key.startsWith('attr_')) {
-      const attrKey = key.replace('attr_', '');
-      attrFilters[attrKey] = getParamArray(value);
-    }
-  }
 
   // 1. جلب كافة الأقسام المفعلة وشجرتها الهرمية الكاملة
   const allCategories = await prisma.category.findMany({
@@ -111,14 +89,12 @@ export default async function ShopPage({
   let activeSubId: string | null = null;
   let activeLeafId: string | null = null;
   let activeCatName: string | null = null;
-  let activeTemplateId: string | null = null;
 
   if (categoryStr) {
     for (const root of rootCategories) {
       if (root.id === categoryStr) {
         activeRootId = root.id;
         activeCatName = root.name;
-        activeTemplateId = root.defaultTemplateId;
         targetCategoryIds = [
           root.id,
           ...root.children.map(c => c.id),
@@ -131,7 +107,6 @@ export default async function ShopPage({
           activeRootId = root.id;
           activeSubId = sub.id;
           activeCatName = sub.name;
-          activeTemplateId = sub.defaultTemplateId || root.defaultTemplateId;
           targetCategoryIds = [
             sub.id,
             ...sub.children.map(c => c.id),
@@ -144,7 +119,6 @@ export default async function ShopPage({
             activeSubId = sub.id;
             activeLeafId = leaf.id;
             activeCatName = leaf.name;
-            activeTemplateId = leaf.defaultTemplateId || sub.defaultTemplateId || root.defaultTemplateId;
             targetCategoryIds = [leaf.id];
             break;
           }
@@ -178,55 +152,8 @@ export default async function ShopPage({
     ];
   }
 
-  if (selectedBrands.length > 0) {
-    where.brandId = { in: selectedBrands };
-  }
-
-  // شروط المتغيرات (المقاس، اللون، السعر، التوفر)
-  const variantConditions: Prisma.ProductVariantWhereInput = { isActive: true };
-  let hasVariantFilter = false;
-
-  if (selectedSizes.length > 0) {
-    variantConditions.size = { in: selectedSizes };
-    hasVariantFilter = true;
-  }
-  if (selectedColors.length > 0) {
-    variantConditions.colorName = { in: selectedColors };
-    hasVariantFilter = true;
-  }
-  if (minPrice !== null || maxPrice !== null) {
-    variantConditions.price = {};
-    if (minPrice !== null) variantConditions.price.gte = minPrice;
-    if (maxPrice !== null) variantConditions.price.lte = maxPrice;
-    hasVariantFilter = true;
-  }
-
-  if (hasVariantFilter) {
-    where.variants = { some: variantConditions };
-  }
-
-  // شروط السمات الديناميكية (EAV Attributes)
-  const andAttrConditions: Prisma.ProductWhereInput[] = [];
-  for (const [attrKey, values] of Object.entries(attrFilters)) {
-    if (values.length > 0) {
-      andAttrConditions.push({
-        attributeValues: {
-          some: {
-            attributeDefinition: { key: attrKey },
-            OR: values.map(val => ({
-              valueJson: { contains: val }
-            }))
-          }
-        }
-      });
-    }
-  }
-  if (andAttrConditions.length > 0) {
-    where.AND = andAttrConditions;
-  }
-
-  // 4. تنفيذ الاستعلامات بالتوازي: المنتجات والعدد الإجمالي والفلاتر الديناميكية
-  const [products, totalCount, dynamicFiltersData, categoryProductCounts] = await Promise.all([
+  // 4. المنتجات والعدد الإجمالي
+  const [products, totalCount] = await Promise.all([
     prisma.product.findMany({
       where,
       take: 40,
@@ -249,62 +176,7 @@ export default async function ShopPage({
       orderBy: { createdAt: 'desc' },
     }),
     prisma.product.count({ where }),
-    getDynamicCatalogFilters(targetCategoryIds, activeTemplateId),
-    prisma.product.groupBy({
-      by: ['categoryId'],
-      where: { isVisible: true },
-      _count: { id: true },
-    }),
   ]);
-
-  // 5. بناء شجرة الأقسام مع الأعداد المباشرة والتراكمية (Rollup Counts)
-  const countMap = new Map(categoryProductCounts.map(c => [c.categoryId, c._count.id]));
-
-  const categoriesTree: CategoryTreeNode[] = rootCategories.map(root => {
-    const rootDirect = countMap.get(root.id) || 0;
-    let rootRollup = rootDirect;
-
-    const subNodes = root.children.map(sub => {
-      const subDirect = countMap.get(sub.id) || 0;
-      let subRollup = subDirect;
-
-      const leafNodes = sub.children.map(leaf => {
-        const leafDirect = countMap.get(leaf.id) || 0;
-        subRollup += leafDirect;
-        return {
-          id: leaf.id,
-          name: leaf.name,
-          slug: leaf.slug,
-          parentId: leaf.parentId,
-          directCount: leafDirect,
-          rollupCount: leafDirect,
-          children: [],
-        };
-      });
-
-      rootRollup += subRollup;
-      return {
-        id: sub.id,
-        name: sub.name,
-        slug: sub.slug,
-        parentId: sub.parentId,
-        directCount: subDirect,
-        rollupCount: subRollup,
-        children: leafNodes,
-      };
-    });
-
-    return {
-      id: root.id,
-      name: root.name,
-      slug: root.slug,
-      parentId: null,
-      imagePath: root.imagePath,
-      directCount: rootDirect,
-      rollupCount: rootRollup,
-      children: subNodes,
-    };
-  });
 
   // أيقونات تمييز الأقسام الرئيسية في رَواق
   const categoryIcons: Record<string, string> = {
@@ -317,7 +189,7 @@ export default async function ShopPage({
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F3EA] pb-16 sm:pb-24">
+    <div className="min-h-screen bg-white pb-16 sm:pb-24">
       {/* ── Header Banner ── */}
       <div className="relative overflow-hidden border-b border-[#B7935F]/60 bg-[#3F4832] py-14 text-center text-white sm:py-20">
         <OliveBranchDecoration className="absolute -start-20 -bottom-20 w-80 text-white opacity-10 pointer-events-none scale-x-[-1]" />
@@ -481,19 +353,8 @@ export default async function ShopPage({
           )}
         </div>
 
-        {/* ── Main Catalog Grid: Sidebar + Products ── */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-
-          {/* Dynamic Interactive Filter Sidebar */}
-          <DynamicCatalogSidebar
-            categoriesTree={categoriesTree}
-            facets={dynamicFiltersData.facets}
-            priceRange={dynamicFiltersData.priceRange}
-            activeCategoryId={categoryStr}
-            totalProducts={totalCount}
-            locale={locale}
-          />
-
+        {/* ── Main Catalog Grid ── */}
+        <div className="w-full">
           {/* Products Grid Area */}
           <main className="flex-1 w-full min-w-0">
             <PaginatedProductGrid
@@ -510,13 +371,13 @@ export default async function ShopPage({
                   {isAr ? 'لم نعثر على منتجات مطابقة' : 'No matching products found'}
                 </h3>
                 <p className="text-sm text-[#746A64] max-w-sm mx-auto mb-6">
-                  {isAr ? 'جربي تعديل خيارات الفلترة أو مسح بعض المحددات لتوسيع نطاق البحث.' : 'Try adjusting your filters or clearing some options to widen your search.'}
+                  {isAr ? 'جربي قسماً آخر أو ابحثي عن منتج مختلف.' : 'Try another category or search for a different product.'}
                 </p>
                 <Link
                   href={`/${locale}/shop`}
                   className="inline-flex items-center gap-2 bg-[#3F4832] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-sm hover:bg-[#2A3321] transition-colors"
                 >
-                  {isAr ? 'إعادة ضبط كافة الفلاتر' : 'Reset all filters'}
+                  {isAr ? 'عرض كل المنتجات' : 'View all products'}
                 </Link>
               </div>
             )}

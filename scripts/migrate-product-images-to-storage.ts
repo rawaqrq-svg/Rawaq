@@ -27,9 +27,11 @@ type VariantImageBackfill = {
 };
 
 const workspace = process.cwd();
-const processedDirectory = path.join(workspace, 'design', 'جاهز_للمتجر_processed_webp');
-const screenshotsDirectory = path.join(workspace, 'design', '07_سكرينات_مكتملة_done');
-const apply = process.argv.includes('--apply');
+const designDirectory = path.resolve(workspace, '..', 'design');
+const processedDirectory = path.join(designDirectory, 'جاهز_للمتجر_processed_webp');
+const studioDirectory = path.join(designDirectory, 'جاهز_للمتجر_studio_webp');
+const screenshotsDirectory = path.join(designDirectory, '07_سكرينات_مكتملة_done');
+const apply = process.argv.includes('--apply') || process.env.APPLY_MIGRATION === '1';
 
 function requiredEnv(name: string): string {
   const value = process.env[name]?.trim();
@@ -39,13 +41,22 @@ function requiredEnv(name: string): string {
 
 async function sourceForUrl(url: string): Promise<string> {
   const basename = path.basename(decodeURIComponent(url));
-  const processedCandidate = path.join(processedDirectory, basename);
+  const localPath = decodeURIComponent(url).replace(/^\/+/, '');
+  const candidates = [
+    path.join(workspace, 'public', localPath),
+    path.join(processedDirectory, basename),
+    path.join(studioDirectory, basename),
+    path.join(studioDirectory, 'batch-78-194', basename),
+    path.join(studioDirectory, 'parachute', basename),
+  ];
 
-  try {
-    await fs.access(processedCandidate);
-    return processedCandidate;
-  } catch {
-    // The newer catalog files are named by SKU in the database and by screenshot number on disk.
+  for (const candidate of candidates) {
+    try {
+      await fs.access(candidate);
+      return candidate;
+    } catch {
+      // Keep looking through the known catalog source directories.
+    }
   }
 
   const screenshotNumber = basename.match(/GHAZ-NEW-(\d{3})-/)?.[1];

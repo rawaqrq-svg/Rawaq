@@ -9,12 +9,14 @@ export type CategoryNodeSeed = {
   children?: CategoryNodeSeed[];
 };
 
+const categoryImage = (name: string) => `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/categories/${name}.webp`;
+
 export const rawaqDefaultTaxonomy: CategoryNodeSeed[] = [
   {
     slug: 'makeup',
     name: 'المكياج',
     description: 'مستحضرات التجميل والمكياج الأصلي لكافة الإطلالات',
-    imagePath: '/images/categories/makeup.jpg',
+    imagePath: categoryImage('makeup'),
     children: [
       {
         slug: 'makeup-lips',
@@ -57,7 +59,7 @@ export const rawaqDefaultTaxonomy: CategoryNodeSeed[] = [
     slug: 'fashion-abayas',
     name: 'الأزياء والعبايات',
     description: 'أرقى العبايات والأثواب التراثية الأردنية المطرزة والفساتين',
-    imagePath: '/images/categories/fashion-abayas.jpg',
+    imagePath: categoryImage('fashion-abayas'),
     children: [
       {
         slug: 'abayas',
@@ -88,7 +90,7 @@ export const rawaqDefaultTaxonomy: CategoryNodeSeed[] = [
     slug: 'perfumes-fragrances',
     name: 'العطور والبخور',
     description: 'عطور شرقية ملكية، دهن عود، وعطور فرنسية نسائية ورجالية',
-    imagePath: '/images/categories/perfumes.jpg',
+    imagePath: categoryImage('perfumes-fragrances'),
     children: [
       {
         slug: 'oriental-oud',
@@ -113,7 +115,7 @@ export const rawaqDefaultTaxonomy: CategoryNodeSeed[] = [
     slug: 'skincare',
     name: 'العناية بالبشرة',
     description: 'حلول العناية المتكاملة بالبشرة وروتين النضارة والترطيب',
-    imagePath: '/images/categories/skincare.jpg',
+    imagePath: categoryImage('skincare'),
     children: [
       {
         slug: 'daily-care',
@@ -140,7 +142,7 @@ export const rawaqDefaultTaxonomy: CategoryNodeSeed[] = [
     slug: 'gifts-sets',
     name: 'الهدايا والبكجات',
     description: 'بوكسات وبكجات هدايا فاخرة جاهزة للمناسبات والإهداء',
-    imagePath: '/images/categories/gifts.jpg',
+    imagePath: categoryImage('gifts-sets'),
     children: [
       {
         slug: 'gift-boxes',
@@ -155,7 +157,7 @@ export const rawaqDefaultTaxonomy: CategoryNodeSeed[] = [
     slug: 'accessories',
     name: 'الإكسسوارات والحلي',
     description: 'أساور، خواتم، عقود فضة 925 وإكسسوارات راقية',
-    imagePath: '/images/categories/accessories.jpg',
+    imagePath: categoryImage('accessories'),
     children: [
       {
         slug: 'silver-jewelry',

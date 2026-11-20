@@ -11,17 +11,18 @@
     "typecheck:e2e": "tsc --noEmit -p tsconfig.e2e.json",
     "test": "pnpm test:migrate && cross-env NODE_ENV=test TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable DATABASE_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable DIRECT_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable vitest run --pool=forks --fileParallelism=false",
     "test:migrate": "cross-env DATABASE_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable DIRECT_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable prisma migrate deploy",
-    "test:e2e": "pnpm test:migrate && cross-env E2E_TEST_MODE=1 TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable DATABASE_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable DIRECT_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable NEXT_PUBLIC_SUPABASE_URL=https://dummy.supabase.co NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=test-only NEXT_PUBLIC_SUPABASE_ANON_KEY=test-only SUPABASE_SERVICE_ROLE_KEY= SUPABASE_SECRET_KEY= TELEGRAM_BOT_TOKEN= TELEGRAM_CHAT_ID= AWS_ENDPOINT_URL_S3= AWS_ACCESS_KEY_ID= AWS_SECRET_ACCESS_KEY= AWS_REGION= PUBLIC_APP_URL=http://127.0.0.1:3000 NEXT_PUBLIC_APP_URL=http://127.0.0.1:3000 playwright test",
+    "test:e2e": "pnpm test:migrate && cross-env E2E_TEST_MODE=1 TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable DATABASE_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable DIRECT_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable NEXT_PUBLIC_SUPABASE_URL=https://dummy.supabase.co NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=test-only NEXT_PUBLIC_SUPABASE_ANON_KEY=test-only SUPABASE_SERVICE_ROLE_KEY= SUPABASE_SECRET_KEY= TELEGRAM_BOT_TOKEN= TELEGRAM_CHAT_ID= PUBLIC_APP_URL=http://127.0.0.1:3000 NEXT_PUBLIC_APP_URL=http://127.0.0.1:3000 playwright test",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
     "prisma:seed": "tsx --env-file=.env scripts/create-admin.ts",
     "import:products": "tsx --env-file=.env scripts/import-products.ts",
     "create:admin": "tsx --env-file=.env scripts/create-admin.ts",
     "test:concurrency": "pnpm test:migrate && cross-env NODE_ENV=test TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable DATABASE_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable DIRECT_URL=postgres://postgres:postgres@127.0.0.1:51214/makeup_test?sslmode=disable tsx scripts/test-concurrent-checkout.ts",
-    "db:safeguard": "tsx scripts/db-safeguard.ts"
+    "db:safeguard": "tsx scripts/db-safeguard.ts",
+    "db:migrate:supabase": "tsx scripts/migrate-postgres-to-supabase.ts",
+    "media:migrate:supabase": "tsx scripts/migrate-product-images-to-storage.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1150.0",
     "@hookform/resolvers": "^5.4.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
@@ -41,7 +42,6 @@
     "zod": "^4.6.6"
   },
   "devDependencies": {
-    "@neon/config": "^1.8.6",
     "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",

@@ -7,8 +7,8 @@ export const runtime = 'nodejs';
 /**
  * Next.js API Route for high-performance image uploads.
  * Automatically converts images (PNG, JPG, HEIC, etc.) to .webp with Sharp (quality: 80)
- * and uploads to Cloud Storage (Supabase Storage with S3 fallback).
- * Optionally links image to a Product in Neon PostgreSQL via Prisma if productId is supplied.
+ * and uploads to Supabase Storage.
+ * Optionally links the image to a Product in Supabase PostgreSQL via Prisma.
  */
 export async function POST(request: Request) {
   try {
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Optional: If productId is supplied, attach to product in Neon Postgres
+    // Optional: If productId is supplied, attach to the Supabase product record.
     let productImage = null;
     if (productId) {
       try {

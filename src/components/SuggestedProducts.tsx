@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { filsToDisplay } from '@/lib/money';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -24,6 +25,7 @@ export default function SuggestedProducts({ products, locale }: SuggestedProduct
   const isAr = locale === 'ar';
   const [mounted, setMounted] = React.useState(false);
   const railRef = React.useRef<HTMLDivElement>(null);
+  const router = useRouter();
   React.useEffect(() => setMounted(true), []);
   if (!mounted || !products || products.length === 0) return null;
 
@@ -52,6 +54,8 @@ export default function SuggestedProducts({ products, locale }: SuggestedProduct
           <Link
             key={product.id}
             href={`/${locale}/products/${product.slug}`}
+            onMouseEnter={() => router.prefetch(`/${locale}/products/${product.slug}`)}
+            onFocus={() => router.prefetch(`/${locale}/products/${product.slug}`)}
             className="group relative flex w-[154px] shrink-0 snap-start flex-col outline-none transition-all duration-300 hover:-translate-y-1 sm:w-[190px]"
           >
             <RawaqProductFrame className="w-full shrink-0">

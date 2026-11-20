@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ProductVariantSelector } from '@/components/ProductVariantSelector';
 import { ProductGallery } from '@/components/ProductGallery';
 import SuggestedProducts from '@/components/SuggestedProducts';
+import { pickRecommendedProducts } from '@/lib/product-recommendations';
 import { BackButton } from '@/components/BackButton';
 import type { Metadata } from 'next';
 
@@ -166,17 +167,20 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     lowestPrice: number;
   }> = [];
 
-  const fallbackProducts = await prisma.product.findMany({
-    where: { isVisible: true, id: { not: product.id } },
-    include: {
-      images: { where: { isMain: true }, take: 1 },
-      variants: { where: { isActive: true }, orderBy: { price: 'asc' }, take: 1 },
-    },
-    orderBy: { createdAt: 'asc' },
-    take: 4,
-  });
+  const [recommendationCategories, recommendationCandidates] = await Promise.all([
+    prisma.category.findMany({ select: { id: true, parentId: true, slug: true } }),
+    prisma.product.findMany({
+      where: { isVisible: true, id: { not: product.id }, variants: { some: { isActive: true } } },
+      include: {
+        images: { orderBy: [{ isMain: 'desc' }, { order: 'asc' }], take: 1 },
+        variants: { where: { isActive: true }, orderBy: { price: 'asc' }, take: 1 },
+      },
+      orderBy: [{ isBestSeller: 'desc' }, { createdAt: 'desc' }],
+      take: 120,
+    }),
+  ]);
 
-  suggestedProductsData = fallbackProducts.map(p => ({
+  suggestedProductsData = pickRecommendedProducts(product, recommendationCandidates, recommendationCategories).map(p => ({
     id: p.id,
     slug: p.slug,
     nameAr: p.nameAr,
@@ -290,24 +294,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               mainImage={mainImage?.url}
             />
 
-            {product.longDescription && (
-              <div className="mt-6 space-y-2 border-t border-[#E9DDCC] pt-5 lg:mt-12 lg:pt-8">
-                <details className="group rounded-2xl border border-[#E9DDCC] bg-white overflow-hidden shadow-sm hover:shadow-[0_4px_16px_rgba(139,30,45,.03)] transition-all">
-                  <summary className="flex justify-between items-center font-bold cursor-pointer list-none text-[#2B2B2B] p-5">
-                    <span className="flex items-center gap-3">
-                      <span className="text-[#B7935F]">✦</span>
-                      {isAr ? 'تفاصيل المنتج' : 'Product Details'}
-                    </span>
-                    <span className="transition-transform duration-300 group-open:rotate-180 text-[#B7935F]">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                    </span>
-                  </summary>
-                  <div className="px-5 pb-5 text-[#746A64] leading-relaxed border-t border-[#E9DDCC]/50 mt-1 pt-4">
-                    {product.longDescription}
-                  </div>
-                </details>
-              </div>
-            )}
           </div>
         </div>
 

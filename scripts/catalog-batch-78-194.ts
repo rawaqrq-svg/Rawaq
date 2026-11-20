@@ -20,7 +20,7 @@ export type CatalogProduct = {
   variants: CatalogVariant[];
 };
 
-const imageRoot = '/images/products/batch-78-194';
+const imageRoot = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/products`;
 
 function variants(
   prefix: string,

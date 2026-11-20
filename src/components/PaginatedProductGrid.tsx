@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { WishlistHeart } from '@/components/WishlistHeart';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
@@ -22,6 +23,7 @@ export function PaginatedProductGrid({
   const [products, setProducts] = useState(initialProducts);
   const [loading, setLoading] = useState(false);
   const [skip, setSkip] = useState(initialProducts.length);
+  const router = useRouter();
   const isAr = locale === 'ar';
 
   React.useEffect(() => {
@@ -70,7 +72,7 @@ export function PaginatedProductGrid({
 
           return (
             <article key={product.id} className="group relative flex h-full flex-col hover:-translate-y-1 transition-all duration-300 rounded-[1.5rem] rounded-tr-[2.5rem] rounded-bl-[2.5rem] border border-[#E9DDCC] bg-white shadow-sm hover:shadow-md hover:border-[#B7935F]/60 overflow-hidden">
-              <Link href={`/${locale}/products/${product.slug}`} className="flex h-full w-full outline-none flex-col group">
+              <Link href={`/${locale}/products/${product.slug}`} onMouseEnter={() => router.prefetch(`/${locale}/products/${product.slug}`)} onFocus={() => router.prefetch(`/${locale}/products/${product.slug}`)} className="flex h-full w-full outline-none flex-col group">
                 <div className="relative w-full aspect-square bg-[#F7F3EA] shrink-0 border-b border-[#E9DDCC]/40">
                   <div className="absolute top-3 right-3 z-20">
                     <WishlistHeart product={{

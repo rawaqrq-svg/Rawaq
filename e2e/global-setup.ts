@@ -26,6 +26,5 @@ export default async function globalSetup() {
   for (const key of [
     'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SECRET_KEY',
     'TELEGRAM_BOT_TOKEN', 'TELEGRAM_CHAT_ID',
-    'AWS_ENDPOINT_URL_S3', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_REGION',
   ]) delete process.env[key];
 }

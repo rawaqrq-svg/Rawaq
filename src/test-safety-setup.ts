@@ -25,8 +25,3 @@ delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 delete process.env.SUPABASE_SECRET_KEY;
 delete process.env.TELEGRAM_BOT_TOKEN;
 delete process.env.TELEGRAM_CHAT_ID;
-delete process.env.AWS_ENDPOINT_URL_S3;
-delete process.env.AWS_ACCESS_KEY_ID;
-delete process.env.AWS_SECRET_ACCESS_KEY;
-delete process.env.AWS_REGION;
-delete process.env.S3_UPLOAD_BUCKET;

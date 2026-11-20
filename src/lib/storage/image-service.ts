@@ -1,8 +1,6 @@
 import sharp from 'sharp';
 import path from 'path';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { getObjectStorageClient, hasObjectStorageConfig, mediaUrlForKey, uploadsBucket } from '@/lib/object-storage';
 
 // Supabase client instance caching
 let supabaseAdminInstance: SupabaseClient | null = null;
@@ -10,9 +8,7 @@ let supabaseAdminInstance: SupabaseClient | null = null;
 function getSupabaseAdmin(): SupabaseClient | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || 
-              process.env.SUPABASE_SECRET_KEY || 
-              process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 
-              process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+              process.env.SUPABASE_SECRET_KEY || '';
 
   if (!url || !key || url === 'https://dummy.supabase.co') {
     return null;
@@ -161,7 +157,7 @@ export interface UploadResult {
 
 /**
  * High-performance centralized upload service with automatic WebP conversion.
- * Uploads to Supabase Storage with graceful fallback to Neon S3.
+ * Uploads to Supabase Storage. Production media never falls back to local or S3 storage.
  */
 export async function uploadAndOptimizeFile(options: UploadOptions): Promise<UploadResult> {
   try {
@@ -201,7 +197,7 @@ export async function uploadAndOptimizeFile(options: UploadOptions): Promise<Upl
     const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
     const finalFileName = `${folder}${baseName ? `${baseName}-` : ''}${uniqueSuffix}${processResult.extension}`;
 
-    // 3. Storage Destination: Primary is Supabase Storage
+    // 3. Supabase Storage is the single media source of truth.
     const supabase = getSupabaseAdmin();
     if (supabase) {
       await ensureSupabaseBucket(supabase, bucket);
@@ -235,57 +231,9 @@ export async function uploadAndOptimizeFile(options: UploadOptions): Promise<Upl
       };
     }
 
-    // 4. Fallback: Neon S3 Object Storage
-    if (hasObjectStorageConfig()) {
-      const s3Key = `${bucket}/${finalFileName}`;
-      await getObjectStorageClient().send(
-        new PutObjectCommand({
-          Bucket: uploadsBucket,
-          Key: s3Key,
-          Body: processResult.buffer,
-          ContentType: processResult.contentType,
-          CacheControl: 'public, max-age=31536000, immutable',
-        })
-      );
-
-      return {
-        success: true,
-        url: mediaUrlForKey(s3Key),
-        key: s3Key,
-        fileName: finalFileName,
-        bucket,
-        format: processResult.extension.replace('.', ''),
-        originalSize: processResult.originalSize,
-        optimizedSize: processResult.optimizedSize,
-        savedPercentage: processResult.savedPercentage,
-      };
-    }
-
-    // 5. Fallback: Local filesystem for dev only
-    if (process.env.NODE_ENV !== 'production') {
-      const fs = await import('fs');
-      const localDir = path.join(process.cwd(), 'public', 'uploads', bucket);
-      if (!fs.existsSync(localDir)) {
-        fs.mkdirSync(localDir, { recursive: true });
-      }
-      fs.writeFileSync(path.join(localDir, path.basename(finalFileName)), processResult.buffer);
-
-      return {
-        success: true,
-        url: `/uploads/${bucket}/${path.basename(finalFileName)}`,
-        key: finalFileName,
-        fileName: finalFileName,
-        bucket,
-        format: processResult.extension.replace('.', ''),
-        originalSize: processResult.originalSize,
-        optimizedSize: processResult.optimizedSize,
-        savedPercentage: processResult.savedPercentage,
-      };
-    }
-
     return {
       success: false,
-      error: 'لا توجد خدمة تخزين سحابي مهيأة (Supabase أو S3 مفقودة)',
+      error: 'Supabase Storage غير مهيأ. يلزم SUPABASE_SERVICE_ROLE_KEY أو SUPABASE_SECRET_KEY.',
     };
   } catch (error: any) {
     console.error('uploadAndOptimizeFile Error:', error);

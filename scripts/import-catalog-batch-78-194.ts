@@ -157,7 +157,13 @@ async function main() {
       });
 
       await tx.productImage.deleteMany({
-        where: { productId: record.id, url: { startsWith: '/images/products/batch-78-194/' } },
+        where: {
+          productId: record.id,
+          OR: [
+            { url: { startsWith: '/images/products/batch-78-194/' } },
+            { url: { startsWith: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/products/` } },
+          ],
+        },
       });
 
       for (const [index, variant] of product.variants.entries()) {

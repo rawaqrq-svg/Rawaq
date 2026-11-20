@@ -7,7 +7,7 @@
 
 :root {
   color-scheme: only light;
-  background-color: #F7F3EA;
+  background-color: #ffffff;
 }
 
 @font-face {
@@ -19,7 +19,7 @@
 html,
 body {
   min-height: 100%;
-  background-color: #F7F3EA;
+  background-color: #ffffff;
   color: #3F4832;
   font-family: 'EnglishDigits', 'Noto Naskh Arabic', 'Geeza Pro', system-ui, sans-serif;
   font-variant-numeric: tabular-nums lining-nums;
@@ -89,6 +89,8 @@ textarea {
    Scoped to [data-brand="rawaq"] — never bleeds into admin
    ═══════════════════════════════════════════════════════════ */
 [data-brand="rawaq"] {
+  color-scheme: only light;
+  background-color: #ffffff;
   /* Primary brand surfaces */
   --brand-primary:       var(--color-olive);
   --brand-primary-hover: #2d3623;
@@ -97,7 +99,7 @@ textarea {
   --brand-accent-muted:  #a68250;
 
   /* Page surfaces */
-  --surface-primary:   var(--color-ivory);
+  --surface-primary:   #ffffff;
   --surface-secondary: #f0e8d5;
   --surface-warm:      var(--color-warm-sand);
   --surface-elevated:  #FFFFFF;

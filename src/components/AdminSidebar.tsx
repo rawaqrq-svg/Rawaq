@@ -17,6 +17,7 @@ export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarP
 
     const allLinks = [
       { href: '/admin/dashboard', label: 'لوحة التحكم', permission: null },
+      { href: '/admin/overview-db', label: 'overview db', permission: 'manage:settings' },
       { href: '/admin/products', label: 'المنتجات والأسعار', permission: 'manage:products' },
       { href: '/admin/product-templates', label: 'خصائص وقوالب المنتجات', permission: 'manage:products' },
       { href: '/admin/categories', label: 'المجموعات', permission: 'manage:products' },

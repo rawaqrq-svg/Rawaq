@@ -1,6 +1,7 @@
 import { prisma } from '../src/lib/db';
 
 const APPLY = process.argv.includes('--apply');
+const imageRoot = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/products`;
 
 const TARGET = {
   id: '65018739-e8f5-43b2-9d8e-40d0e5743fd9',
@@ -16,28 +17,28 @@ const SOURCES = [
     productSku: 'GHAZ-BODY-053',
     variantSku: 'GHAZ-BODY-053',
     option: 'كاكاو + فيتامين B5',
-    image: '/images/products/parachute/parachute-skinpure-cocoa-vitamin-b5.webp',
+    image: `${imageRoot}/parachute-skinpure-cocoa-vitamin-b5.webp`,
   },
   {
     productId: '6280012f-f851-4c45-a03f-dfb24684477e',
     productSku: 'GHAZ-BODY-054',
     variantSku: 'GHAZ-BODY-054',
     option: 'جوز الهند + فيتامين E',
-    image: '/images/products/parachute/parachute-skinpure-coconut-vitamin-e.webp',
+    image: `${imageRoot}/parachute-skinpure-coconut-vitamin-e.webp`,
   },
   {
     productId: 'dbc4c91d-e1b5-4220-8dc9-0ecacbca28d0',
     productSku: 'GHAZ-BODY-055',
     variantSku: 'GHAZ-BODY-055',
     option: 'فيتامين C',
-    image: '/images/products/parachute/parachute-skinpure-vitamin-c.webp',
+    image: `${imageRoot}/parachute-skinpure-vitamin-c.webp`,
   },
   {
     productId: 'fb7735a9-6a38-461e-834d-5c7aa393cd5b',
     productSku: 'GHAZ-BODY-056',
     variantSku: 'GHAZ-BODY-056',
     option: 'حمض الهيالورونيك',
-    image: '/images/products/parachute/parachute-skinpure-hyaluron.webp',
+    image: `${imageRoot}/parachute-skinpure-hyaluron.webp`,
   },
 ] as const;
 

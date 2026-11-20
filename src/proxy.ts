@@ -5,10 +5,12 @@ import { updateSession } from './utils/supabase/middleware';
 const SESSION_COOKIE_NAME = 'makeup_session';
 
 export default async function proxy(request: NextRequest) {
-  // Update Supabase session and get the base response with potentially refreshed cookies
-  const supabaseResponse = await updateSession(request);
-
   const { pathname } = request.nextUrl;
+  // Public pages do not use Supabase Auth. Avoid a remote getUser() request on
+  // every storefront navigation; retain session refresh on admin routes.
+  const supabaseResponse = pathname.startsWith('/admin')
+    ? await updateSession(request)
+    : NextResponse.next({ request });
   const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const roleCookie = request.cookies.get('makeup_role')?.value;
 
