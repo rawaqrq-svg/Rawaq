@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { isRemoteMediaUrl } from '@/lib/media';
 import { prisma } from '@/lib/db';
 import { filsToDisplay } from '@/lib/money';
 import { OliveBranchDecoration } from '@/components/RawaqMotifs';
@@ -98,11 +99,12 @@ export default async function StoreFrontPage({ params }: { params: Promise<{ loc
                   className="group relative flex flex-col overflow-hidden rounded-[1.5rem] bg-[#F7F3EA] shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-2 border-white"
                 >
                   <div className="relative w-full aspect-[4/5] overflow-hidden bg-[#e8e5df]">
-                    {cat.imagePath ? (
+                    {isRemoteMediaUrl(cat.imagePath) ? (
                       <Image
                         src={cat.imagePath}
                         alt={cat.name}
                         fill
+                        unoptimized
                         sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 16vw"
                         className="object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-110"
                       />
@@ -328,6 +330,7 @@ function ProductSection({
                         src={image.startsWith('local://') ? image.replace('local://', '/') : image}
                         alt={name}
                         fill
+                        unoptimized={isRemoteMediaUrl(image)}
                         sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
                         className="object-contain p-4 transition-transform duration-500 group-hover:scale-[1.04]"
                       />

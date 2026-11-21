@@ -51,6 +51,7 @@ export type ProductImageData = {
   id?: string;
   url: string;
   isMain: boolean;
+  variantRef?: string | null;
   file?: File;
 };
 
@@ -79,7 +80,7 @@ export type UnifiedProductInitialData = {
   benefits?: string | null;
   inventoryMode?: string;
   variants: VariantRow[];
-  images: { id: string; url: string; isMain: boolean }[];
+  images: { id: string; url: string; isMain: boolean; variantId?: string | null }[];
 };
 
 export type CategoryOption = {
@@ -269,7 +270,7 @@ export function UnifiedProductManager({
 
   // Media
   const [images, setImages] = useState<ProductImageData[]>(
-    initialData?.images?.map(img => ({ id: img.id, url: img.url, isMain: img.isMain })) || []
+    initialData?.images?.map(img => ({ id: img.id, url: img.url, isMain: img.isMain, variantRef: img.variantId || null })) || []
   );
 
   // Status & Flags
@@ -660,6 +661,15 @@ export function UnifiedProductManager({
       // Existing image IDs vs new images
       const existingIds = images.filter(img => img.id && !img.file).map(img => img.id);
       formData.set('existingImageIds', JSON.stringify(existingIds));
+      const mainImageIndex = images.findIndex(img => img.isMain);
+      formData.set('imageMetadata', JSON.stringify(images.map((img, index) => ({
+        id: img.id || null,
+        uploadIndex: img.file ? images.slice(0, index).filter(item => item.file).length : null,
+        isMain: index === (mainImageIndex < 0 ? 0 : mainImageIndex),
+        order: index,
+        variantId: img.variantRef && !img.variantRef.startsWith('new:') ? img.variantRef : null,
+        variantIndex: img.variantRef?.startsWith('new:') ? Number(img.variantRef.slice(4)) : null,
+      }))));
 
       // Append new files
       for (const img of images) {
@@ -1683,7 +1693,7 @@ export function UnifiedProductManager({
                     </span>
                   )}
 
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                  <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center justify-center gap-1 bg-black/55 p-2 sm:inset-0 sm:bg-black/40 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:flex-col">
                     {!img.isMain && (
                       <button
                         type="button"
@@ -1693,6 +1703,24 @@ export function UnifiedProductManager({
                         تعيين كرئيسية
                       </button>
                     )}
+                    <label className="sr-only" htmlFor={`image-variant-${idx}`}>ربط الصورة بخيار المنتج</label>
+                    <select
+                      id={`image-variant-${idx}`}
+                      value={img.variantRef || ''}
+                      onChange={event => {
+                        const value = event.target.value || null;
+                        setImages(curr => curr.map((item, imageIndex) => imageIndex === idx ? { ...item, variantRef: value } : item));
+                        setIsDirty(true);
+                      }}
+                      className="max-w-full rounded-lg bg-white px-2 py-1 text-[10px] font-bold text-zinc-900"
+                      aria-label="الخيار المرتبط بالصورة"
+                    >
+                      <option value="">صورة عامة</option>
+                      {variants.map((variant, variantIndex) => {
+                        const ref = variant.id || `new:${variantIndex}`;
+                        return <option key={ref} value={ref}>{variant.name || variant.size || `خيار ${variantIndex + 1}`}</option>;
+                      })}
+                    </select>
                     <button
                       type="button"
                       onClick={() => removeImage(idx)}

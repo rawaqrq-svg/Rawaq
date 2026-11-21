@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { isRemoteMediaUrl } from '@/lib/media';
 import { prisma } from '@/lib/db';
 import { filsToDisplay } from '@/lib/money';
 
@@ -144,6 +145,7 @@ export async function BestSellersSection({ locale }: { locale: string }) {
                       src={image.startsWith('local://') ? image.replace('local://', '/') : image}
                       alt={name}
                       fill
+                      unoptimized={isRemoteMediaUrl(image)}
                       sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />

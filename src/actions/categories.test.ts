@@ -33,6 +33,7 @@ import {
   toggleCategoryVisibility,
   deleteCategory,
   getCategoryTree,
+  moveCategory,
 } from './categories';
 
 describe('Category Hierarchy Actions', () => {
@@ -209,6 +210,122 @@ describe('Category Hierarchy Actions', () => {
       expect(leaf.name).toBe('أحمر شفاه');
       expect(leaf.directProductCount).toBe(5);
       expect(leaf.rollupProductCount).toBe(5);
+    });
+  });
+
+  describe('moveCategory', () => {
+    it('prevents moving a category to itself', async () => {
+      mocks.category.findUnique.mockResolvedValueOnce({ id: 'cat-1', name: 'الشفاه', parentId: null, sortOrder: 0 });
+      const result = await moveCategory('cat-1', 'cat-1', 'inside');
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('لا يمكن نقل القسم إلى نفسه');
+    });
+
+    it('prevents moving a category to its descendant', async () => {
+      // moving category
+      mocks.category.findUnique
+        .mockResolvedValueOnce({ id: 'cat-root', name: 'المكياج', parentId: null, sortOrder: 0 })
+        // target category
+        .mockResolvedValueOnce({ id: 'cat-child', name: 'الشفاه', parentId: 'cat-root', sortOrder: 0 })
+        // isDescendant check: cat-child's parent is cat-root
+        .mockResolvedValueOnce({ parentId: 'cat-root' });
+
+      const result = await moveCategory('cat-root', 'cat-child', 'inside');
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('لا يمكن نقل القسم ليكون فرعاً لأحد الأقسام التابعة له');
+    });
+
+    it('prevents moving if resulting depth exceeds 3 levels', async () => {
+      // Moving a category that has 1 level of children (subtree height = 2) into a Level 2 parent (targetParentLevel = 2)
+      // Resulting depth = 2 + 2 = 4 > 3 -> Error!
+      mocks.category.findUnique
+        .mockResolvedValueOnce({ id: 'cat-sub', name: 'فرع', parentId: null, sortOrder: 0 }) // moving
+        .mockResolvedValueOnce({ id: 'cat-lvl2', name: 'مستوى 2', parentId: 'cat-lvl1', sortOrder: 0 }) // target
+        .mockResolvedValueOnce(null) // isDescendant check
+        // getCategoryLevel for cat-lvl2:
+        .mockResolvedValueOnce({ parentId: 'cat-lvl1' })
+        .mockResolvedValueOnce({ parentId: null });
+
+      // getSubtreeHeight for cat-sub: returns children
+      mocks.category.findMany
+        .mockResolvedValueOnce([{ id: 'cat-sub-child' }]) // cat-sub has a child
+        .mockResolvedValueOnce([]); // cat-sub-child has no children
+
+      const result = await moveCategory('cat-sub', 'cat-lvl2', 'inside');
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('الحد الأقصى المسموح به (3 مستويات)');
+    });
+
+    it('moves category to root when targetId is null', async () => {
+      mocks.category.findUnique.mockResolvedValueOnce({
+        id: 'cat-2',
+        name: 'الشفاه',
+        parentId: 'cat-1',
+        sortOrder: 5,
+      });
+      mocks.category.findMany.mockResolvedValueOnce([
+        { id: 'cat-root-1', sortOrder: 10 },
+      ]);
+      mocks.category.update.mockResolvedValueOnce({ id: 'cat-2', parentId: null, sortOrder: 20 });
+
+      const result = await moveCategory('cat-2', null);
+      expect(result.success).toBe(true);
+      expect(mocks.category.update).toHaveBeenCalledWith({
+        where: { id: 'cat-2' },
+        data: {
+          parentId: null,
+          sortOrder: 20,
+        },
+      });
+      expect(mocks.revalidatePath).toHaveBeenCalledWith('/admin/categories');
+    });
+
+    it('moves category inside another category successfully', async () => {
+      mocks.category.findUnique
+        .mockResolvedValueOnce({ id: 'cat-leaf', name: 'أحمر شفاه', parentId: null, sortOrder: 0 }) // moving
+        .mockResolvedValueOnce({ id: 'cat-lvl1', name: 'المكياج', parentId: null, sortOrder: 0 }) // target
+        .mockResolvedValueOnce(null) // isDescendant check
+        // getCategoryLevel for cat-lvl1:
+        .mockResolvedValueOnce({ parentId: null }); // parent is null -> level 1
+
+      // getSubtreeHeight for cat-leaf: leaf node
+      mocks.category.findMany
+        .mockResolvedValueOnce([]) // no children
+        // siblings of cat-lvl1:
+        .mockResolvedValueOnce([{ id: 'cat-other', sortOrder: 10 }]);
+
+      mocks.category.update.mockResolvedValueOnce({ id: 'cat-leaf', parentId: 'cat-lvl1', sortOrder: 20 });
+
+      const result = await moveCategory('cat-leaf', 'cat-lvl1', 'inside');
+      expect(result.success).toBe(true);
+      expect(mocks.category.update).toHaveBeenCalledWith({
+        where: { id: 'cat-leaf' },
+        data: {
+          parentId: 'cat-lvl1',
+          sortOrder: 20,
+        },
+      });
+    });
+
+    it('reorders category before target category successfully', async () => {
+      mocks.category.findUnique
+        .mockResolvedValueOnce({ id: 'cat-b', name: 'ب', parentId: 'root', sortOrder: 20 }) // moving
+        .mockResolvedValueOnce({ id: 'cat-a', name: 'أ', parentId: 'root', sortOrder: 10 }) // target
+        .mockResolvedValueOnce(null) // isDescendant check
+        // getCategoryLevel for target parent 'root':
+        .mockResolvedValueOnce({ parentId: null }); // root level 1
+
+      // getSubtreeHeight:
+      mocks.category.findMany
+        .mockResolvedValueOnce([]) // leaf
+        // siblings excluding cat-b:
+        .mockResolvedValueOnce([{ id: 'cat-a' }, { id: 'cat-c' }]);
+
+      mocks.category.update.mockResolvedValue({});
+
+      const result = await moveCategory('cat-b', 'cat-a', 'before');
+      expect(result.success).toBe(true);
+      expect(mocks.category.update).toHaveBeenCalled();
     });
   });
 });

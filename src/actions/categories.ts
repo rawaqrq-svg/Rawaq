@@ -22,6 +22,43 @@ export type CategoryWithChildren = {
   children: CategoryWithChildren[];
 };
 
+export type MoveCategoryPosition = 'inside' | 'before' | 'after';
+
+/**
+ * Returns the depth level of a category (1 for root, 2 for subcategory, 3 for sub-sub, etc.)
+ * Returns 0 if categoryId is null (the root).
+ */
+export async function getCategoryLevel(categoryId: string | null): Promise<number> {
+  if (!categoryId) return 0;
+  let level = 1;
+  let currentId: string | null = categoryId;
+
+  while (currentId) {
+    const cat: { parentId: string | null } | null = await prisma.category.findUnique({
+      where: { id: currentId },
+      select: { parentId: true },
+    });
+    if (!cat || !cat.parentId) break;
+    level++;
+    currentId = cat.parentId;
+    if (level > 10) break; // safeguard
+  }
+  return level;
+}
+
+/**
+ * Returns the maximum depth of the subtree rooted at categoryId (1 if leaf, 2 if has children, 3 if has grandchildren).
+ */
+export async function getSubtreeHeight(categoryId: string): Promise<number> {
+  const children: { id: string }[] = await prisma.category.findMany({
+    where: { parentId: categoryId },
+    select: { id: true },
+  });
+  if (children.length === 0) return 1;
+  const childHeights = await Promise.all(children.map(c => getSubtreeHeight(c.id)));
+  return 1 + Math.max(...childHeights);
+}
+
 /**
  * Checks if candidateParentId is a descendant of currentId to prevent circular nesting.
  */
@@ -229,6 +266,143 @@ export async function deleteCategory(id: string, deleteProducts: boolean, fallba
   } catch (error: unknown) {
     console.error('Error deleting category:', error);
     return { success: false, error: error instanceof Error ? error.message : 'حدث خطأ أثناء الحذف' };
+  }
+}
+
+/**
+ * Move or reorder a category:
+ * - position === 'inside': moves category to become a child of targetId.
+ * - position === 'before' | 'after': reorders category relative to targetId as a sibling.
+ * - targetId === null: moves category to the root level.
+ */
+export async function moveCategory(
+  categoryId: string,
+  targetId: string | null,
+  position: MoveCategoryPosition = 'inside'
+) {
+  await requirePermission('manage:products');
+
+  try {
+    if (!categoryId) {
+      throw new Error('معرف القسم المراد نقله مطلوب');
+    }
+
+    const moving = await prisma.category.findUnique({
+      where: { id: categoryId },
+      select: { id: true, name: true, parentId: true, sortOrder: true },
+    });
+    if (!moving) {
+      throw new Error('القسم المراد نقله غير موجود');
+    }
+
+    // Moving to root level
+    if (!targetId) {
+      const rootSiblings = await prisma.category.findMany({
+        where: { parentId: null, id: { not: categoryId } },
+        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+        select: { id: true, sortOrder: true },
+      });
+      const maxSortOrder = rootSiblings.length > 0 ? Math.max(...rootSiblings.map(s => s.sortOrder)) : 0;
+
+      await prisma.category.update({
+        where: { id: categoryId },
+        data: {
+          parentId: null,
+          sortOrder: maxSortOrder + 10,
+        },
+      });
+
+      revalidatePath('/admin/categories');
+      revalidatePath('/admin/products');
+      revalidatePath('/', 'layout');
+      return { success: true, message: `تم نقل "${moving.name}" إلى المستوى الرئيسي` };
+    }
+
+    if (targetId === categoryId) {
+      throw new Error('لا يمكن نقل القسم إلى نفسه');
+    }
+
+    const target = await prisma.category.findUnique({
+      where: { id: targetId },
+      select: { id: true, name: true, parentId: true, sortOrder: true },
+    });
+    if (!target) {
+      throw new Error('القسم المستهدف غير موجود');
+    }
+
+    const newParentId = position === 'inside' ? targetId : target.parentId;
+
+    // Prevent circular hierarchy
+    if (newParentId) {
+      if (newParentId === categoryId) {
+        throw new Error('لا يمكن للقسم أن يكون فرعاً لنفسه');
+      }
+      const isCycle = await isDescendant(newParentId, categoryId);
+      if (isCycle) {
+        throw new Error('لا يمكن نقل القسم ليكون فرعاً لأحد الأقسام التابعة له');
+      }
+    }
+
+    // Check maximum tree depth (max 3 levels)
+    const targetParentLevel = await getCategoryLevel(newParentId);
+    const catSubtreeHeight = await getSubtreeHeight(categoryId);
+    const resultingDepth = targetParentLevel + catSubtreeHeight;
+
+    if (resultingDepth > 3) {
+      throw new Error(
+        `لا يمكن النقل: يتجاوز الهيكل الحد الأقصى المسموح به (3 مستويات). المستوى الناتج سيكون ${resultingDepth}.`
+      );
+    }
+
+    if (position === 'inside') {
+      const siblings = await prisma.category.findMany({
+        where: { parentId: newParentId, id: { not: categoryId } },
+        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+        select: { id: true, sortOrder: true },
+      });
+      const maxSortOrder = siblings.length > 0 ? Math.max(...siblings.map(s => s.sortOrder)) : 0;
+
+      await prisma.category.update({
+        where: { id: categoryId },
+        data: {
+          parentId: newParentId,
+          sortOrder: maxSortOrder + 10,
+        },
+      });
+    } else {
+      // position === 'before' || position === 'after'
+      const siblings = await prisma.category.findMany({
+        where: { parentId: newParentId, id: { not: categoryId } },
+        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+        select: { id: true },
+      });
+
+      const targetIndex = siblings.findIndex(s => s.id === targetId);
+      const insertIndex = position === 'before' ? Math.max(0, targetIndex) : targetIndex + 1;
+
+      siblings.splice(insertIndex, 0, { id: categoryId });
+
+      for (const [idx, item] of siblings.entries()) {
+        await prisma.category.update({
+          where: { id: item.id },
+          data: {
+            parentId: newParentId,
+            sortOrder: idx * 10,
+          },
+        });
+      }
+    }
+
+    revalidatePath('/admin/categories');
+    revalidatePath('/admin/products');
+    revalidatePath('/', 'layout');
+    return { success: true, message: `تم نقل وترتيب القسم "${moving.name}" بنجاح` };
+  } catch (error: unknown) {
+    console.error('Error moving category:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'حدث خطأ أثناء نقل القسم',
+    };
   }
 }
 

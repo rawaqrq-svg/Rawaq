@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { X } from 'lucide-react';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
+import { isRemoteMediaUrl } from '@/lib/media';
 
 export function ProductGallery({ images, productName, isAr }: { images: { id?: string; url: string; isMain?: boolean; variantId?: string | null }[]; productName: string; isAr: boolean; categorySlug?: string }) {
   const uploadedImages = useMemo(
@@ -56,6 +57,7 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
                 alt={productName} 
                 fill
                 priority 
+                unoptimized={isRemoteMediaUrl(imageUrl)}
                 sizes="(max-width: 768px) 100vw, 50vw" 
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               />
@@ -74,7 +76,26 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
         </RawaqProductFrame>
       </button>
 
-      {/* Variant images are intentionally hidden here. Selecting a scent/option changes the main image. */}
+      {uploadedImages.length > 1 && (
+        <div className="flex w-full gap-3 overflow-x-auto pb-2" aria-label={isAr ? 'صور المنتج' : 'Product photos'}>
+          {uploadedImages.map((image, index) => {
+            const thumbUrl = image.url.replace('local://', '/');
+            const isSelected = current?.url === image.url;
+            return (
+              <button
+                key={image.id || `${image.url}-${index}`}
+                type="button"
+                onClick={() => setSelectedUrl(image.url)}
+                aria-label={isAr ? `عرض صورة المنتج ${index + 1}` : `Show product photo ${index + 1}`}
+                aria-pressed={isSelected}
+                className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#3F4832] ${isSelected ? 'border-[#3F4832]' : 'border-[#E9DDCC]'}`}
+              >
+                <Image src={thumbUrl} alt={`${productName} ${index + 1}`} fill sizes="80px" unoptimized={isRemoteMediaUrl(thumbUrl)} className="object-cover" />
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Fullscreen Lightbox */}
       {isLightboxOpen && imageUrl && (
@@ -99,6 +120,7 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
               src={imageUrl} 
               alt={productName} 
               fill 
+              unoptimized={isRemoteMediaUrl(imageUrl)}
               sizes="(max-width: 768px) 92vw, 680px"
               className="object-contain p-4"
               quality={100}

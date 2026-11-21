@@ -112,6 +112,35 @@ async function uploadedImages(formData: FormData) {
   return urls;
 }
 
+type ImageMetadataInput = {
+  id?: string | null;
+  uploadIndex?: number | null;
+  isMain?: boolean;
+  order?: number;
+  variantId?: string | null;
+  variantIndex?: number | null;
+};
+
+function parseImageMetadata(formData: FormData, existingImageIds: string[], imageUrls: string[]): ImageMetadataInput[] {
+  const raw = formData.get('imageMetadata');
+  if (raw == null) {
+    return [
+      ...existingImageIds.map((id, order) => ({ id, order, isMain: order === 0 })),
+      ...imageUrls.map((_, uploadIndex) => ({ uploadIndex, order: existingImageIds.length + uploadIndex, isMain: existingImageIds.length === 0 && uploadIndex === 0 })),
+    ];
+  }
+  let parsed: unknown;
+  try { parsed = JSON.parse(String(raw)); } catch { throw new Error('بيانات صور المنتج غير صالحة.'); }
+  if (!Array.isArray(parsed)) throw new Error('بيانات صور المنتج غير صالحة.');
+  const metadata = parsed as ImageMetadataInput[];
+  const ids = metadata.flatMap(item => item.id ? [item.id] : []);
+  if (new Set(ids).size !== ids.length || ids.some(id => !existingImageIds.includes(id))) throw new Error('إحدى الصور المحددة لا تتبع هذا المنتج.');
+  const uploadIndexes = metadata.flatMap(item => Number.isInteger(item.uploadIndex) ? [item.uploadIndex as number] : []);
+  if (new Set(uploadIndexes).size !== uploadIndexes.length || uploadIndexes.some(index => index < 0 || index >= imageUrls.length)) throw new Error('ترتيب صور المنتج غير صالح.');
+  if (ids.length !== existingImageIds.length || uploadIndexes.length !== imageUrls.length) throw new Error('تعذر مطابقة صور المنتج المرفوعة.');
+  return metadata;
+}
+
 function productFields(formData: FormData) {
   const nameAr = text(formData, 'nameAr', true);
   return {
@@ -170,6 +199,10 @@ export async function createProduct(formData: FormData) {
     const variants = parseVariants(formData, productSku);
     const templateAttributes = parseTemplateAttributes(formData);
     const imageUrls = await uploadedImages(formData);
+    const imageMetadata = parseImageMetadata(formData, [], imageUrls);
+    if (imageMetadata.some(image => image.variantId || (Number.isInteger(image.variantIndex) && (image.variantIndex as number) >= variants.length))) {
+      throw new Error('الخيار المرتبط بإحدى الصور غير صالح.');
+    }
     const slug = `${productSku.toLowerCase()}-${Date.now()}`;
 
     // Auto-resolve template if not explicitly provided
@@ -205,10 +238,29 @@ export async function createProduct(formData: FormData) {
               inventorySource: v.inventorySource === 'SUPPLIER' ? 'SUPPLIER' : 'INTERNAL',
             })),
           },
-          ...(imageUrls.length ? { images: { create: imageUrls.map((url, order) => ({ url, alt: data.nameAr, order, isMain: order === 0 })) } } : {}),
         },
         include: { variants: true },
       });
+
+      if (imageUrls.length && tx.productImage) {
+        const imageRows = imageMetadata.flatMap(image => {
+          if (!Number.isInteger(image.uploadIndex)) return [];
+          const variantId = Number.isInteger(image.variantIndex) ? created.variants[image.variantIndex as number]?.id : null;
+          return [{
+            productId: created.id,
+            url: imageUrls[image.uploadIndex as number],
+            alt: data.nameAr,
+            order: image.order ?? image.uploadIndex as number,
+            isMain: Boolean(image.isMain),
+            variantId: variantId || null,
+          }];
+        });
+        if (imageRows.length) await tx.productImage.createMany({ data: imageRows });
+        for (const variant of created.variants) {
+          const linkedImage = imageRows.find(image => image.variantId === variant.id);
+          if (linkedImage) await tx.productVariant.update({ where: { id: variant.id }, data: { mainImage: linkedImage.url } });
+        }
+      }
 
       if (templateAttributes.length && tx.productAttributeValue) {
         await tx.productAttributeValue.createMany({
@@ -252,6 +304,7 @@ export async function updateProduct(productId: string, formData: FormData) {
 
     const existingImageIds = JSON.parse(String(formData.get('existingImageIds') ?? '[]')) as string[];
     const imageUrls = await uploadedImages(formData);
+    const imageMetadata = parseImageMetadata(formData, existingImageIds, imageUrls);
     const templateAttributes = parseTemplateAttributes(formData);
 
     const audit = await prisma.$transaction(async (tx) => {
@@ -270,6 +323,11 @@ export async function updateProduct(productId: string, formData: FormData) {
       // Preserve existing immutable SKU
       const productSku = previous?.sku || generateUniqueSku();
       const variants = parseVariants(formData, productSku);
+      if (imageMetadata.some(image => Number.isInteger(image.variantIndex) && (image.variantIndex as number) >= variants.length)) {
+        throw new Error('الخيار المرتبط بإحدى الصور غير صالح.');
+      }
+      const previousImageIds = new Set((previous?.images || []).map((image: any) => image.id));
+      if (imageMetadata.some(image => image.id && !previousImageIds.has(image.id))) throw new Error('إحدى الصور المحددة لا تتبع هذا المنتج.');
       const incomingIds = variants.flatMap(v => (v.id ? [v.id] : []));
       if (new Set(incomingIds).size !== incomingIds.length) throw new Error('أحد خيارات المنتج مكرر.');
 
@@ -326,6 +384,7 @@ export async function updateProduct(productId: string, formData: FormData) {
         await tx.productVariant.updateMany({ where: { productId, id: { notIn: incomingIds } }, data: { isActive: false } });
       }
 
+      const savedVariantIds: string[] = [];
       for (let index = 0; index < variants.length; index++) {
         const variant = variants[index];
         const existingVariant = previous?.variants?.find((v: any) => v.id === variant.id);
@@ -348,6 +407,7 @@ export async function updateProduct(productId: string, formData: FormData) {
         const saved = variant.id
           ? await tx.productVariant.update({ where: { id: variant.id, productId }, data: variantData })
           : await tx.productVariant.create({ data: { productId, ...variantData } });
+        savedVariantIds[index] = saved.id;
 
         await applySupplier(tx, variant.id || saved?.id || '', variant);
       }
@@ -367,21 +427,41 @@ export async function updateProduct(productId: string, formData: FormData) {
       }
 
       if (tx.productImage) {
-        await tx.productImage.deleteMany({ where: { productId, id: { notIn: existingImageIds } } });
-        if (imageUrls.length) {
-          await tx.productImage.createMany({
-            data: imageUrls.map((url, index) => ({
-              productId,
-              url,
-              alt: data.nameAr,
-              order: existingImageIds.length + index,
-              isMain: existingImageIds.length === 0 && index === 0,
-            })),
-          });
+        const retainedIds = imageMetadata.flatMap(image => image.id ? [image.id] : []);
+        await tx.productImage.deleteMany({ where: { productId, id: { notIn: retainedIds } } });
+        const hasMain = imageMetadata.some(image => image.isMain);
+        const linkedImagesByVariant = new Map<string, string>();
+        for (const image of imageMetadata) {
+          const variantIndex = Number.isInteger(image.variantIndex) ? image.variantIndex as number : null;
+          const variantId = image.variantId || (variantIndex !== null ? savedVariantIds[variantIndex] : null);
+          if (variantId && !incomingIds.includes(variantId) && !variants.some((_, index) => savedVariantIds[index] === variantId)) {
+            throw new Error('الخيار المرتبط بإحدى الصور لا يتبع هذا المنتج.');
+          }
+          const url = image.id
+            ? previous?.images?.find((existing: any) => existing.id === image.id)?.url
+            : (Number.isInteger(image.uploadIndex) ? imageUrls[image.uploadIndex as number] : undefined);
+          if (!url) throw new Error('تعذر العثور على صورة المنتج المحددة.');
+          if (variantId && !linkedImagesByVariant.has(variantId)) linkedImagesByVariant.set(variantId, url);
+          const imageData = {
+            variantId: variantId || null,
+            isMain: Boolean(image.isMain) || (!hasMain && image.order === 0),
+            order: image.order ?? 0,
+            alt: data.nameAr,
+          };
+          if (image.id) {
+            await tx.productImage.update({ where: { id: image.id, productId }, data: imageData });
+          } else {
+            await tx.productImage.create({ data: { ...imageData, productId, url } });
+          }
         }
-        const images = await tx.productImage.findMany({ where: { productId }, orderBy: { order: 'asc' } });
-        if (images.length && !images.some((image: any) => image.isMain)) {
-          await tx.productImage.update({ where: { id: images[0].id }, data: { isMain: true } });
+        for (let index = 0; index < variants.length; index++) {
+          const variantId = savedVariantIds[index];
+          const linkedImageUrl = linkedImagesByVariant.get(variantId);
+          if (linkedImageUrl) {
+            await tx.productVariant.update({ where: { id: variantId }, data: { mainImage: linkedImageUrl } });
+          } else if (previous?.images?.some((image: any) => image.variantId === variantId)) {
+            await tx.productVariant.update({ where: { id: variantId }, data: { mainImage: null } });
+          }
         }
       }
 

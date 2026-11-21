@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { isRemoteMediaUrl } from '@/lib/media';
 import { prisma } from '@/lib/db';
 import { filsToDisplay } from '@/lib/money';
 
@@ -113,6 +114,7 @@ export async function OffersSection({ locale }: { locale: string }) {
                           src={image.startsWith('local://') ? image.replace('local://', '/') : image}
                           alt={name}
                           fill
+                          unoptimized={isRemoteMediaUrl(image)}
                           sizes="(max-width: 640px) 48vw, 270px"
                           className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
                         />
@@ -171,6 +173,7 @@ export async function OffersSection({ locale }: { locale: string }) {
                         <Image
                           src={image.startsWith('local://') ? image.replace('local://', '/') : image}
                           alt={name} fill
+                          unoptimized={isRemoteMediaUrl(image)}
                           sizes="(max-width: 640px) 48vw, 270px"
                           className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
                         />

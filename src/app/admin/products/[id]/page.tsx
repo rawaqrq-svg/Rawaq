@@ -141,6 +141,7 @@ export default async function AdminProductEditPage({
       id: img.id,
       url: img.url,
       isMain: img.isMain,
+      variantId: img.variantId,
     })),
   };
 

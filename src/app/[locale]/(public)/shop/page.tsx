@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Prisma } from '@prisma/client';
+import { isRemoteMediaUrl } from '@/lib/media';
 
 export const revalidate = 60;
 
@@ -232,11 +233,12 @@ export default async function ShopPage({
                 >
                   <div className={`w-16 h-16 sm:w-[84px] sm:h-[84px] rounded-full border-2 p-0.5 transition-all duration-300 ${isRootActive ? 'border-[#B7935F] shadow-lg scale-105 ring-2 ring-[#B7935F]/30' : 'border-[#E9DDCC] group-hover:border-[#B7935F]'}`}>
                     <div className={`w-full h-full rounded-full flex items-center justify-center overflow-hidden relative shadow-inner bg-[#EDE3D5]`}>
-                      {cat.imagePath ? (
+                      {isRemoteMediaUrl(cat.imagePath) ? (
                         <Image
                           src={cat.imagePath}
                           alt={cat.name}
                           fill
+                          unoptimized
                           sizes="84px"
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
                         />

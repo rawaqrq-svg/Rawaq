@@ -18,7 +18,7 @@ export default async function AdminProductsPage() {
   try {
     const [inventorySettings, productRows, categoryRows] = await Promise.all([
       getInventorySettings(),
-      prisma.product.findMany({ orderBy: { createdAt: 'desc' }, include: { category: true, variants: true, images: { where: { isMain: true }, take: 1 } } }),
+      prisma.product.findMany({ orderBy: { createdAt: 'desc' }, include: { category: true, variants: true, images: { orderBy: { order: 'asc' } } } }),
       prisma.category.findMany(),
     ]);
     lowStockThreshold = inventorySettings.lowStockThreshold;

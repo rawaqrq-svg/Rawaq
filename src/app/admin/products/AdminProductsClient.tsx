@@ -71,7 +71,58 @@ export function AdminProductsClient({
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-[var(--color-ivory-200)] overflow-x-auto">
+      <div className="space-y-3 md:hidden">
+        {filteredProducts.map(product => (
+          <article key={product.id} className="rounded-xl border border-[var(--color-ivory-200)] bg-white p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={selectedIds.includes(product.id)}
+                onChange={() => toggleSelect(product.id)}
+                aria-label={`تحديد ${product.nameAr}`}
+                className="mt-1 h-4 w-4 shrink-0 rounded border-zinc-300 text-[#3F4832] focus:ring-[#3F4832]"
+              />
+              <div className="flex min-w-0 flex-1 items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <h2 className="truncate font-bold text-zinc-900">{product.nameAr}</h2>
+                  <p className="truncate text-xs text-zinc-500">{product.category?.name || 'بدون تصنيف'}</p>
+                </div>
+                <span className={`shrink-0 rounded px-2 py-1 text-[10px] font-bold ${product.isVisible ? 'bg-green-100 text-green-800' : 'bg-zinc-100 text-zinc-600'}`}>
+                  {product.isVisible ? 'نشط' : 'مخفي'}
+                </span>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1">
+              {(product.images || []).slice(0, 5).map((image: any, index: number) => (
+                <img
+                  key={image.id}
+                  src={image.url.startsWith('local://') ? image.url.replace('local://', '/') : image.url}
+                  alt={`${product.nameAr} ${index + 1}`}
+                  loading="lazy"
+                  className="h-14 w-14 shrink-0 rounded-lg border border-zinc-200 bg-zinc-50 object-cover"
+                />
+              ))}
+              {(!product.images || product.images.length === 0) && (
+                <span className="flex h-14 items-center rounded-lg border border-dashed border-zinc-300 px-3 text-xs text-zinc-400">لا توجد صور</span>
+              )}
+              {product.images?.length > 5 && <span className="shrink-0 text-xs text-zinc-500">+{product.images.length - 5}</span>}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-1">
+              {product.variants.map((variant: any) => (
+                <span key={variant.id} className="rounded bg-[var(--color-ivory-200)] px-2 py-1 text-[10px] font-bold text-[#2d3623]">
+                  {variant.name || variant.size}: {filsToDisplay(variant.price, 'ar')}
+                </span>
+              ))}
+            </div>
+            <Link href={`/admin/products/${product.id}`} className="mt-3 block rounded-lg bg-[#3F4832] px-4 py-2 text-center text-sm font-bold text-white">
+              تعديل المنتج
+            </Link>
+          </article>
+        ))}
+        {filteredProducts.length === 0 && <p className="rounded-lg bg-white p-8 text-center text-sm text-zinc-500">لا توجد منتجات تطابق البحث.</p>}
+      </div>
+
+      <div className="hidden overflow-x-auto rounded-lg border border-[var(--color-ivory-200)] bg-white shadow-sm md:block">
         <div className="overflow-x-auto w-full max-w-[90vw] md:max-w-full pb-4">
           <table className="w-full text-right border-collapse min-w-[800px]">
             <thead className="bg-zinc-50 border-b border-zinc-200">
@@ -94,7 +145,7 @@ export function AdminProductsClient({
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {filteredProducts.map(product => {
-                const mainImage = product.images?.[0];
+                const mainImage = product.images?.find((image: any) => image.isMain) || product.images?.[0];
                 const isSelected = selectedIds.includes(product.id);
 
                 return (

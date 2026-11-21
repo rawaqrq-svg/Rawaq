@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState, useTransition, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   createCategory,
@@ -8,8 +8,23 @@ import {
   deleteCategory,
   toggleCategoryVisibility,
   initRawaqTaxonomyAction,
+  moveCategory,
   type CategoryWithChildren,
+  type MoveCategoryPosition,
 } from '@/actions/categories';
+import {
+  GripVertical,
+  FolderInput,
+  Move,
+  CheckCircle2,
+  AlertCircle,
+  Info,
+  Plus,
+  Edit3,
+  Trash2,
+  ArrowUpDown,
+  Search,
+} from 'lucide-react';
 
 interface CategoryTreeExplorerProps {
   tree: CategoryWithChildren[];
@@ -25,11 +40,27 @@ export function CategoryTreeExplorer({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // Search filter
+  // Search filter & collapse state
   const [searchTerm, setSearchTerm] = useState('');
   const [collapsedNodes, setCollapsedNodes] = useState<Record<string, boolean>>({});
 
-  // Modal states
+  // Notification banner state
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error' | 'info';
+    message: string;
+  } | null>(null);
+
+  // Drag and drop states
+  const [draggedNode, setDraggedNode] = useState<CategoryWithChildren | null>(null);
+  const [dropTargetId, setDropTargetId] = useState<string | null>(null);
+  const [dropPosition, setDropPosition] = useState<'before' | 'after' | 'inside' | null>(null);
+  const [isOverRootZone, setIsOverRootZone] = useState(false);
+
+  // Quick move modal state (for mobile / accessible fallback)
+  const [quickMoveCategory, setQuickMoveCategory] = useState<CategoryWithChildren | null>(null);
+  const [quickMoveTargetId, setQuickMoveTargetId] = useState<string>('ROOT');
+
+  // Modal states (Create / Edit)
   const [modalMode, setModalMode] = useState<'CREATE' | 'EDIT' | null>(null);
   const [editingCategory, setEditingCategory] = useState<CategoryWithChildren | null>(null);
   const [targetParentId, setTargetParentId] = useState<string | null>(null);
@@ -49,6 +80,81 @@ export function CategoryTreeExplorer({
   const [deleteTarget, setDeleteTarget] = useState<CategoryWithChildren | null>(null);
   const [fallbackId, setFallbackId] = useState<string>('');
 
+  // Compute category levels map for instant validation and labels
+  const categoryLevelMap = useMemo(() => {
+    const map = new Map<string, number>();
+    function traverse(nodes: CategoryWithChildren[], lvl: number) {
+      for (const n of nodes) {
+        map.set(n.id, lvl);
+        if (n.children && n.children.length > 0) {
+          traverse(n.children, lvl + 1);
+        }
+      }
+    }
+    traverse(tree, 1);
+    return map;
+  }, [tree]);
+
+  function getSubtreeHeight(node: CategoryWithChildren): number {
+    if (!node.children || node.children.length === 0) return 1;
+    return 1 + Math.max(...node.children.map(getSubtreeHeight));
+  }
+
+  function isDescendant(candidateId: string, node: CategoryWithChildren): boolean {
+    if (candidateId === node.id) return true;
+    if (!node.children) return false;
+    for (const child of node.children) {
+      if (isDescendant(candidateId, child)) return true;
+    }
+    return false;
+  }
+
+  function canDropInside(
+    targetNode: CategoryWithChildren,
+    targetLevel: number,
+    movingNode: CategoryWithChildren
+  ): { allowed: boolean; reason?: string } {
+    if (movingNode.id === targetNode.id) {
+      return { allowed: false, reason: 'لا يمكن نقل القسم إلى نفسه' };
+    }
+    if (isDescendant(targetNode.id, movingNode)) {
+      return { allowed: false, reason: 'لا يمكن نقله ليكون فرعاً لأحد الأقسام التابعة له' };
+    }
+    if (targetLevel >= 3) {
+      return { allowed: false, reason: 'القسم في المستوى الأخير (3) ولا يمكن إضافة فروع تحته' };
+    }
+    const movingHeight = getSubtreeHeight(movingNode);
+    if (targetLevel + movingHeight > 3) {
+      return {
+        allowed: false,
+        reason: `سيتجاوز الحد الأقصى للهيكل (3 مستويات). المستوى الناتج سيكون ${targetLevel + movingHeight}.`,
+      };
+    }
+    return { allowed: true };
+  }
+
+  function canDropRelative(
+    targetNode: CategoryWithChildren,
+    targetLevel: number,
+    movingNode: CategoryWithChildren
+  ): { allowed: boolean; reason?: string } {
+    if (movingNode.id === targetNode.id) {
+      return { allowed: false, reason: 'نفس القسم' };
+    }
+    if (isDescendant(targetNode.id, movingNode)) {
+      return { allowed: false, reason: 'لا يمكن الترتيب بالنسبة لقسم تابع' };
+    }
+    const parentLevel = targetLevel - 1; // 0 if target is root
+    const movingHeight = getSubtreeHeight(movingNode);
+    if (parentLevel + movingHeight > 3) {
+      return {
+        allowed: false,
+        reason: `سيتجاوز الحد الأقصى للهيكل (3 مستويات). المستوى الناتج سيكون ${parentLevel + movingHeight}.`,
+      };
+    }
+    return { allowed: true };
+  }
+
   function toggleCollapse(id: string) {
     setCollapsedNodes(curr => ({ ...curr, [id]: !curr[id] }));
   }
@@ -61,7 +167,7 @@ export function CategoryTreeExplorer({
     const allIds: Record<string, boolean> = {};
     function collect(nodes: CategoryWithChildren[]) {
       for (const n of nodes) {
-        if (n.children.length) {
+        if (n.children && n.children.length > 0) {
           allIds[n.id] = true;
           collect(n.children);
         }
@@ -99,6 +205,11 @@ export function CategoryTreeExplorer({
     setImagePreview(cat.imagePath || null);
     setFormIsVisible(cat.isVisible);
     setErrorMessage('');
+  }
+
+  function openQuickMove(cat: CategoryWithChildren) {
+    setQuickMoveCategory(cat);
+    setQuickMoveTargetId(cat.parentId || 'ROOT');
   }
 
   function closeModal() {
@@ -171,11 +282,169 @@ export function CategoryTreeExplorer({
     });
   }
 
+  // Execute Move server action
+  async function executeMove(
+    categoryId: string,
+    targetId: string | null,
+    pos: MoveCategoryPosition = 'inside'
+  ) {
+    setNotification({ type: 'info', message: 'جارِ نقل وترتيب القسم...' });
+    startTransition(async () => {
+      const res = await moveCategory(categoryId, targetId, pos);
+      if (res.success) {
+        setNotification({
+          type: 'success',
+          message: res.message || 'تم نقل وترتيب القسم بنجاح!',
+        });
+        router.refresh();
+      } else {
+        setNotification({
+          type: 'error',
+          message: res.error || 'تعذر نقل القسم.',
+        });
+      }
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+    });
+  }
+
+  // Drag Event Handlers
+  function handleDragStart(e: React.DragEvent, node: CategoryWithChildren) {
+    e.dataTransfer.setData('text/plain', node.id);
+    e.dataTransfer.effectAllowed = 'move';
+    setDraggedNode(node);
+  }
+
+  function handleDragEnd() {
+    setDraggedNode(null);
+    setDropTargetId(null);
+    setDropPosition(null);
+    setIsOverRootZone(false);
+  }
+
+  function handleDragOver(e: React.DragEvent, node: CategoryWithChildren, level: number) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!draggedNode || draggedNode.id === node.id) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const offsetY = e.clientY - rect.top;
+    const ratio = offsetY / rect.height;
+
+    let pos: 'before' | 'after' | 'inside';
+    if (ratio < 0.25) {
+      pos = 'before';
+    } else if (ratio > 0.75) {
+      pos = 'after';
+    } else {
+      pos = 'inside';
+    }
+
+    if (dropTargetId !== node.id || dropPosition !== pos) {
+      setDropTargetId(node.id);
+      setDropPosition(pos);
+    }
+  }
+
+  function handleDragLeave(e: React.DragEvent, node: CategoryWithChildren) {
+    const related = e.relatedTarget as Node | null;
+    if (e.currentTarget.contains(related)) return;
+    if (dropTargetId === node.id) {
+      setDropTargetId(null);
+      setDropPosition(null);
+    }
+  }
+
+  function handleDrop(e: React.DragEvent, node: CategoryWithChildren, level: number) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!draggedNode || draggedNode.id === node.id || !dropPosition) {
+      handleDragEnd();
+      return;
+    }
+
+    // Validate drop permissions
+    if (dropPosition === 'inside') {
+      const check = canDropInside(node, level, draggedNode);
+      if (!check.allowed) {
+        setNotification({ type: 'error', message: check.reason || 'لا يمكن نقل القسم إلى هذا المكان' });
+        handleDragEnd();
+        return;
+      }
+    } else {
+      const check = canDropRelative(node, level, draggedNode);
+      if (!check.allowed) {
+        setNotification({ type: 'error', message: check.reason || 'لا يمكن نقل القسم إلى هذا المكان' });
+        handleDragEnd();
+        return;
+      }
+    }
+
+    const movingId = draggedNode.id;
+    const targetId = node.id;
+    const pos = dropPosition;
+
+    handleDragEnd();
+    executeMove(movingId, targetId, pos);
+  }
+
+  function handleDropOnRoot(e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!draggedNode) return;
+
+    if (!draggedNode.parentId) {
+      setNotification({ type: 'info', message: 'القسم موجود بالفعل في المستوى الرئيسي.' });
+      handleDragEnd();
+      return;
+    }
+
+    const movingId = draggedNode.id;
+    handleDragEnd();
+    executeMove(movingId, null, 'inside');
+  }
+
+  function nodeMatchesSearch(node: CategoryWithChildren, term: string): boolean {
+    if (!term) return true;
+    if (node.name.toLowerCase().includes(term.toLowerCase())) return true;
+    if (node.slug.toLowerCase().includes(term.toLowerCase())) return true;
+    return node.children.some(child => nodeMatchesSearch(child, term));
+  }
+
+  // Eligible parents for quick move modal
+  const eligibleQuickMoveParents = useMemo(() => {
+    if (!quickMoveCategory) return [];
+    return flatCategories.filter(c => {
+      if (c.id === quickMoveCategory.id) return false;
+      if (isDescendant(c.id, quickMoveCategory)) return false;
+      const parentLvl = categoryLevelMap.get(c.id) || 1;
+      if (parentLvl >= 3) return false;
+      const movingHeight = getSubtreeHeight(quickMoveCategory);
+      if (parentLvl + movingHeight > 3) return false;
+      return true;
+    });
+  }, [quickMoveCategory, flatCategories, categoryLevelMap]);
+
   // Recursive render of category tree
   function renderNode(node: CategoryWithChildren, level: number = 1) {
+    if (searchTerm && !nodeMatchesSearch(node, searchTerm)) {
+      return null;
+    }
+
     const isCollapsed = Boolean(collapsedNodes[node.id]);
-    const hasChildren = node.children.length > 0;
-    const matchesSearch = !searchTerm || node.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const hasChildren = node.children && node.children.length > 0;
+    const isDraggingCurrent = draggedNode?.id === node.id;
+    const isDropTarget = dropTargetId === node.id;
+    const isDropBefore = isDropTarget && dropPosition === 'before';
+    const isDropAfter = isDropTarget && dropPosition === 'after';
+    const isDropInside = isDropTarget && dropPosition === 'inside';
+
+    let dropInsideValidity: { allowed: boolean; reason?: string } = { allowed: true };
+    if (isDropInside && draggedNode) {
+      dropInsideValidity = canDropInside(node, level, draggedNode);
+    }
 
     const levelBadge =
       level === 1
@@ -185,25 +454,58 @@ export function CategoryTreeExplorer({
         : { text: 'مستوى 3 تخصصي', bg: 'bg-blue-100 text-blue-900' };
 
     return (
-      <div key={node.id} className="space-y-2">
+      <div key={node.id} className="space-y-1.5 transition-all">
+        {/* Drop Insertion Line (Before) */}
+        {isDropBefore && (
+          <div
+            className="h-2.5 w-full bg-[#3F4832] rounded-full my-1.5 animate-pulse flex items-center justify-center shadow-md"
+            style={{ marginInlineStart: `${(level - 1) * 24}px` }}
+          >
+            <span className="text-[10px] bg-[#3F4832] text-white px-3 py-0.5 rounded-full font-bold shadow">
+              ↑ إفلات للترتيب قبل &quot;{node.name}&quot;
+            </span>
+          </div>
+        )}
+
         <div
-          className={`flex flex-wrap items-center justify-between p-3.5 rounded-2xl border transition-all ${
-            !node.isVisible
+          draggable={!isPending}
+          onDragStart={e => handleDragStart(e, node)}
+          onDragEnd={handleDragEnd}
+          onDragOver={e => handleDragOver(e, node, level)}
+          onDragLeave={e => handleDragLeave(e, node)}
+          onDrop={e => handleDrop(e, node, level)}
+          className={`group flex flex-wrap items-center justify-between p-3.5 rounded-2xl border transition-all select-none ${
+            isDraggingCurrent
+              ? 'opacity-40 border-dashed border-[#3F4832] bg-[#3F4832]/5 scale-[0.99]'
+              : isDropInside
+              ? dropInsideValidity.allowed
+                ? 'bg-emerald-50/80 border-emerald-500 ring-2 ring-emerald-300 shadow-md'
+                : 'bg-rose-50/80 border-rose-400 ring-2 ring-rose-200'
+              : !node.isVisible
               ? 'bg-zinc-100/60 border-zinc-200 text-zinc-400'
               : level === 1
-              ? 'bg-white border-zinc-200 shadow-sm hover:border-[#3F4832]/40'
+              ? 'bg-white border-zinc-200 shadow-sm hover:border-[#3F4832]/40 hover:shadow'
               : level === 2
-              ? 'bg-zinc-50/80 border-zinc-200 hover:border-zinc-300'
+              ? 'bg-zinc-50/80 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'
               : 'bg-white border-dashed border-zinc-200 hover:border-zinc-300'
           }`}
-          style={{ marginRight: `${(level - 1) * 20}px` }}
+          style={{ marginInlineStart: `${(level - 1) * 24}px` }}
         >
           <div className="flex items-center gap-3">
+            {/* Drag Handle */}
+            <div
+              className="cursor-grab active:cursor-grabbing p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors shrink-0 group-hover:text-[#3F4832]"
+              title="اضغط مع السحب لنقل القسم أو إعادة ترتيبه"
+            >
+              <GripVertical className="w-4 h-4" />
+            </div>
+
             {hasChildren ? (
               <button
                 type="button"
                 onClick={() => toggleCollapse(node.id)}
                 className="w-7 h-7 rounded-lg bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center text-xs font-bold text-zinc-600 transition-transform"
+                title={isCollapsed ? 'توسيع الفروع' : 'طي الفروع'}
               >
                 {isCollapsed ? '+' : '−'}
               </button>
@@ -220,23 +522,47 @@ export function CategoryTreeExplorer({
             ) : null}
 
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-bold text-sm text-zinc-900">{node.name}</span>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${levelBadge.bg}`}>
                   {levelBadge.text}
                 </span>
+
                 {!node.isVisible && (
                   <span className="text-[10px] font-bold bg-zinc-200 text-zinc-600 px-2 py-0.5 rounded-full">
                     مخفي من المتجر 👁️‍🗨️
                   </span>
                 )}
+
                 {node.defaultTemplate && (
                   <span className="text-[10px] font-bold bg-emerald-50 border border-emerald-200 text-emerald-800 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                     <span>قالب:</span>
                     <span>{node.defaultTemplate.nameAr}</span>
                   </span>
                 )}
+
+                {/* Drop inside indicator badge */}
+                {isDropInside && (
+                  <span
+                    className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm animate-pulse flex items-center gap-1 ${
+                      dropInsideValidity.allowed
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-rose-600 text-white'
+                    }`}
+                  >
+                    {dropInsideValidity.allowed ? (
+                      <>
+                        <span>↳ إفلات ليصبح فرعاً داخل {node.name} (مستوى {level + 1})</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>⛔ {dropInsideValidity.reason}</span>
+                      </>
+                    )}
+                  </span>
+                )}
               </div>
+
               <div className="flex items-center gap-3 mt-0.5 text-[11px] text-zinc-400 font-mono">
                 <span>slug: {node.slug}</span>
                 <span>•</span>
@@ -272,6 +598,17 @@ export function CategoryTreeExplorer({
               {node.isVisible ? 'ظاهر 🟢' : 'مخفي ⚪'}
             </button>
 
+            {/* Quick Move Button (Accessibility & Mobile) */}
+            <button
+              type="button"
+              onClick={() => openQuickMove(node)}
+              className="text-xs font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 px-2.5 py-1.5 rounded-xl transition-colors flex items-center gap-1"
+              title="نقل القسم إلى قسم آخر أو للمستوى الرئيسي"
+            >
+              <Move className="w-3.5 h-3.5" />
+              <span>نقل</span>
+            </button>
+
             <button
               type="button"
               onClick={() => openEdit(node)}
@@ -294,8 +631,21 @@ export function CategoryTreeExplorer({
           </div>
         </div>
 
+        {/* Drop Insertion Line (After) */}
+        {isDropAfter && (
+          <div
+            className="h-2.5 w-full bg-[#3F4832] rounded-full my-1.5 animate-pulse flex items-center justify-center shadow-md"
+            style={{ marginInlineStart: `${(level - 1) * 24}px` }}
+          >
+            <span className="text-[10px] bg-[#3F4832] text-white px-3 py-0.5 rounded-full font-bold shadow">
+              ↓ إفلات للترتيب بعد &quot;{node.name}&quot;
+            </span>
+          </div>
+        )}
+
+        {/* Children Render */}
         {hasChildren && !isCollapsed && (
-          <div className="border-r-2 border-zinc-200/80 pr-2 space-y-2 mt-2 mr-3">
+          <div className="border-inline-start-2 border-zinc-200/80 ps-2 space-y-1.5 mt-1.5 ms-3">
             {node.children.map(child => renderNode(child, level + 1))}
           </div>
         )}
@@ -305,27 +655,89 @@ export function CategoryTreeExplorer({
 
   return (
     <div className="space-y-6">
+      {/* Top Helper Banner */}
+      <div className="p-4 rounded-3xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-3 shadow-xs">
+        <div className="p-2 bg-amber-100 text-amber-900 rounded-xl shrink-0">
+          <FolderInput className="w-5 h-5" />
+        </div>
+        <div className="text-xs text-amber-950 space-y-1">
+          <h4 className="font-bold text-sm">ميزة سحب وإفلات الأقسام الهرمية (Drag & Drop) مفعلة ✨</h4>
+          <p className="leading-relaxed text-amber-900/90">
+            يمكنك الآن بكل سهولة الإمساك بأي قسم وسحبه:
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 pt-1 font-medium text-[11px]">
+            <div className="bg-white/80 p-2 rounded-xl border border-amber-200/60">
+              <span className="font-bold block text-emerald-800 mb-0.5">↳ نقل كقسم فرعي:</span>
+              اسحب القسم وأفلته في منتصف القسم المراد ليصبح فرعاً له تلقائياً.
+            </div>
+            <div className="bg-white/80 p-2 rounded-xl border border-amber-200/60">
+              <span className="font-bold block text-blue-800 mb-0.5">↕ إعادة الترتيب:</span>
+              اسحب القسم لأعلى أو لأسفل قسم آخر لإعادة ترتيب ظهوره بالمتجر.
+            </div>
+            <div className="bg-white/80 p-2 rounded-xl border border-amber-200/60">
+              <span className="font-bold block text-purple-800 mb-0.5">⭐ تحويل لقسم رئيسي:</span>
+              اسحب القسم وأفلته في &quot;منطقة المستوى الرئيسي&quot; بالأعلى لجعله مستقلاً (Level 1).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Notification Toast */}
+      {notification && (
+        <div
+          className={`p-3.5 rounded-2xl text-xs font-bold flex items-center justify-between gap-3 shadow-sm transition-all animate-in fade-in ${
+            notification.type === 'success'
+              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+              : notification.type === 'error'
+              ? 'bg-red-50 border border-red-200 text-red-800'
+              : 'bg-blue-50 border border-blue-200 text-blue-800'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            {notification.type === 'success' ? (
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            ) : notification.type === 'error' ? (
+              <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+            ) : (
+              <Info className="w-4 h-4 text-blue-600 shrink-0" />
+            )}
+            <span>{notification.message}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setNotification(null)}
+            className="text-zinc-400 hover:text-zinc-600 text-sm font-bold"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Top Header Controls */}
       <div className="bg-white rounded-3xl p-5 border border-zinc-200/80 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3 flex-1">
-          <input
-            type="text"
-            placeholder="بحث في شجرة الأقسام..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="rounded-xl border border-zinc-200 px-4 py-2 text-xs w-64 outline-none focus:border-[#3F4832] bg-zinc-50"
-          />
+          <div className="relative w-64">
+            <input
+              type="text"
+              placeholder="بحث في شجرة الأقسام..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full rounded-xl border border-zinc-200 ps-9 pe-4 py-2 text-xs outline-none focus:border-[#3F4832] bg-zinc-50"
+            />
+            <Search className="w-4 h-4 text-zinc-400 absolute start-3 top-2.5 pointer-events-none" />
+          </div>
+
           <button
             type="button"
             onClick={expandAll}
-            className="text-xs font-bold text-zinc-600 bg-zinc-100 hover:bg-zinc-200 px-3 py-2 rounded-xl"
+            className="text-xs font-bold text-zinc-600 bg-zinc-100 hover:bg-zinc-200 px-3 py-2 rounded-xl transition-colors"
           >
             توسيع الكل ⊞
           </button>
           <button
             type="button"
             onClick={collapseAll}
-            className="text-xs font-bold text-zinc-600 bg-zinc-100 hover:bg-zinc-200 px-3 py-2 rounded-xl"
+            className="text-xs font-bold text-zinc-600 bg-zinc-100 hover:bg-zinc-200 px-3 py-2 rounded-xl transition-colors"
           >
             طي الكل ⊟
           </button>
@@ -350,6 +762,34 @@ export function CategoryTreeExplorer({
         </div>
       </div>
 
+      {/* Root Drop Zone: Active when dragging */}
+      {draggedNode && (
+        <div
+          onDragOver={e => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsOverRootZone(true);
+          }}
+          onDragLeave={() => setIsOverRootZone(false)}
+          onDrop={handleDropOnRoot}
+          className={`p-5 rounded-3xl border-2 border-dashed transition-all text-center flex items-center justify-center gap-3 animate-in fade-in duration-200 ${
+            isOverRootZone
+              ? 'border-[#3F4832] bg-[#3F4832]/10 text-[#3F4832] shadow-lg scale-[1.01]'
+              : 'border-zinc-300 bg-zinc-50 text-zinc-600 hover:border-[#3F4832]'
+          }`}
+        >
+          <FolderInput className={`w-6 h-6 ${isOverRootZone ? 'text-[#3F4832]' : 'text-zinc-400'}`} />
+          <div>
+            <span className="text-xs font-bold block">
+              📥 إفلات هنا لتحويل القسم &quot;{draggedNode.name}&quot; إلى قسم رئيسي (المستوى 1 بدون أب)
+            </span>
+            <span className="text-[11px] text-zinc-400">
+              سيصبح قسماً مستقلاً في أعلى هيكل شجرة الأقسام
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Tree View Display */}
       {tree.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 text-center border border-dashed border-zinc-300 shadow-sm">
@@ -370,6 +810,88 @@ export function CategoryTreeExplorer({
       ) : (
         <div className="bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-sm space-y-3">
           {tree.map(rootNode => renderNode(rootNode, 1))}
+        </div>
+      )}
+
+      {/* Modal: Quick Move (Accessible & Mobile-friendly) */}
+      {quickMoveCategory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl shadow-2xl border border-zinc-100 max-w-md w-full p-6 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-[#3F4832]/10 text-[#3F4832] rounded-xl">
+                  <Move className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-zinc-900">
+                    نقل القسم: {quickMoveCategory.name}
+                  </h3>
+                  <p className="text-[11px] text-zinc-400">
+                    تغيير موقع القسم في الهيكل الشجري للمتجر
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setQuickMoveCategory(null)}
+                className="text-zinc-400 hover:text-zinc-700 text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 mt-4">
+              <div>
+                <label className="text-xs font-bold text-zinc-700 block mb-1">
+                  الموقع الجديد للقسم:
+                </label>
+                <select
+                  value={quickMoveTargetId}
+                  onChange={e => setQuickMoveTargetId(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-200 p-2.5 text-xs outline-none focus:border-[#3F4832] bg-white font-medium"
+                >
+                  <option value="ROOT">⭐ المستوى الرئيسي (Level 1 بدون أب)</option>
+                  <optgroup label="الأقسام المتاحة للنقل داخلها:">
+                    {eligibleQuickMoveParents.map(c => {
+                      const lvl = categoryLevelMap.get(c.id) || 1;
+                      return (
+                        <option key={c.id} value={c.id}>
+                          {lvl === 1 ? '📁 ' : '↳ '}
+                          {c.name} (مستوى {lvl})
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                </select>
+                <p className="text-[10px] text-zinc-400 mt-1">
+                  ملاحظة: تظهر فقط الأقسام المسموح النقل إليها وفق الحد الأقصى (3 مستويات) وبدون تكرار حلقي.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-100">
+                <button
+                  type="button"
+                  onClick={() => setQuickMoveCategory(null)}
+                  className="px-4 py-2 text-xs font-bold rounded-xl text-zinc-600 hover:bg-zinc-100"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="button"
+                  disabled={isPending}
+                  onClick={() => {
+                    const target = quickMoveTargetId === 'ROOT' ? null : quickMoveTargetId;
+                    const catId = quickMoveCategory.id;
+                    setQuickMoveCategory(null);
+                    executeMove(catId, target, 'inside');
+                  }}
+                  className="px-6 py-2.5 text-xs font-bold rounded-xl text-white bg-[#3F4832] hover:bg-[#2d3623] shadow-sm disabled:opacity-50"
+                >
+                  {isPending ? 'جارِ النقل...' : 'تأكيد النقل'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

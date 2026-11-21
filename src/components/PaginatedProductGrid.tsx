@@ -8,6 +8,7 @@ import { WishlistHeart } from '@/components/WishlistHeart';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
 import { getPaginatedProducts } from '@/actions/shop';
 import { filsToDisplay } from '@/lib/money';
+import { isRemoteMediaUrl } from '@/lib/media';
 
 export function PaginatedProductGrid({
   initialProducts,
@@ -91,6 +92,7 @@ export function PaginatedProductGrid({
                       src={mainImage.url.startsWith('local://') ? mainImage.url.replace('local://', '/') : mainImage.url}
                       alt={isAr ? product.nameAr : product.nameEn}
                       fill
+                      unoptimized={isRemoteMediaUrl(mainImage.url)}
                       sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
                       className={`object-cover transition duration-700 group-hover:scale-[1.03] ${totalStock === 0 ? 'opacity-50 grayscale-[0.3]' : ''}`}
                     />
