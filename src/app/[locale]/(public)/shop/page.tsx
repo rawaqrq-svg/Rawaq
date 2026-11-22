@@ -83,6 +83,14 @@ export default async function ShopPage({
   });
 
   const rootCategories = allCategories.filter(c => !c.parentId);
+  const rootCategoryById = new Map<string, string>();
+  for (const root of rootCategories) {
+    rootCategoryById.set(root.id, root.id);
+    for (const child of root.children) {
+      rootCategoryById.set(child.id, root.id);
+      for (const leaf of child.children) rootCategoryById.set(leaf.id, root.id);
+    }
+  }
 
   // 2. كشف مسار القسم المختار لتطبيق التجميع التراكمي (Rollup)
   let targetCategoryIds: string[] = [];
@@ -154,7 +162,7 @@ export default async function ShopPage({
   }
 
   // 4. المنتجات والعدد الإجمالي
-  const [products, totalCount] = await Promise.all([
+  const [products, totalCount, categoryImageProducts] = await Promise.all([
     prisma.product.findMany({
       where,
       take: 40,
@@ -177,7 +185,32 @@ export default async function ShopPage({
       orderBy: { createdAt: 'desc' },
     }),
     prisma.product.count({ where }),
+    prisma.product.findMany({
+      where: {
+        isVisible: true,
+        categoryId: { in: Array.from(rootCategoryById.keys()) },
+        images: { some: {} },
+      },
+      select: {
+        categoryId: true,
+        images: {
+          select: { url: true },
+          orderBy: [{ isMain: 'desc' }, { order: 'asc' }],
+          take: 1,
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    }),
   ]);
+
+  const categoryImagesByRoot = new Map<string, string>();
+  for (const product of categoryImageProducts) {
+    const rootId = rootCategoryById.get(product.categoryId);
+    const imageUrl = product.images[0]?.url;
+    if (rootId && imageUrl && isRemoteMediaUrl(imageUrl) && !categoryImagesByRoot.has(rootId)) {
+      categoryImagesByRoot.set(rootId, imageUrl);
+    }
+  }
 
   // أيقونات تمييز الأقسام الرئيسية في رَواق
   const categoryIcons: Record<string, string> = {
@@ -225,6 +258,9 @@ export default async function ShopPage({
             {rootCategories.map((cat) => {
               const isRootActive = activeRootId === cat.id;
               const icon = categoryIcons[cat.slug] || '✦';
+              const categoryImageUrl = isRemoteMediaUrl(cat.imagePath)
+                ? cat.imagePath
+                : categoryImagesByRoot.get(cat.id);
               return (
                 <Link
                   key={cat.id}
@@ -233,9 +269,9 @@ export default async function ShopPage({
                 >
                   <div className={`w-16 h-16 sm:w-[84px] sm:h-[84px] rounded-full border-2 p-0.5 transition-all duration-300 ${isRootActive ? 'border-[#B7935F] shadow-lg scale-105 ring-2 ring-[#B7935F]/30' : 'border-[#E9DDCC] group-hover:border-[#B7935F]'}`}>
                     <div className={`w-full h-full rounded-full flex items-center justify-center overflow-hidden relative shadow-inner bg-[#EDE3D5]`}>
-                      {isRemoteMediaUrl(cat.imagePath) ? (
+                      {categoryImageUrl ? (
                         <Image
-                          src={cat.imagePath}
+                          src={categoryImageUrl}
                           alt={cat.name}
                           fill
                           unoptimized
