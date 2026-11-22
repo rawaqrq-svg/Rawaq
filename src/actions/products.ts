@@ -2,6 +2,7 @@
 
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
+import { normalizeMediaUrl } from '@/lib/media';
 import { requirePermission } from '@/lib/dal';
 import { uploadMedia } from '@/actions/upload';
 import { assignProductSupplier, productSupplierSchema } from '@/lib/product-supplier';
@@ -443,6 +444,7 @@ export async function updateProduct(productId: string, formData: FormData) {
           if (!url) throw new Error('تعذر العثور على صورة المنتج المحددة.');
           if (variantId && !linkedImagesByVariant.has(variantId)) linkedImagesByVariant.set(variantId, url);
           const imageData = {
+            url: normalizeMediaUrl(url),
             variantId: variantId || null,
             isMain: Boolean(image.isMain) || (!hasMain && image.order === 0),
             order: image.order ?? 0,

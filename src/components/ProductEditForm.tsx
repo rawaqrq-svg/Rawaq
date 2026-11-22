@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { updateProduct } from '@/actions/products';
+import { normalizeMediaUrl } from '@/lib/media';
 import { Loader2, Plus, Trash2, Search, X } from 'lucide-react';
 
 interface Variant {
@@ -520,7 +521,7 @@ export function ProductEditForm({
             {existingImages.map((img) => (
               <div key={img.id} className={`relative border rounded-lg overflow-hidden ${mainImageId === img.id ? 'ring-2 ring-[var(--color-rose-600)]' : 'border-zinc-200'}`}>
                 <div className="aspect-square bg-zinc-100">
-                  <img src={img.url} alt="Existing" className="w-full h-full object-cover" />
+                  <img src={normalizeMediaUrl(img.url)} alt="Existing" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute top-2 right-2 flex gap-1">
                   <button type="button" onClick={() => removeExistingImage(img.id)} className="bg-white/90 p-1.5 rounded-md shadow-sm text-red-600 hover:bg-white transition-colors">

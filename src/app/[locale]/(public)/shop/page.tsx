@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Prisma } from '@prisma/client';
-import { isRemoteMediaUrl } from '@/lib/media';
+import { isRemoteMediaUrl, normalizeMediaUrl } from '@/lib/media';
 
 export const revalidate = 60;
 
@@ -206,7 +206,7 @@ export default async function ShopPage({
   const categoryImagesByRoot = new Map<string, string>();
   for (const product of categoryImageProducts) {
     const rootId = rootCategoryById.get(product.categoryId);
-    const imageUrl = product.images[0]?.url;
+    const imageUrl = normalizeMediaUrl(product.images[0]?.url);
     if (rootId && imageUrl && isRemoteMediaUrl(imageUrl) && !categoryImagesByRoot.has(rootId)) {
       categoryImagesByRoot.set(rootId, imageUrl);
     }
@@ -258,8 +258,9 @@ export default async function ShopPage({
             {rootCategories.map((cat) => {
               const isRootActive = activeRootId === cat.id;
               const icon = categoryIcons[cat.slug] || '✦';
-              const categoryImageUrl = isRemoteMediaUrl(cat.imagePath)
-                ? cat.imagePath
+              const storedCategoryImageUrl = normalizeMediaUrl(cat.imagePath);
+              const categoryImageUrl = isRemoteMediaUrl(storedCategoryImageUrl)
+                ? storedCategoryImageUrl
                 : categoryImagesByRoot.get(cat.id);
               return (
                 <Link

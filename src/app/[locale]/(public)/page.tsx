@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { isRemoteMediaUrl } from '@/lib/media';
+import { isRemoteMediaUrl, normalizeMediaUrl } from '@/lib/media';
 import { prisma } from '@/lib/db';
 import { filsToDisplay } from '@/lib/money';
 import { OliveBranchDecoration } from '@/components/RawaqMotifs';
@@ -185,7 +185,7 @@ export default async function StoreFrontPage({ params }: { params: Promise<{ loc
               {/* Tatreez divider */}
               <div
                 className="my-7 h-5 max-w-[200px] opacity-60"
-                style={{ backgroundImage: "url('/brand/patterns/rawaq-tatreez-divider.svg')", backgroundRepeat: 'no-repeat', backgroundSize: 'contain' }}
+                style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(183,147,95,.5), transparent)' }}
                 aria-hidden="true"
               />
               <Link href={`/${locale}/about`} className="btn-rawaq-ghost text-sm">
@@ -314,7 +314,7 @@ function ProductSection({
         {products.length ? (
           <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             {products.map((product) => {
-              const image = product.images[0]?.url;
+              const image = normalizeMediaUrl(product.images[0]?.url);
               const price = product.variants[0]?.price;
               const comparePrice = product.variants[0]?.compareAt;
               const name = isAr ? product.nameAr : product.nameEn;

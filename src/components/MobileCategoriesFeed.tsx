@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { filsToDisplay } from '@/lib/money';
 import { WishlistHeart } from '@/components/WishlistHeart';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
+import { normalizeMediaUrl } from '@/lib/media';
 
 interface Product {
   id: string;
@@ -59,6 +60,7 @@ export function MobileCategoriesFeed({ categories, locale, isAr }: { categories:
             >
               {category.products.map(product => {
                 const mainImage = product.images?.find(img => img.isMain) || product.images?.[0];
+                const imageUrl = normalizeMediaUrl(mainImage?.url);
                 const lowestPrice = product.variants?.length > 0 
                   ? Math.min(...product.variants.map(v => v.price))
                   : 0;
@@ -76,13 +78,13 @@ export function MobileCategoriesFeed({ categories, locale, isAr }: { categories:
                           nameAr: product.nameAr,
                           nameEn: product.nameEn,
                           slug: product.slug,
-                          imageUrl: mainImage?.url || '',
+                          imageUrl,
                           price: lowestPrice,
                           stockStatus: product.stockStatus
                         }} />
                       </div>
                       {mainImage ? (
-                        <div className="h-full w-full bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-[1.03]" style={{ backgroundImage: `url("${mainImage.url.startsWith('local://') ? mainImage.url.replace('local://', '/') : mainImage.url}")` }} />
+                        <div className="h-full w-full bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-[1.03]" style={{ backgroundImage: `url("${imageUrl.startsWith('local://') ? imageUrl.replace('local://', '/') : imageUrl}")` }} />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center text-3xl text-[#3F4832]/20">✦</div>
                       )}

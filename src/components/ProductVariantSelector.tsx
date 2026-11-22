@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { filsToDisplay } from '@/lib/money';
+import { normalizeMediaUrl } from '@/lib/media';
 import { AlertCircle, Check } from 'lucide-react';
 
 export interface ProductVariantItem {
@@ -186,7 +187,7 @@ export function ProductVariantSelector({
           colorHex: selectedVariant.colorHex || null,
           price: selectedVariant.price,
           quantity: quantity,
-          image: selectedVariant.mainImage || mainImage || null
+          image: normalizeMediaUrl(selectedVariant.mainImage || mainImage) || null
         });
       }
       

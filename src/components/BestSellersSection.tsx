@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { isRemoteMediaUrl } from '@/lib/media';
+import { isRemoteMediaUrl, normalizeMediaUrl } from '@/lib/media';
 import { prisma } from '@/lib/db';
 import { filsToDisplay } from '@/lib/money';
 
@@ -130,7 +130,7 @@ export async function BestSellersSection({ locale }: { locale: string }) {
 
         <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
           {products.map((product) => {
-            const image = product.images[0]?.url;
+            const image = normalizeMediaUrl(product.images[0]?.url);
             const price = product.variants[0]?.price;
             const name = isAr ? product.nameAr : product.nameEn;
             return (

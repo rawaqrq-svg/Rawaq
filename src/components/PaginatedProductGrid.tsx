@@ -8,7 +8,7 @@ import { WishlistHeart } from '@/components/WishlistHeart';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
 import { getPaginatedProducts } from '@/actions/shop';
 import { filsToDisplay } from '@/lib/money';
-import { isRemoteMediaUrl } from '@/lib/media';
+import { isRemoteMediaUrl, normalizeMediaUrl } from '@/lib/media';
 
 export function PaginatedProductGrid({
   initialProducts,
@@ -66,6 +66,7 @@ export function PaginatedProductGrid({
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         {products.map((product) => {
           const mainImage = product.images?.find((img: any) => img.isMain) || product.images?.[0];
+          const mainImageUrl = mainImage ? normalizeMediaUrl(mainImage.url) : '';
           const lowestPrice = product.variants?.length > 0
             ? Math.min(...product.variants.map((v: any) => v.price))
             : 0;
@@ -81,7 +82,7 @@ export function PaginatedProductGrid({
                       nameAr: product.nameAr,
                       nameEn: product.nameEn,
                       slug: product.slug,
-                      imageUrl: mainImage?.url || '',
+                      imageUrl: mainImageUrl,
                       price: lowestPrice,
                       stockStatus: totalStock === 0 ? 'OUT_OF_STOCK' : 'IN_STOCK'
                     }} />
@@ -89,10 +90,10 @@ export function PaginatedProductGrid({
 
                   {mainImage ? (
                     <Image
-                      src={mainImage.url.startsWith('local://') ? mainImage.url.replace('local://', '/') : mainImage.url}
+                      src={mainImageUrl.startsWith('local://') ? mainImageUrl.replace('local://', '/') : mainImageUrl}
                       alt={isAr ? product.nameAr : product.nameEn}
                       fill
-                      unoptimized={isRemoteMediaUrl(mainImage.url)}
+                      unoptimized={isRemoteMediaUrl(mainImageUrl)}
                       sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
                       className={`object-cover transition duration-700 group-hover:scale-[1.03] ${totalStock === 0 ? 'opacity-50 grayscale-[0.3]' : ''}`}
                     />

@@ -9,6 +9,7 @@ import SuggestedProducts from '@/components/SuggestedProducts';
 import { pickRecommendedProducts } from '@/lib/product-recommendations';
 import { BackButton } from '@/components/BackButton';
 import type { Metadata } from 'next';
+import { normalizeMediaUrl } from '@/lib/media';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '');
 
@@ -51,7 +52,7 @@ export async function generateMetadata({
   const description = product.shortDescription || (isAr
     ? `${product.nameAr} من رَواق.`
     : `${product.nameEn} from Rawaq.`);
-  const rawImageUrl = product.images[0]?.url?.replace('local://', '/');
+  const rawImageUrl = normalizeMediaUrl(product.images[0]?.url?.replace('local://', '/'));
   const imageUrl = rawImageUrl
     ? (BASE_URL && rawImageUrl.startsWith('/') ? `${BASE_URL}${rawImageUrl}` : rawImageUrl)
     : BASE_URL ? `${BASE_URL}/brand/logo_rawaq.png` : '/brand/logo_rawaq.png';
@@ -142,6 +143,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const mainImage = product.images.find(img => img.isMain) || product.images[0];
   const variants = product.variants.map((variant) => ({
     ...variant,
+    mainImage: normalizeMediaUrl(variant.mainImage),
     size: variant.size,
     name: variant.name || variant.size,
     shadeName: variant.shade?.name || variant.colorName || (variant.shadeId ? 'درجة' : null),
@@ -153,7 +155,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const isAr = locale === 'ar';
   const productName = isAr ? product.nameAr : product.nameEn;
-  const rawMainImageUrl = mainImage?.url?.replace('local://', '/');
+  const rawMainImageUrl = normalizeMediaUrl(mainImage?.url?.replace('local://', '/'));
   const mainImageUrl = rawMainImageUrl
     ? (BASE_URL && rawMainImageUrl.startsWith('/') ? `${BASE_URL}${rawMainImageUrl}` : rawMainImageUrl)
     : BASE_URL ? `${BASE_URL}/brand/logo_rawaq.png` : '/brand/logo_rawaq.png';
@@ -185,7 +187,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     slug: p.slug,
     nameAr: p.nameAr,
     nameEn: p.nameEn,
-    imageUrl: p.images[0]?.url || null,
+    imageUrl: normalizeMediaUrl(p.images[0]?.url) || null,
     lowestPrice: p.variants.length > 0 ? Math.min(...p.variants.map(v => v.price)) : 0,
   }));
 

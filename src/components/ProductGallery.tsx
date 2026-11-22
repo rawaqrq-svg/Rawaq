@@ -4,11 +4,13 @@ import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { X } from 'lucide-react';
 import { RawaqProductFrame } from '@/components/RawaqProductFrame';
-import { isRemoteMediaUrl } from '@/lib/media';
+import { isRemoteMediaUrl, normalizeMediaUrl } from '@/lib/media';
 
 export function ProductGallery({ images, productName, isAr }: { images: { id?: string; url: string; isMain?: boolean; variantId?: string | null }[]; productName: string; isAr: boolean; categorySlug?: string }) {
   const uploadedImages = useMemo(
-    () => images.filter(image => image.url && !image.url.includes('/images/templates/')),
+    () => images
+      .filter(image => image.url && !image.url.includes('/images/templates/'))
+      .map(image => ({ ...image, url: normalizeMediaUrl(image.url) })),
     [images],
   );
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
   useEffect(() => {
     const selectVariantImage = (event: Event) => {
       const variant = (event as CustomEvent<{ id?: string; mainImage?: string | null }>).detail;
-      const variantUrl = variant?.mainImage || uploadedImages.find(image => image.variantId === variant?.id)?.url;
+      const variantUrl = normalizeMediaUrl(variant?.mainImage) || uploadedImages.find(image => image.variantId === variant?.id)?.url;
       if (variantUrl) setSelectedUrl(variantUrl);
     };
     window.addEventListener('variant-changed', selectVariantImage);
@@ -75,27 +77,6 @@ export function ProductGallery({ images, productName, isAr }: { images: { id?: s
           )}
         </RawaqProductFrame>
       </button>
-
-      {uploadedImages.length > 1 && (
-        <div className="flex w-full gap-3 overflow-x-auto pb-2" aria-label={isAr ? 'صور المنتج' : 'Product photos'}>
-          {uploadedImages.map((image, index) => {
-            const thumbUrl = image.url.replace('local://', '/');
-            const isSelected = current?.url === image.url;
-            return (
-              <button
-                key={image.id || `${image.url}-${index}`}
-                type="button"
-                onClick={() => setSelectedUrl(image.url)}
-                aria-label={isAr ? `عرض صورة المنتج ${index + 1}` : `Show product photo ${index + 1}`}
-                aria-pressed={isSelected}
-                className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#3F4832] ${isSelected ? 'border-[#3F4832]' : 'border-[#E9DDCC]'}`}
-              >
-                <Image src={thumbUrl} alt={`${productName} ${index + 1}`} fill sizes="80px" unoptimized={isRemoteMediaUrl(thumbUrl)} className="object-cover" />
-              </button>
-            );
-          })}
-        </div>
-      )}
 
       {/* Fullscreen Lightbox */}
       {isLightboxOpen && imageUrl && (

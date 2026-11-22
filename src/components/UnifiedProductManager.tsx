@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { createProduct, updateProduct, duplicateProduct } from '@/actions/products';
 import { detectTemplateCode } from '@/lib/product-template-detection';
 import { calculateSupplierSplit } from '@/lib/business-finance';
+import { normalizeMediaUrl } from '@/lib/media';
 
 export type TemplateField = {
   attributeDefinitionId: string;
@@ -1685,7 +1686,7 @@ export function UnifiedProductManager({
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img.url} alt="Product media" className="w-full h-full object-cover" />
+                  <img src={normalizeMediaUrl(img.url)} alt="Product media" className="w-full h-full object-cover" />
 
                   {img.isMain && (
                     <span className="absolute top-2 right-2 bg-[#3F4832] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">

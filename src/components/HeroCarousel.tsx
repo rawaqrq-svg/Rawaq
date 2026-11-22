@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { isRemoteMediaUrl, normalizeMediaUrl, normalizeSiteUploadUrl } from '@/lib/media';
 
 export interface HeroSlide {
   id: string;
@@ -206,8 +207,10 @@ export function HeroCarousel({ slides, settings }: HeroCarouselProps) {
           const isActive = index === currentIndex;
           const slideUrl = resolveSlideUrl(slide as any);
           const hasAction = slide.destinationType !== 'NONE';
-          const desktopMediaPath = slide.imageDesktopPath;
-          const mobileMediaPath = slide.imageMobilePath || desktopMediaPath;
+          const desktopSource = normalizeMediaUrl(slide.imageDesktopPath);
+          const desktopMediaPath = isVideo(desktopSource) ? desktopSource : normalizeSiteUploadUrl(desktopSource);
+          const mobileSource = normalizeMediaUrl(slide.imageMobilePath || desktopMediaPath);
+          const mobileMediaPath = isVideo(mobileSource) ? mobileSource : normalizeSiteUploadUrl(mobileSource);
           const isVideoMedia = isVideo(desktopMediaPath);
           const eyebrow = isAr ? slide.eyebrowAr : slide.eyebrowEn;
           const title = isAr ? slide.titleAr : slide.titleEn;
@@ -247,10 +250,12 @@ export function HeroCarousel({ slides, settings }: HeroCarouselProps) {
                         <>
                           <Image
                             src={mobileMediaPath} alt={isAr ? slide.altAr : slide.altEn} fill priority={index === 0}
+                            unoptimized={isRemoteMediaUrl(mobileMediaPath)}
                             className="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-[10000ms] ease-out scale-105 group-hover/carousel:scale-100 md:hidden"
                           />
                           <Image
                             src={desktopMediaPath} alt={isAr ? slide.altAr : slide.altEn} fill priority={index === 0}
+                            unoptimized={isRemoteMediaUrl(desktopMediaPath)}
                             className="absolute inset-0 hidden h-full w-full object-cover opacity-90 transition-transform duration-[10000ms] ease-out scale-105 group-hover/carousel:scale-100 md:block"
                           />
                         </>
@@ -299,7 +304,8 @@ export function HeroCarousel({ slides, settings }: HeroCarouselProps) {
                   <div className="w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden">
                      {slide.imageDesktopPath ? (
                         <Image
-                          src={slide.imageDesktopPath} alt={isAr ? slide.altAr : slide.altEn} fill priority={index === 0}
+                          src={desktopMediaPath} alt={isAr ? slide.altAr : slide.altEn} fill priority={index === 0}
+                          unoptimized={isRemoteMediaUrl(desktopMediaPath)}
                           className="absolute inset-0 h-full w-full object-cover"
                         />
                       ) : (

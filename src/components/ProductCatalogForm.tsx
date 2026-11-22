@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createProduct, updateProduct } from '@/actions/products';
 import { detectTemplateCode } from '@/lib/product-template-detection';
+import { normalizeMediaUrl } from '@/lib/media';
 
 type Variant = {
   id?: string;
@@ -434,7 +435,7 @@ export function ProductCatalogForm({
           <div className="grid gap-3 sm:grid-cols-4">
             {images.map(image => (
               <div key={image.id} className="relative rounded-lg border bg-zinc-50 p-2">
-                <img src={image.url} alt="" className="aspect-square w-full rounded object-cover" />
+                <img src={normalizeMediaUrl(image.url)} alt="" className="aspect-square w-full rounded object-cover" />
                 <button
                   type="button"
                   onClick={() => setImages(current => current.filter(item => item.id !== image.id))}
