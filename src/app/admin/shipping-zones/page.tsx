@@ -5,7 +5,7 @@ import { configureJordanShipping } from '@/lib/jordan-shipping';
 import ShippingZonesClient from './ShippingZonesClient';
 
 export default async function ShippingZonesPage() {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('section:settings');
   
   await prisma.$transaction(async (tx) => {
     await configureJordanShipping(tx);

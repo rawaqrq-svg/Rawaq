@@ -50,6 +50,7 @@ const nextConfig: NextConfig = {
 
   experimental: {
     agentUpgrade: 'security',
+    authInterrupts: true,
     serverActions: {
       // تقليل الحد الأقصى لرفع الملفات (50mb كبير جداً)
       bodySizeLimit: '10mb',

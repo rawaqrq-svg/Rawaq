@@ -19,7 +19,7 @@ export default async function ReconciliationPage({
 }: {
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('section:financials');
   const params = await searchParams;
   const initialSupplierId =
     params.supplierId ||
@@ -57,7 +57,7 @@ export default async function ReconciliationPage({
         orderBy: { createdAt: 'desc' },
         take: 200,
       }),
-      prisma.employee.findMany({ select: { id: true, name: true } }),
+      prisma.employee.findMany({ where: { isActive: true, role: { name: { in: ['أدمن تشغيلي', 'أدمن رئيسي', 'ADMIN', 'Admin', 'SUPER ADMIN', 'Super Admin'] } } }, select: { id: true, name: true }, orderBy: { name: 'asc' } }),
       prisma.expense.findMany({ orderBy: { expenseDate: 'desc' }, take: 100 }),
     ]);
 
@@ -213,7 +213,7 @@ export default async function ReconciliationPage({
             expenses={expenses}
             categories={categories}
             initialReport={initialReport}
-            currentEmployee={{ name: session.employee.name, role: session.employee.role.name }}
+            currentEmployee={{ name: session.employee.name, role: session.employee.role.name, id: session.employeeId }}
           />
         </div>
       </main>

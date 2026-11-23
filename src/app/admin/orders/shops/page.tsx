@@ -1,7 +1,7 @@
 import { getShopOperationsHubDataAction } from '@/actions/shop-orders-hub';
 import ShopOperationsClient from './ShopOperationsClient';
 import { Metadata } from 'next';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { AdminSidebar } from '@/components/AdminSidebar';
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopOrdersHubPage() {
-  const session = await requireAuth();
+  const session = await requirePermission('section:orders');
   const data = await getShopOperationsHubDataAction();
 
   return (

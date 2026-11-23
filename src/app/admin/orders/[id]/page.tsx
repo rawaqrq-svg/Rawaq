@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { redirect } from 'next/navigation';
 
 export default async function AdminOrderDetailPage({
@@ -6,7 +6,7 @@ export default async function AdminOrderDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAuth();
+  await requirePermission('section:orders');
   const { id } = await params;
   redirect(`/admin/orders?orderId=${id}`);
 }

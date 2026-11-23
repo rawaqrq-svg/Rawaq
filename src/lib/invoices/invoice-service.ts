@@ -193,6 +193,12 @@ export async function getPublicInvoiceDataByToken(token: string) {
 
   const order = invoice.order;
 
+  const consentMarker = '[إقرار وموافقة إلكترونية موثقة]:';
+  const notes = order.notes || '';
+  const consentStart = notes.indexOf(consentMarker);
+  const consentNote = consentStart >= 0 ? notes.slice(consentStart).trim() : null;
+  const addressFromNotes = consentStart >= 0 ? notes.slice(0, consentStart).trim() : notes;
+
   return {
     invoiceNumber: invoice.number,
     issueDate: invoice.createdAt,
@@ -205,7 +211,8 @@ export async function getPublicInvoiceDataByToken(token: string) {
     customerName: order.customerName,
     customerPhone: order.customerPhone,
     city: order.deliveryJob?.city || order.shippingZoneNameSnapshot || 'عمان',
-    addressDetails: order.deliveryJob?.addressDetails || order.notes || '—',
+    addressDetails: order.deliveryJob?.addressDetails || addressFromNotes || '—',
+    consentNote,
     paymentMethod: 'الدفع عند الاستلام (COD)',
     grossTotalFils: invoice.grossTotalFils,
     netSubtotalFils: invoice.netSubtotalFils,

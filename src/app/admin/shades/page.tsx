@@ -1,12 +1,12 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { ShadeNewForm } from '@/components/ShadeNewForm';
 import { ShadeActionsMenu } from '@/components/ShadeActionsMenu';
 
 export default async function AdminShadesPage() {
-  const session = await requireAuth();
+  const session = await requirePermission('section:products');
 
   const shades = await prisma.shade.findMany({
     include: {

@@ -28,6 +28,7 @@ interface Props {
     customerPhone: string;
     city: string;
     addressDetails: string;
+    consentNote?: string | null;
     paymentMethod: string;
     grossTotalFils: number;
     netSubtotalFils: number;
@@ -418,6 +419,11 @@ export default function InvoiceViewClient({ invoice }: Props) {
 
         {/* Read-Only Notice */}
         <div className="bg-stone-100/60 p-3.5 border-t border-stone-200 text-center space-y-0.5">
+          {invoice.consentNote && (
+            <p className="text-[8px] leading-relaxed text-stone-400">
+              {invoice.consentNote}
+            </p>
+          )}
           <p className="text-[10px] text-stone-400">
             شكراً لثقتكِ برَواق • منصة مستحضرات العناية والتجميل الأولى في الأردن
           </p>

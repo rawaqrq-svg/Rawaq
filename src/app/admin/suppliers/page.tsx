@@ -11,7 +11,7 @@ import { getMessageTemplate, compileTemplate } from '@/lib/message-templates';
 import { Store, User, Phone, MapPin, ExternalLink, Percent, Mail, Eye, EyeOff, Image as ImageIcon } from 'lucide-react';
 
 export default async function SuppliersPage() {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('section:suppliers');
   const [suppliers, orders, supplierTransactions, shopProfileTemplate] = await Promise.all([
     prisma.supplier.findMany({
       orderBy: { name: 'asc' },

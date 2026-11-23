@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { cancelOrderAndReverseFinancials } from '@/lib/order-cancellation';
 import { OrderLifecycleService } from '@/lib/orders/order-lifecycle-service';
 import { authorizeManifestAction } from '@/lib/delivery-manifest-access';
+import { getCourierTariffForDate, getPickupLocationCount, recordCompletedBatchTariffCost, resolveCourierTierCost } from '@/lib/delivery/courier-pricing';
 
 function parseOrders(formData: FormData) {
   const values = formData.getAll('orderIds').flatMap(value => String(value).split(',')).filter(Boolean);
@@ -25,6 +26,8 @@ function refreshBatch(reference: string) {
 export async function createDeliveryBatch(formData: FormData) {
   const session = await requirePermission('manage:orders');
   const orderIds = parseOrders(formData);
+  const courierCompany = z.string().trim().min(2).max(120).safeParse(formData.get('courierCompany'));
+  if (!courierCompany.success) throw new Error('اختر أو اكتب اسم شركة التوصيل قبل إنشاء الطلبية.');
   const secureToken = randomBytes(32).toString('base64url');
   const reference = await prisma.$transaction(async tx => {
     const [count, lastBatch] = await Promise.all([
@@ -57,7 +60,15 @@ export async function createDeliveryBatch(formData: FormData) {
       },
     });
     if (eligible !== orderIds.length) throw new Error('تغيرت حالة بعض الطلبات أو أُضيفت إلى طلبية أخرى. حدّث الصفحة.');
-    const batch = await tx.deliveryBatch.create({ data: { reference: newRef, secureToken, status: 'NOT_DELIVERED' } });
+    const pickupLocationCount = await getPickupLocationCount(tx, orderIds);
+    const tariff = await getCourierTariffForDate(tx, courierCompany.data, new Date());
+    const carrierTariffCostFils = tariff ? resolveCourierTierCost(tariff.tiers, pickupLocationCount) : null;
+    const evaluatedAt = new Date();
+    const batch = await tx.deliveryBatch.create({ data: {
+      reference: newRef, secureToken, status: 'NOT_DELIVERED', courierCompany: courierCompany.data,
+      courierTariffVersionId: tariff?.id ?? null, pickupLocationCount, carrierTariffCostFils,
+      tariffEvaluatedAt: evaluatedAt,
+    } });
     const updated = await tx.order.updateMany({
       where: { id: { in: orderIds }, deliveryBatchId: null },
       data: { deliveryBatchId: batch.id, status: 'SHIPPED', fulfillmentStatus: 'OUT_FOR_DELIVERY' },
@@ -68,7 +79,7 @@ export async function createDeliveryBatch(formData: FormData) {
       status: 'SHIPPED',
       notes: `تم وضع الطلب في طلبية شركة التوصيل ${newRef}`,
     })) });
-    await tx.auditLog.create({ data: { employeeId: session.employeeId, action: 'DELIVERY_BATCH_CREATED', entityType: 'DeliveryBatch', entityId: batch.id, details: JSON.stringify({ reference: newRef, orderIds }) } });
+    await tx.auditLog.create({ data: { employeeId: session.employeeId, action: 'DELIVERY_BATCH_CREATED', entityType: 'DeliveryBatch', entityId: batch.id, details: JSON.stringify({ reference: newRef, orderIds, courierCompany: courierCompany.data, pickupLocationCount, courierTariffVersionId: tariff?.id ?? null, carrierTariffCostFils }) } });
     return newRef;
   }, { isolationLevel: 'Serializable' });
   refreshBatch(reference);
@@ -78,7 +89,7 @@ export async function updateDeliveryBatch(batchId: string, formData: FormData) {
   const session = await requirePermission('manage:orders');
   const orderIds = parseOrders(formData);
   const reference = await prisma.$transaction(async tx => {
-    const batch = await tx.deliveryBatch.findUniqueOrThrow({ where: { id: batchId }, include: { orders: { include: { deliveryAssignment: true } } } });
+    const batch = await tx.deliveryBatch.findUniqueOrThrow({ where: { id: batchId }, include: { orders: { include: { deliveryAssignment: true } }, courierTariffVersion: { include: { tiers: true } } } });
     if (batch.status === 'COMPLETED' || batch.orders.some(order => order.status !== 'SHIPPED' || order.deliveryAssignment)) throw new Error('لا يمكن تغيير طلبية مكتملة أو بدأ توصيلها.');
     const eligible = await tx.order.count({ where: { id: { in: orderIds }, deliveryAssignment: null, OR: [
       { status: 'PREPARED', deliveryBatchId: null },
@@ -88,11 +99,16 @@ export async function updateDeliveryBatch(batchId: string, formData: FormData) {
     const removedOrderIds = batch.orders.filter(order => !orderIds.includes(order.id)).map(order => order.id);
     await tx.order.updateMany({ where: { id: { in: removedOrderIds }, deliveryBatchId: batchId }, data: { deliveryBatchId: null, status: 'PREPARED' } });
     await tx.order.updateMany({ where: { id: { in: orderIds } }, data: { deliveryBatchId: batchId, status: 'SHIPPED' } });
+    const pickupLocationCount = await getPickupLocationCount(tx, orderIds);
+    const carrierTariffCostFils = batch.courierTariffVersion
+      ? resolveCourierTierCost(batch.courierTariffVersion.tiers, pickupLocationCount)
+      : null;
+    await tx.deliveryBatch.update({ where: { id: batchId }, data: { pickupLocationCount, carrierTariffCostFils, tariffEvaluatedAt: new Date() } });
     await tx.orderStatusHistory.createMany({ data: [
       ...removedOrderIds.map(orderId => ({ orderId, status: 'PREPARED', notes: `تمت إزالة الطلب من طلبية شركة التوصيل ${batch.reference}` })),
       ...orderIds.filter(orderId => !batch.orders.some(order => order.id === orderId)).map(orderId => ({ orderId, status: 'SHIPPED', notes: `تمت إضافة الطلب إلى طلبية شركة التوصيل ${batch.reference}` })),
     ] });
-    await tx.auditLog.create({ data: { employeeId: session.employeeId, action: 'DELIVERY_BATCH_UPDATED', entityType: 'DeliveryBatch', entityId: batchId, details: JSON.stringify({ previousOrderIds: batch.orders.map(order => order.id), orderIds }) } });
+    await tx.auditLog.create({ data: { employeeId: session.employeeId, action: 'DELIVERY_BATCH_UPDATED', entityType: 'DeliveryBatch', entityId: batchId, details: JSON.stringify({ previousOrderIds: batch.orders.map(order => order.id), orderIds, previousPickupLocationCount: batch.pickupLocationCount, pickupLocationCount, previousCarrierTariffCostFils: batch.carrierTariffCostFils, carrierTariffCostFils }) } });
     return batch.reference;
   }, { isolationLevel: 'Serializable' });
   refreshBatch(reference);
@@ -165,6 +181,7 @@ export async function updateDeliveryBatchStatus(batchId: string, formData: FormD
           }
         }
       }
+      if (nextStatus === 'COMPLETED') await recordCompletedBatchTariffCost(tx, current.id, session.employeeId);
       await tx.deliveryBatch.update({ where: { id: batchId }, data: { status: nextStatus } });
       await tx.auditLog.create({ data: { employeeId: session.employeeId, action: 'DELIVERY_BATCH_STATUS_UPDATED', entityType: 'DeliveryBatch', entityId: batchId, details: JSON.stringify({ reference: current.reference, previousStatus: current.status, status: nextStatus, cancelledOrderIds, shippingResponsibility: shippingResponsibility.data ?? null }) } });
     }, { isolationLevel: 'Serializable' });
@@ -327,9 +344,9 @@ export async function confirmOrderDeliveryFromManifestAction(
       updatedOrders.every((o) => ['DELIVERED', 'CANCELLED', 'REFUNDED'].includes(o.status));
 
     if (allFinished) {
-      await prisma.deliveryBatch.update({
-        where: { id: batch.id },
-        data: { status: 'COMPLETED' },
+      await prisma.$transaction(async tx => {
+        await recordCompletedBatchTariffCost(tx, batch.id);
+        await tx.deliveryBatch.update({ where: { id: batch.id }, data: { status: 'COMPLETED' } });
       });
     }
 

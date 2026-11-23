@@ -1,5 +1,5 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { WarehouseActionsMenu } from './WarehouseActionsMenu';
@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Plus, MapPin, Hash, Box } from 'lucide-react';
 
 export default async function AdminWarehousesPage() {
-  const session = await requireAuth();
+  const session = await requirePermission('section:inventory');
 
   const warehouses = await prisma.warehouse.findMany({
     include: {

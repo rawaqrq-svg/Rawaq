@@ -25,7 +25,7 @@ const offerSchema = z.object({
 });
 
 export async function createSupplier(formData: FormData) {
-  await requirePermission('manage:settings');
+  await requirePermission('manage:suppliers');
   const input = supplierSchema.safeParse(Object.fromEntries(formData));
   if (!input.success) return;
   const { profitMargin, ...supplierData } = input.data;
@@ -53,7 +53,7 @@ export async function createSupplier(formData: FormData) {
 }
 
 export async function saveSupplierOffer(formData: FormData) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:suppliers');
   const input = offerSchema.safeParse(Object.fromEntries(formData));
   if (!input.success) return;
   const { supplierId, variantId, unitCost, stock: rawStock, supplierSku } = input.data;
@@ -90,7 +90,7 @@ export async function saveSupplierOffer(formData: FormData) {
 }
 
 export async function setSupplierOfferActive(offerId: string, isActive: boolean) {
-  await requirePermission('manage:settings');
+  await requirePermission('manage:suppliers');
   const offer = await prisma.supplierOffer.findUnique({ where: { id: offerId }, include: { supplier: { select: { isActive: true } } } });
   if (!offer || (isActive && !offer.supplier.isActive)) throw new Error('فعّل المورد قبل استخدام عرضه.');
   await prisma.supplierOffer.update({ where: { id: offerId }, data: { isActive } });
@@ -98,7 +98,7 @@ export async function setSupplierOfferActive(offerId: string, isActive: boolean)
 }
 
 export async function updateSupplier(id: string, formData: FormData) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:suppliers');
   const input = supplierSchema.safeParse(Object.fromEntries(formData));
   if (!input.success) throw new Error('بيانات المحل أو نسبة الربح غير صالحة.');
   await prisma.$transaction(async tx => {
@@ -145,7 +145,7 @@ export async function updateSupplier(id: string, formData: FormData) {
 }
 
 export async function toggleProductVisibilityFromSupplierAction(productId: string, isVisible: boolean): Promise<void> {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:suppliers');
   await prisma.product.update({
     where: { id: productId },
     data: { isVisible },
@@ -168,7 +168,7 @@ export async function toggleSupplierProductOffersActiveAction(
   productId: string,
   isActive: boolean
 ): Promise<void> {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:suppliers');
   const supplier = await prisma.supplier.findUnique({
     where: { id: supplierId },
     select: { isActive: true },
@@ -201,7 +201,7 @@ export async function toggleSupplierProductOffersActiveAction(
 }
 
 export async function deleteSupplier(id: string) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:suppliers');
   await prisma.$transaction(async tx => {
     const supplier = await tx.supplier.findUnique({
       where: { id },

@@ -148,7 +148,7 @@ export async function getHeroCarouselSettings() {
 }
 
 export async function updateHeroCarouselSettings(data: z.infer<typeof carouselSettingsSchema>) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:content');
   await validateOriginAndHost();
   
   const parsed = carouselSettingsSchema.parse(data);
@@ -194,7 +194,7 @@ export async function getHeroSlides() {
 }
 
 export async function createHeroSlide(data: z.infer<typeof slideInputSchema>) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:content');
   await validateOriginAndHost();
 
   const parsed = slideInputSchema.parse(data);
@@ -233,7 +233,7 @@ export async function createHeroSlide(data: z.infer<typeof slideInputSchema>) {
 }
 
 export async function updateHeroSlide(id: string, data: z.infer<typeof slideInputSchema>) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:content');
   await validateOriginAndHost();
 
   const parsed = slideInputSchema.parse(data);
@@ -273,7 +273,7 @@ export async function updateHeroSlide(id: string, data: z.infer<typeof slideInpu
 }
 
 export async function deleteHeroSlide(id: string) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:content');
   await validateOriginAndHost();
 
   const slides = await readJsonSetting<HomepageHeroSlideRecord[]>(CMS_KEYS.slides, []);
@@ -293,7 +293,7 @@ export async function deleteHeroSlide(id: string) {
 }
 
 export async function reorderHeroSlides(ids: string[]) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:content');
   await validateOriginAndHost();
 
   const slides = await readJsonSetting<HomepageHeroSlideRecord[]>(CMS_KEYS.slides, []);
@@ -345,7 +345,7 @@ export async function getStoreLocationSettings() {
 }
 
 export async function updateStoreLocationSettings(data: z.infer<typeof locationSettingsSchema>) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:content');
   await validateOriginAndHost();
 
   const parsed = locationSettingsSchema.parse(data);

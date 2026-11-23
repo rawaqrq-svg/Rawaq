@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ShippingZoneForm } from './ShippingZoneForm';
 import { deleteShippingZone } from '@/actions/shipping-zones';
+import Link from 'next/link';
 
 type Zone = {
   id: string;
@@ -30,12 +31,13 @@ export default function ShippingZonesClient({ initialZones }: { initialZones: Zo
           </p>
         </div>
         {!isAdding && !editingZone && (
-          <button 
+          <div className="flex flex-wrap items-center gap-2"><Link href="/admin/settings/delivery-pricing" className="rounded-xl border border-emerald-800 px-4 py-2 text-xs font-bold text-emerald-900 hover:bg-emerald-50">إدارة تعرفة الشركات حسب عدد المحلات</Link><button
             onClick={() => setIsAdding(true)}
             className="rounded-xl bg-zinc-900 hover:bg-zinc-800 px-4 py-2 text-white font-bold text-xs transition"
           >
             + إضافة منطقة
           </button>
+          </div>
         )}
       </div>
 
@@ -44,10 +46,10 @@ export default function ShippingZonesClient({ initialZones }: { initialZones: Zo
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="text-base">🚚</span>
-            <strong className="font-bold text-sm">سياسة تسعير التوصيل المعتمدة:</strong>
+            <strong className="font-bold text-sm">فصل رسوم العميل عن تكلفة الشركة:</strong>
           </div>
           <p className="text-emerald-900 leading-relaxed">
-            يدفع العميل بشكل افتراضي <strong>3.00 د.أ</strong>، وتدفع المنصة لشركة التوصيل <strong>2.00 د.أ</strong>، والفرق <strong>(1.00 د.أ)</strong> هو ربح خالص للمنصة يسجل في جرد الأرباح، ولا علاقة للمحلات به، كما يُحجب هذا الفارق بالكامل عن شركة التوصيل.
+            رسوم العميل تبقى محددة حسب المنطقة. أما تكلفة شركة التوصيل للطلبيات المجمعة فتُحسب من تعرفة الشركة وشرائح عدد المحلات، وتُثبت على الطلبية عند إنشائها حتى لا تتغير الحسابات القديمة.
           </p>
         </div>
       </div>
@@ -66,7 +68,7 @@ export default function ShippingZonesClient({ initialZones }: { initialZones: Zo
               <tr>
                 <th className="px-4 py-3">المنطقة</th>
                 <th className="px-4 py-3">سعر الزبون (تحصيل)</th>
-                <th className="px-4 py-3">أجرة شركة التوصيل</th>
+                <th className="px-4 py-3">التكلفة الافتراضية للمنطقة</th>
                 <th className="px-4 py-3">ربح المنصة (الصافي)</th>
                 <th className="px-4 py-3">الشحن المجاني</th>
                 <th className="px-4 py-3">الحالة</th>

@@ -1,11 +1,11 @@
 import React from 'react';
-import { requirePermission } from '@/lib/dal';
+import { requireSuperAdmin } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import Link from 'next/link';
 
 export default async function AdminCustomersPage() {
-  const session = await requirePermission('manage:settings');
+  const session = await requireSuperAdmin();
 
   const customers = await prisma.customer.findMany({
     include: {

@@ -12,7 +12,7 @@ type TemplateRow = {
 };
 
 export default async function ProductTemplatesPage() {
-  const session = await requirePermission('manage:products');
+  const session = await requirePermission('section:products');
 
   // Auto-install templates if not already seeded
   await ensureProductTemplatesInstalled();

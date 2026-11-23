@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { logout } from '@/actions/auth';
 import Image from 'next/image';
@@ -14,41 +14,45 @@ interface AdminSidebarProps {
 export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [permissions, setPermissions] = useState<string[] | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch('/api/auth/permissions', { cache: 'no-store' })
+      .then((response) => response.ok ? response.json() : [])
+      .then((value: unknown) => {
+        if (active) setPermissions(Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : []);
+      })
+      .catch(() => { if (active) setPermissions([]); });
+    return () => { active = false; };
+  }, []);
 
     const allLinks = [
-      { href: '/admin/dashboard', label: 'لوحة التحكم', permission: null },
-      { href: '/admin/overview-db', label: 'overview db', permission: 'manage:settings' },
-      { href: '/admin/products', label: 'المنتجات والأسعار', permission: 'manage:products' },
-      { href: '/admin/product-templates', label: 'خصائص وقوالب المنتجات', permission: 'manage:products' },
-      { href: '/admin/categories', label: 'المجموعات', permission: 'manage:products' },
-      { href: '/admin/orders', label: 'مركز إدارة الطلبات الموحد 📦', permission: 'manage:orders' },
-      { href: '/admin/orders/shops', label: 'متابعة المحلات والطرود 🏬', permission: 'manage:orders' },
-      { href: '/admin/settings', label: 'طلبيات شركة التوصيل 🚚', permission: 'manage:orders' },
-      { href: '/admin/reports', label: 'تقارير الأعمال', permission: 'manage:settings' },
-      { href: '/admin/suppliers', label: 'المحلات', permission: 'manage:settings' },
-      { href: '/admin/reconciliation', label: 'الجرد والتسويات', permission: 'manage:settings' },
-      { href: '/admin/profits', label: 'الأرباح وتوزيع المستحقات 💰', permission: 'manage:settings' },
-      { href: '/admin/deliveries', label: 'إدارة التوصيلات', permission: 'manage:settings' },
-      { href: '/admin/rewards', label: 'مكافآت العملاء', permission: 'manage:settings' },
-      { href: '/admin/message-templates', label: 'قوالب الرسائل 💬', permission: 'manage:settings' },
-      { href: '/admin/employees', label: 'الموظفين والصلاحيات', permission: 'manage:settings' },
-      { href: '/admin/content', label: 'المحتوى والمدونة (CMS)', permission: 'manage:settings' },
-      { href: '/admin/logs', label: 'سجلات النظام', permission: 'manage:settings' }
+      { href: '/admin/dashboard', label: 'لوحة الأعمال', permission: 'section:dashboard' },
+      { href: '/admin/orders', label: 'إدارة الطلبات', permission: 'section:orders' },
+      { href: '/admin/products', label: 'المنتجات والأسعار', permission: 'section:products' },
+      { href: '/admin/categories', label: 'المجموعات', permission: 'section:products' },
+      { href: '/admin/financials', label: 'المالية', permission: 'section:financials' },
+      { href: '/admin/profits', label: 'الأرباح والمستحقات', permission: 'section:financials' },
+      { href: '/admin/reconciliation', label: 'التسويات', permission: 'section:financials' },
+      { href: '/admin/settings', label: 'طلبيات التوصيل', permission: 'section:delivery' },
+      { href: '/admin/deliveries', label: 'إدارة التوصيلات', permission: 'section:delivery' },
+      { href: '/admin/suppliers', label: 'الموردون والمحلات', permission: 'section:suppliers' },
+      { href: '/admin/shipping-zones', label: 'مناطق الشحن', permission: 'section:settings' },
+      { href: '/admin/rewards', label: 'مكافآت العملاء', permission: 'section:settings' },
+      { href: '/admin/overview-db', label: 'إعدادات النظام', permission: 'section:settings' },
+      { href: '/admin/content', label: 'المحتوى والمدونة', permission: 'section:content' },
+      { href: '/admin/media', label: 'الوسائط', permission: 'section:content' },
+      { href: '/admin/message-templates', label: 'قوالب الرسائل', permission: 'section:content' },
+      { href: '/admin/employees', label: 'الموظفون والصلاحيات', permission: 'superadmin' },
+      { href: '/admin/logs', label: 'سجلات النظام', permission: 'superadmin' },
     ];
 
   const normalizedRole = roleName.trim().toUpperCase().replace(/[_-]+/g, ' ');
-  const roleAccess: Record<string, string[]> = {
-    'أدمن تشغيلي': ['manage:orders'],
-    'ادمن تشغيلي': ['manage:orders'],
-    'STORE MANAGER': ['manage:products', 'manage:orders'],
-    'INVENTORY MANAGER': ['manage:products', 'manage:inventory'],
-    'FINANCE MANAGER': ['manage:settings'],
-    'DELIVERY MANAGER': ['manage:orders', 'manage:settings'],
-    'CONTENT MANAGER': ['manage:products', 'manage:settings'],
-  };
-  const filteredLinks = ['ADMIN', 'SUPER ADMIN', 'أدمن رئيسي', 'ادمن رئيسي'].includes(normalizedRole)
-    ? allLinks
-    : allLinks.filter(link => !link.permission || (roleAccess[normalizedRole] || []).includes(link.permission));
+  const isSuperAdmin = ['ADMIN', 'SUPER ADMIN', 'أدمن رئيسي', 'ادمن رئيسي'].includes(normalizedRole);
+  const filteredLinks = !isSuperAdmin && permissions === null ? [] : allLinks.filter((link) =>
+    link.permission === 'superadmin' ? isSuperAdmin : isSuperAdmin || permissions?.includes(link.permission)
+  );
 
   return (
     <>

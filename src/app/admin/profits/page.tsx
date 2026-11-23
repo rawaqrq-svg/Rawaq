@@ -2,15 +2,20 @@ import { requirePermission } from '@/lib/dal';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { ProfitsService } from '@/lib/profits/profits-service';
 import ProfitsClientTabs from './ProfitsClientTabs';
+import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/db';
 
 export default async function ProfitsPage({
   searchParams,
 }: {
   searchParams?: Promise<Record<string, string | undefined>>;
 }) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('section:financials');
   const params = searchParams ? await searchParams : {};
   const rawTab = params.tab || params.x || params.view || params.v;
+  if (rawTab && ['close', 'approval', 'dual_approval', 'period_close', 'إغلاق', 'اعتماد', 'اغلاق'].includes(rawTab.trim().toLowerCase())) {
+    redirect('/admin/profits?tab=overview');
+  }
   const fromParam = params.from;
   const toParam = params.to;
 
@@ -18,11 +23,22 @@ export default async function ProfitsPage({
   const toDate = toParam ? new Date(`${toParam}T23:59:59.999Z`) : undefined;
 
   // استعلامات متزامنة للبيانات المالية الرئيسية لمركز الأرباح وفق النطاق الزمني المحدد
-  const [kpis, employees, partners, ledger] = await Promise.all([
+  const parseLedgerDate = (value?: string) => {
+    if (!value) return undefined;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? undefined : date;
+  };
+  const ledgerFrom = parseLedgerDate(params.ledgerFrom);
+  const ledgerTo = parseLedgerDate(params.ledgerTo);
+  const [kpis, employees, partners, ledger, ledgerEmployees, balances, hasOpeningBalance, hasCashOpeningBalance] = await Promise.all([
     ProfitsService.getProfitsKPIs(fromDate, toDate),
     ProfitsService.getEmployeePayrollList(),
     ProfitsService.getPartnersSummary(fromDate, toDate),
-    ProfitsService.getProfitsFullLedger(50, fromDate, toDate),
+    ProfitsService.getProfitsFullLedger(500, ledgerFrom, ledgerTo, params.receiver, params.method),
+    prisma.employee.findMany({ where: { isActive: true, role: { name: { in: ['أدمن تشغيلي', 'أدمن رئيسي', 'ADMIN', 'Admin', 'SUPER ADMIN', 'Super Admin'] } } }, select: { id: true, name: true }, orderBy: { name: 'asc' } }),
+    ProfitsService.getFundBalances(),
+    prisma.financialTransaction.findUnique({ where: { businessEventKey: 'bank-opening-balance:initial' }, select: { id: true } }),
+    prisma.financialTransaction.findUnique({ where: { businessEventKey: 'cash-opening-balance:initial' }, select: { id: true } }),
   ]);
 
   return (
@@ -42,6 +58,11 @@ export default async function ProfitsPage({
             initialEmployees={employees}
             initialPartners={partners}
             initialLedger={ledger}
+            ledgerEmployees={ledgerEmployees}
+            balances={balances}
+            hasOpeningBalance={Boolean(hasOpeningBalance)}
+            hasCashOpeningBalance={Boolean(hasCashOpeningBalance)}
+            ledgerFilters={{ from: params.ledgerFrom || '', to: params.ledgerTo || '', receiver: params.receiver || '', method: params.method || '' }}
           />
         </div>
       </main>

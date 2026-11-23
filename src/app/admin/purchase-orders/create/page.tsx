@@ -4,7 +4,7 @@ import { AdminSidebar } from '@/components/AdminSidebar';
 import CreatePOForm from './CreatePOForm';
 
 export default async function CreatePurchaseOrderPage() {
-  const session = await requirePermission('manage:inventory');
+  const session = await requirePermission('section:inventory');
   
   const suppliers = await prisma.supplier.findMany({
     where: { isActive: true },

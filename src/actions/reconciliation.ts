@@ -11,13 +11,14 @@ export type SettleBatchResult =
   | { success: false; error: string; reference?: never; differenceFils?: never; hasDifference?: never; isPartial?: never; outstandingBalanceFils?: never };
 
 export async function settleDeliveryBatchAction(formData: FormData): Promise<SettleBatchResult> {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:financials');
 
   const schema = z.object({
     batchId: z.string().uuid(),
     policy: z.enum(['NET_SETTLEMENT', 'GROSS_REMITTANCE']).default('NET_SETTLEMENT'),
     actualReceivedAmount: z.coerce.number().min(0).max(100000),
-    paymentMethod: z.enum(['CASH', 'BANK_TRANSFER', 'CARD', 'OTHER']).default('BANK_TRANSFER'),
+    paymentMethod: z.enum(['CASH', 'BANK_TRANSFER', 'CARD']).default('BANK_TRANSFER'),
+    receivedByEmployeeId: z.string().uuid().optional(),
     reference: z.string().trim().max(120).optional(),
     isDiscrepancy: z.enum(['true', 'false']).optional(),
     discrepancyAmount: z.coerce.number().min(0).optional(),
@@ -43,6 +44,7 @@ export async function settleDeliveryBatchAction(formData: FormData): Promise<Set
     policy,
     actualReceivedAmount,
     paymentMethod,
+    receivedByEmployeeId,
     reference,
     isDiscrepancy,
     discrepancyAmount,
@@ -68,6 +70,12 @@ export async function settleDeliveryBatchAction(formData: FormData): Promise<Set
 
       if (!batch) throw new Error('الطلبية المجمعة غير موجودة.');
 
+      if (paymentMethod === 'CASH' && !receivedByEmployeeId) throw new Error('حدد الأدمن الذي استلم النقد.');
+      if (paymentMethod === 'CASH') {
+        const receiver = await tx.employee.findFirst({ where: { id: receivedByEmployeeId, isActive: true, role: { name: { in: ['أدمن تشغيلي', 'أدمن رئيسي', 'ADMIN', 'Admin', 'SUPER ADMIN', 'Super Admin'] } } }, select: { id: true } });
+        if (!receiver) throw new Error('مستلم النقد المحدد ليس أدمن فعالاً.');
+      }
+
       // التحقق من الحركات السابقة لمنع التكرار ودعم التسويات الجزئية
       const eventKey = `batch-remittance:${batch.id}:${idempotencyKey}`;
       const existingTx = await tx.financialTransaction.findUnique({
@@ -82,7 +90,7 @@ export async function settleDeliveryBatchAction(formData: FormData): Promise<Set
       }
 
       let collectedCodFils = 0;
-      let carrierCostFils = 0;
+      let legacyCarrierCostFils = 0;
 
       for (const order of deliveredOrders) {
         const isPrepaid = order.paymentStatus === 'PAID' || order.paymentStatus === 'PREPAID';
@@ -101,8 +109,11 @@ export async function settleDeliveryBatchAction(formData: FormData): Promise<Set
           : (!order.deliveryJob ? codDueFromCustomer : (order.deliveryJob?.isCodCollected ? codDueFromCustomer : 0));
 
         collectedCodFils += actualCollected;
-        carrierCostFils += (order.actualDeliveryCost ?? 2000);
+        legacyCarrierCostFils += (order.actualDeliveryCost ?? 2000);
       }
+      const carrierCostFils = batch.tariffEvaluatedAt
+        ? (batch.carrierTariffCostFils ?? 0)
+        : legacyCarrierCostFils;
 
       // صافي التوريد المتوقع = COD المحصل فعلياً - رسوم التوصيل المسموح بخصمها (في حال Net Settlement)
       const expectedRemittanceFils = policy === 'NET_SETTLEMENT'
@@ -134,6 +145,9 @@ export async function settleDeliveryBatchAction(formData: FormData): Promise<Set
             type: 'COD_SETTLEMENT',
             direction: 'IN',
             amount: actualReceivedFils,
+            fundAccount: paymentMethod === 'CASH' ? 'CASH' : 'BANK',
+            paymentMethod,
+            receivedByEmployeeId: paymentMethod === 'CASH' ? receivedByEmployeeId : null,
             description: `توريد نقد COD من شركة التوصيل (${batch.courierCompany || 'الناقل'}) لطلبية ${batch.reference} [${reference || 'دفعة'}]`,
             createdByEmployeeId: session.employeeId,
           },
@@ -199,6 +213,9 @@ export async function settleDeliveryBatchAction(formData: FormData): Promise<Set
           details: JSON.stringify({
             reference: batch.reference,
             policy,
+            paymentMethod,
+            receivedByEmployeeId: paymentMethod === 'CASH' ? receivedByEmployeeId : null,
+            receivedByEmployeeName: paymentMethod === 'CASH' ? (await tx.employee.findUnique({ where: { id: receivedByEmployeeId }, select: { name: true } }))?.name : null,
             expectedRemittanceFils,
             actualReceivedFils,
             totalRemittedAfterThisFils,
@@ -229,7 +246,7 @@ export async function settleDeliveryBatchAction(formData: FormData): Promise<Set
 }
 
 export async function settleCaptainClearingAction(formData: FormData) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:financials');
 
   const schema = z.object({
     captainId: z.string().uuid(),
@@ -263,6 +280,8 @@ export async function settleCaptainClearingAction(formData: FormData) {
             type: 'CAPTAIN_PAYMENT',
             direction: 'OUT',
             amount: amountFils,
+            fundAccount: 'CASH',
+            paymentMethod: 'CASH',
             captainId,
             description: `مقاصة أجر توصيل مقابل عهدة نقدية لـ ${captain.name} ${notes ? `(${notes})` : ''}`,
             createdByEmployeeId: session.employeeId,
@@ -276,6 +295,9 @@ export async function settleCaptainClearingAction(formData: FormData) {
             type: 'COD_SETTLEMENT',
             direction: 'IN',
             amount: amountFils,
+            fundAccount: 'CASH',
+            paymentMethod: 'CASH',
+            receivedByEmployeeId: session.employeeId,
             captainId,
             description: `مقاصة توريد عهدة COD مقيدة مقابل أجر التوصيل لـ ${captain.name}`,
             createdByEmployeeId: session.employeeId,
@@ -299,6 +321,9 @@ export async function settleCaptainClearingAction(formData: FormData) {
             type: 'COD_SETTLEMENT',
             direction: 'IN',
             amount: amountFils,
+            fundAccount: paymentMethod === 'CASH' ? 'CASH' : paymentMethod === 'OTHER' ? 'UNALLOCATED' : 'BANK',
+            paymentMethod,
+            receivedByEmployeeId: paymentMethod === 'CASH' ? session.employeeId : null,
             captainId,
             description: `توريد عهدة نقدية من المندوب (${captain.name}) للخزينة ${notes ? `· ${notes}` : ''}`,
             createdByEmployeeId: session.employeeId,
@@ -326,7 +351,7 @@ export async function settleCaptainClearingAction(formData: FormData) {
 }
 
 export async function resolveDiscrepancyAction(formData: FormData) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:financials');
 
   const schema = z.object({
     diffId: z.string().uuid(),
@@ -378,7 +403,7 @@ export async function resolveDiscrepancyAction(formData: FormData) {
 }
 
 export async function cancelDeliveryBatchSettlementAction(formData: FormData): Promise<{ success: boolean; error?: string; message?: string }> {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:financials');
 
   const batchId = formData.get('batchId') as string;
   const reason = (formData.get('reason') as string)?.trim() || 'إلغاء تسوية طلبية معتمد من إدارة الجرد';
@@ -447,26 +472,30 @@ export async function cancelDeliveryBatchSettlementAction(formData: FormData): P
         },
       });
 
-      let netSettledFils = 0;
-      for (const t of transactions) {
-        if (t.type === 'COD_SETTLEMENT' && t.direction === 'IN') {
-          netSettledFils += t.amount;
-        } else if (t.type === 'COD_SETTLEMENT_REVERSAL' || t.direction === 'OUT') {
-          netSettledFils -= t.amount;
-        }
-      }
-
+      const remittances = transactions.filter(t => t.type === 'COD_SETTLEMENT' && t.direction === 'IN');
+      let reversedRemaining = transactions.filter(t => t.type === 'COD_SETTLEMENT_REVERSAL').reduce((sum, t) => sum + t.amount, 0);
+      const netSettledFils = Math.max(0, remittances.reduce((sum, t) => sum + t.amount, 0) - reversedRemaining);
       if (netSettledFils > 0) {
-        await tx.financialTransaction.create({
-          data: {
-            businessEventKey: `reverse-batch-settlement:${batch.id}:${Date.now()}`,
-            type: 'COD_SETTLEMENT_REVERSAL',
-            direction: 'OUT',
-            amount: netSettledFils,
-            description: `إلغاء تسوية طلبية ${batch.reference} وإعادة الذمة كعهدة معلقة لدى الناقل · السبب: ${reason}`,
-            createdByEmployeeId: session.employeeId,
-          },
-        });
+        let sequence = 0;
+        for (const remittance of remittances) {
+          const alreadyApplied = Math.min(remittance.amount, reversedRemaining);
+          reversedRemaining -= alreadyApplied;
+          const amountToReverse = remittance.amount - alreadyApplied;
+          if (amountToReverse <= 0) continue;
+          await tx.financialTransaction.create({
+            data: {
+              businessEventKey: `reverse-batch-settlement:${batch.id}:${Date.now()}:${sequence++}`,
+              type: 'COD_SETTLEMENT_REVERSAL',
+              direction: 'OUT',
+              amount: amountToReverse,
+              fundAccount: remittance.fundAccount,
+              paymentMethod: remittance.paymentMethod,
+              receivedByEmployeeId: remittance.receivedByEmployeeId,
+              description: `إلغاء توريد ${remittance.fundAccount === 'CASH' ? 'نقدي' : 'بنكي'} لطلبية ${batch.reference} · السبب: ${reason}`,
+              createdByEmployeeId: session.employeeId,
+            },
+          });
+        }
       }
 
       // إعادة حالة تحصيل الطلبات إلى COLLECTED_BY_COURIER
@@ -541,7 +570,7 @@ export async function cancelDeliveryBatchSettlementAction(formData: FormData): P
 }
 
 export async function universalReverseSettlementAction(formData: FormData) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:financials');
 
   const schema = z.object({
     settlementType: z.enum(['SUPPLIER', 'CAPTAIN', 'BATCH', 'DELIVERY_BATCH']),

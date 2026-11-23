@@ -9,12 +9,12 @@ import {
 } from '@/lib/message-templates';
 
 export async function getAllMessageTemplatesAction() {
-  await requirePermission('manage:settings');
+  await requirePermission('manage:content');
   return await getAllMessageTemplates();
 }
 
 export async function saveMessageTemplateAction(key: string, content: string) {
-  await requirePermission('manage:settings');
+  await requirePermission('manage:content');
 
   if (!SYSTEM_MESSAGE_TEMPLATES[key]) {
     throw new Error('قالب غير صالح');
@@ -39,7 +39,7 @@ export async function saveMessageTemplateAction(key: string, content: string) {
 }
 
 export async function resetMessageTemplateAction(key: string) {
-  await requirePermission('manage:settings');
+  await requirePermission('manage:content');
 
   const settingKey = `msg_template_${key}`;
   await prisma.siteSettings.deleteMany({

@@ -18,7 +18,6 @@ import {
   FileText,
   Clock,
   Sparkles,
-  Lock,
   ChevronLeft,
   X,
   Building2,
@@ -33,10 +32,11 @@ import {
 import {
   disburseSalaryPaymentAction,
   disbursePartnerPayoutAction,
-  createPeriodCloseDraftAction,
-  approvePeriodCloseAction,
   updateEmployeePayAgreementAction,
   updatePartnerShareRulesAction,
+  recordCashDepositAction,
+  recordBankOpeningBalanceAction,
+  recordCashOpeningBalanceAction,
 } from '@/actions/profits';
 import type {
   ProfitsKPIs,
@@ -58,6 +58,11 @@ interface Props {
   initialEmployees: EmployeePayrollCard[];
   initialPartners: PartnerSummaryCard[];
   initialLedger: any[];
+  ledgerEmployees: { id: string; name: string }[];
+  balances: { bankFils: number; cashFils: number };
+  hasOpeningBalance: boolean;
+  hasCashOpeningBalance: boolean;
+  ledgerFilters: { from: string; to: string; receiver: string; method: string };
 }
 
 export default function ProfitsClientTabs({
@@ -68,6 +73,11 @@ export default function ProfitsClientTabs({
   initialEmployees,
   initialPartners,
   initialLedger,
+  ledgerEmployees,
+  balances,
+  hasOpeningBalance,
+  hasCashOpeningBalance,
+  ledgerFilters,
 }: Props) {
   const router = useRouter();
   const [paramKey, setParamKey] = useState<'tab' | 'x'>('tab');
@@ -204,6 +214,14 @@ export default function ProfitsClientTabs({
   const [employees, setEmployees] = useState<EmployeePayrollCard[]>(initialEmployees);
   const [partners, setPartners] = useState<PartnerSummaryCard[]>(initialPartners);
   const [ledger, setLedger] = useState<any[]>(initialLedger);
+  const [depositInput, setDepositInput] = useState('');
+  const [depositRequestKey, setDepositRequestKey] = useState(() => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`);
+  const [openingBalanceInput, setOpeningBalanceInput] = useState('');
+  const [cashOpeningBalanceInput, setCashOpeningBalanceInput] = useState('');
+  const [ledgerFrom, setLedgerFrom] = useState(ledgerFilters.from);
+  const [ledgerTo, setLedgerTo] = useState(ledgerFilters.to);
+  const [ledgerReceiver, setLedgerReceiver] = useState(ledgerFilters.receiver);
+  const [ledgerMethod, setLedgerMethod] = useState(ledgerFilters.method);
 
   // Synchronize state data when incoming server props change
   useEffect(() => {
@@ -236,8 +254,6 @@ export default function ProfitsClientTabs({
     partnerName: string;
     remainingDueFils: number;
   } | null>(null);
-
-  const [closeWizardModal, setCloseWizardModal] = useState<boolean>(false);
 
   // Edit Agreement Modal State
   const [editAgreementModal, setEditAgreementModal] = useState<{
@@ -272,15 +288,6 @@ export default function ProfitsClientTabs({
     'PROFIT_DISTRIBUTION' | 'DRAWING_ON_ACCOUNT' | 'ADMINISTRATIVE_WAGE'
   >('PROFIT_DISTRIBUTION');
   const [partnerAmountInput, setPartnerAmountInput] = useState('');
-
-  // Close wizard inputs
-  const [closeFromDate, setCloseFromDate] = useState(() => {
-    const d = new Date();
-    d.setDate(1);
-    return d.toISOString().split('T')[0];
-  });
-  const [closeToDate, setCloseToDate] = useState(() => new Date().toISOString().split('T')[0]);
-  const [closeNotes, setCloseNotes] = useState('');
 
   // ==========================================
   // Handlers
@@ -340,31 +347,6 @@ export default function ProfitsClientTabs({
         window.location.reload();
       } else {
         alert(res.error || 'تعذر صرف دفعة الشريك.');
-      }
-    });
-  };
-
-  const handleCreatePeriodClose = async () => {
-    startTransition(async () => {
-      const res = await createPeriodCloseDraftAction(closeFromDate, closeToDate, closeNotes);
-      if (res.success) {
-        alert('تم إنشاء مسودة إغلاق الفترة المالية بنجاح. يرجى مصادقة الشريكين لاعتماد التوزيع.');
-        setCloseWizardModal(false);
-        window.location.reload();
-      } else {
-        alert(res.error || 'تعذر إنشاء مسودة الإغلاق.');
-      }
-    });
-  };
-
-  const handleApproveClose = async (closeId: string, partnerNumber: 1 | 2) => {
-    startTransition(async () => {
-      const res = await approvePeriodCloseAction(closeId, partnerNumber);
-      if (res.success) {
-        alert(`تم تسجيل موافقة الشريك ${partnerNumber === 1 ? 'الأول' : 'الثاني'} بنجاح.`);
-        window.location.reload();
-      } else {
-        alert(res.error || 'تعذر اعتماد الإغلاق.');
       }
     });
   };
@@ -440,13 +422,7 @@ export default function ProfitsClientTabs({
           </p>
         </div>
 
-        <button
-          onClick={() => setCloseWizardModal(true)}
-          className="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-2xl bg-[#3F4832] hover:bg-[#2f3625] text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm min-h-[42px]"
-        >
-          <Sparkles className="w-4 h-4 text-amber-300" />
-          <span>مراجعة وإغلاق الفترة وتوزيع الأرباح</span>
-        </button>
+
       </div>
 
       {/* Date Filter & Time Periods Control Bar */}
@@ -688,18 +664,6 @@ export default function ProfitsClientTabs({
               مستحق
             </span>
           )}
-        </button>
-
-        <button
-          onClick={() => switchTab('CLOSE')}
-          className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl transition flex items-center gap-1.5 shrink-0 whitespace-nowrap min-h-[38px] ${
-            activeTab === 'CLOSE'
-              ? 'bg-[#3F4832] text-white shadow-xs'
-              : 'text-stone-600 hover:bg-stone-100 bg-white sm:bg-transparent border border-stone-200 sm:border-transparent'
-          }`}
-        >
-          <Calendar className="w-4 h-4" />
-          <span>إغلاق الفترة والاعتماد الثنائي</span>
         </button>
 
         <button
@@ -1021,93 +985,6 @@ export default function ProfitsClientTabs({
         </div>
       )}
 
-      {/* TAB 3: PERIOD CLOSE & DUAL APPROVAL */}
-      {activeTab === 'CLOSE' && (
-        <div className="bg-white rounded-2xl sm:rounded-3xl border border-stone-200 p-4 sm:p-6 shadow-xs space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-100 pb-4">
-            <div>
-              <h3 className="font-extrabold text-sm text-stone-900">
-                إغلاق الفترة المالية ومسار الاعتماد الثنائي (Dual Approval)
-              </h3>
-              <p className="text-xs text-stone-400 mt-0.5">
-                تأكيد مطابقات الموردين، شركات التوصيل، رواتب الموظفين، واعتماد توزيع الأرباح بالتساوي
-              </p>
-            </div>
-
-            <button
-              onClick={() => setCloseWizardModal(true)}
-              className="px-4 py-2.5 sm:py-2 rounded-xl bg-[#3F4832] text-white font-bold text-xs hover:bg-[#2d3424] transition flex items-center justify-center gap-1.5 w-full sm:w-auto min-h-[42px] sm:min-h-0"
-            >
-              <Calendar className="w-4 h-4" />
-              <span>إنشاء مسودة إغلاق جديدة</span>
-            </button>
-          </div>
-
-          {/* Dual Approval Explainer Banner */}
-          <div className="bg-gradient-to-r from-purple-50 via-stone-50 to-blue-50 border border-purple-200 rounded-2xl p-4 sm:p-5 text-xs space-y-2">
-            <div className="flex items-center gap-2 font-bold text-purple-900">
-              <Lock className="w-4 h-4 text-purple-700" />
-              <span>مبدأ الحوكمة الثنائية لأصحاب رَواق (50% / 50%):</span>
-            </div>
-            <p className="text-stone-600 leading-relaxed">
-              لا يمكن تحويل أي أرباح أو اعتماد توزيعها إلا بتوقيع الشريك الأول والشريك الثاني معاً في لوحة التحكم. لا يستطيع الشريك الذي أنشأ الدفعة اعتمادها لنفسه وحده.
-            </p>
-          </div>
-
-          {/* Periods List */}
-          <div className="space-y-3">
-            <h4 className="font-bold text-xs text-stone-700">سجل إغلاقات الفترات المالية:</h4>
-            {ledger.filter((l) => l.category === 'PERIOD_CLOSE').length === 0 ? (
-              <div className="p-8 text-center text-xs text-stone-400 bg-stone-50 rounded-2xl">
-                لا توجد فترات مغلقة بعد. استخدم زر &quot;إنشاء مسودة إغلاق جديدة&quot; للبدء.
-              </div>
-            ) : (
-              ledger
-                .filter((l) => l.category === 'PERIOD_CLOSE')
-                .map((close) => (
-                  <div
-                    key={close.id}
-                    className="p-4 rounded-2xl border border-stone-200 bg-stone-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-stone-900">
-                          {close.reference}
-                        </span>
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                            close.status === 'APPROVED'
-                              ? 'bg-emerald-100 text-emerald-900'
-                              : 'bg-amber-100 text-amber-900'
-                          }`}
-                        >
-                          {close.status === 'APPROVED' ? 'معتمد للتوزيع' : 'بانتظار الاعتماد الثنائي'}
-                        </span>
-                      </div>
-                      <p className="text-stone-500 text-[11px] mt-1">{close.subtitle}</p>
-                    </div>
-
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                      <button
-                        onClick={() => handleApproveClose(close.id, 1)}
-                        className="flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs sm:text-[11px] transition text-center min-h-[38px] sm:min-h-0"
-                      >
-                        توقيع الشريك الأول
-                      </button>
-                      <button
-                        onClick={() => handleApproveClose(close.id, 2)}
-                        className="flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs sm:text-[11px] transition text-center min-h-[38px] sm:min-h-0"
-                      >
-                        توقيع الشريك الثاني
-                      </button>
-                    </div>
-                  </div>
-                ))
-            )}
-          </div>
-        </div>
-      )}
-
       {/* TAB 4: PARTNER DISTRIBUTIONS */}
       {activeTab === 'PARTNERS' && (
         <div className="space-y-6">
@@ -1262,12 +1139,37 @@ export default function ProfitsClientTabs({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 border-b border-stone-100 pb-3">
             <h3 className="font-extrabold text-sm text-stone-900 flex items-center gap-2">
               <FileText className="w-4 h-4 text-[#3F4832]" />
-              <span>السجل التاريخي لعمليات الرواتب والسحوبات وإغلاق الفترات</span>
+              <span>سجل جميع الحركات المالية</span>
             </h3>
             <span className="text-[11px] sm:text-xs text-stone-400 font-mono">
               المصدر المالي الموحد • بالفلس
             </span>
           </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4"><p className="text-xs text-emerald-800 font-bold">رصيد الحساب البنكي من الحركات المسجلة</p><p className="text-2xl font-black text-emerald-950 mt-2" dir="ltr">{filsToDisplay(balances.bankFils)}</p></div>
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4"><p className="text-xs text-amber-800 font-bold">النقد المسجل في الصندوق</p><p className="text-2xl font-black text-amber-950 mt-2" dir="ltr">{filsToDisplay(balances.cashFils)}</p></div>
+          </div>
+          {!hasOpeningBalance && <form onSubmit={async e => { e.preventDefault(); const result = await recordBankOpeningBalanceAction(Math.round(Number(openingBalanceInput) * 1000)); if (result.success) window.location.reload(); else alert(result.error); }} className="rounded-2xl border border-blue-200 bg-blue-50 p-4 flex flex-col sm:flex-row gap-3 sm:items-end">
+            <div className="flex-1"><label htmlFor="openingBalance" className="block text-xs font-bold text-blue-950 mb-1">الرصيد الافتتاحي حسب كشف البنك (مرة واحدة)</label><input id="openingBalance" type="number" min="0" step="0.001" required value={openingBalanceInput} onChange={e => setOpeningBalanceInput(e.target.value)} className="w-full rounded-xl border border-blue-200 p-2.5 text-sm" /><p className="text-[11px] text-blue-800 mt-1">بعد تسجيله يتغير الرصيد تلقائياً مع الحركات والإيداعات.</p></div>
+            <button className="rounded-xl bg-blue-900 text-white px-4 py-2.5 text-xs font-bold">تثبيت الرصيد الافتتاحي</button>
+          </form>}
+          {!hasCashOpeningBalance && <form onSubmit={async e => { e.preventDefault(); const result = await recordCashOpeningBalanceAction(Math.round(Number(cashOpeningBalanceInput) * 1000)); if (result.success) window.location.reload(); else alert(result.error); }} className="rounded-2xl border border-orange-200 bg-orange-50 p-4 flex flex-col sm:flex-row gap-3 sm:items-end">
+            <div className="flex-1"><label htmlFor="cashOpeningBalance" className="block text-xs font-bold text-orange-950 mb-1">رصيد الصندوق الافتتاحي بعد الجرد (مرة واحدة)</label><input id="cashOpeningBalance" type="number" min="0" step="0.001" required value={cashOpeningBalanceInput} onChange={e => setCashOpeningBalanceInput(e.target.value)} className="w-full rounded-xl border border-orange-200 p-2.5 text-sm" /></div>
+            <button className="rounded-xl bg-orange-900 text-white px-4 py-2.5 text-xs font-bold">تثبيت رصيد الصندوق</button>
+          </form>}
+          <form onSubmit={async e => { e.preventDefault(); const result = await recordCashDepositAction(Math.round(Number(depositInput) * 1000), undefined, depositRequestKey); if (result.success) { setDepositInput(''); setDepositRequestKey(globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`); window.location.reload(); } else alert(result.error); }} className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4 flex flex-col sm:flex-row gap-3 sm:items-end">
+            <div className="flex-1"><label htmlFor="cashDeposit" className="block text-xs font-bold text-stone-800 mb-1">إيداع نقد الصندوق في البنك (د.أ)</label><input id="cashDeposit" type="number" min="0.001" step="0.001" required value={depositInput} onChange={e => setDepositInput(e.target.value)} className="w-full rounded-xl border border-stone-300 p-2.5 text-sm" /></div>
+            <button className="rounded-xl bg-[#3F4832] text-white px-4 py-2.5 text-xs font-bold">تسجيل الإيداع ونقل الرصيد للبنك</button>
+          </form>
+          <form method="get" action="/admin/profits" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 rounded-2xl bg-stone-50 border border-stone-200 p-3">
+            <input type="hidden" name="tab" value="ledger" />
+            <label className="text-[11px] font-bold text-stone-600">من وقت<input type="datetime-local" name="ledgerFrom" value={ledgerFrom} onChange={e => setLedgerFrom(e.target.value)} className="mt-1 block w-full rounded-lg border border-stone-300 p-2 text-xs" /></label>
+            <label className="text-[11px] font-bold text-stone-600">إلى وقت<input type="datetime-local" name="ledgerTo" value={ledgerTo} onChange={e => setLedgerTo(e.target.value)} className="mt-1 block w-full rounded-lg border border-stone-300 p-2 text-xs" /></label>
+            <label className="text-[11px] font-bold text-stone-600">الأدمن مستلم النقد<select name="receiver" value={ledgerReceiver} onChange={e => setLedgerReceiver(e.target.value)} className="mt-1 block w-full rounded-lg border border-stone-300 p-2 text-xs"><option value="">الكل</option>{ledgerEmployees.map(employee => <option key={employee.id} value={employee.id}>{employee.name}</option>)}</select></label>
+            <label className="text-[11px] font-bold text-stone-600">طريقة الدفع<select name="method" value={ledgerMethod} onChange={e => setLedgerMethod(e.target.value)} className="mt-1 block w-full rounded-lg border border-stone-300 p-2 text-xs"><option value="">الكل</option><option value="CASH">نقداً</option><option value="BANK_TRANSFER">تحويل بنكي</option><option value="CARD">بطاقة</option><option value="CLIK">كليك</option><option value="OTHER">أخرى</option></select></label>
+            <button className="self-end rounded-lg bg-stone-800 text-white p-2.5 text-xs font-bold">تطبيق الفلاتر</button>
+          </form>
 
           {/* Mobile View: Transaction Cards */}
           <div className="block sm:hidden space-y-3">
@@ -1282,36 +1184,26 @@ export default function ProfitsClientTabs({
                     <span className="font-mono font-bold text-stone-900 text-xs">
                       {event.reference}
                     </span>
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        event.status === 'PAID' || event.status === 'APPROVED'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : 'bg-amber-100 text-amber-800'
-                      }`}
-                    >
-                      {event.status === 'PAID'
-                        ? 'مسدد'
-                        : event.status === 'APPROVED'
-                        ? 'معتمد'
-                        : 'مسودة'}
-                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">مسجل</span>
                   </div>
 
                   <div>
                     <span className="font-bold text-stone-900 block">{event.title}</span>
-                    <span className="text-[11px] text-stone-500">{event.subtitle}</span>
+                    <span className="text-[11px] text-stone-500">{event.subtitle} • {event.fundAccount === 'BANK' ? 'بنك' : event.fundAccount === 'CASH' ? 'نقد' : 'غير محدد'}</span>
+                    {event.receiver && <span className="text-[11px] text-stone-600 block">استلمها: {event.receiver}</span>}
                   </div>
 
                   <div className="pt-2 border-t border-stone-200/60 flex items-center justify-between">
                     <span className="font-mono font-black text-stone-900 text-sm" dir="ltr">
-                      {filsToDisplay(event.amountFils)}
+                      {event.direction === 'OUT' ? '−' : event.direction === 'IN' ? '+' : ''}{filsToDisplay(event.amountFils)}
                     </span>
+                    {event.transferToFundAccount && <span className="text-[10px] text-stone-500">نقل من النقد إلى البنك</span>}
                     <div className="text-end">
                       <span className="text-[10px] text-stone-400 font-mono block">
                         {new Date(event.date).toLocaleDateString('ar-JO')}
                       </span>
                       <span className="text-[10px] text-stone-500 font-mono">
-                        {event.admin || 'النظام'}
+                        سجلها: {event.admin || 'النظام'}
                       </span>
                     </div>
                   </div>
@@ -1328,8 +1220,9 @@ export default function ProfitsClientTabs({
                   <th className="p-3">المرجع والتاريخ</th>
                   <th className="p-3">التصنيف والبيان</th>
                   <th className="p-3 text-left">المبلغ</th>
-                  <th className="p-3 text-center">الحالة</th>
-                  <th className="p-3">بمعرفة</th>
+                  <th className="p-3">الصندوق وطريقة الدفع</th>
+                  <th className="p-3">مستلم النقد</th>
+                  <th className="p-3">سجلها</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100">
@@ -1350,24 +1243,14 @@ export default function ProfitsClientTabs({
                     </td>
 
                     <td className="p-3 text-left font-mono font-bold text-stone-900" dir="ltr">
-                      {filsToDisplay(event.amountFils)}
+                      {event.direction === 'OUT' ? '−' : event.direction === 'IN' ? '+' : 'نقد ← بنك '}{filsToDisplay(event.amountFils)}
                     </td>
 
-                    <td className="p-3 text-center">
-                      <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          event.status === 'PAID' || event.status === 'APPROVED'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-amber-100 text-amber-800'
-                        }`}
-                      >
-                        {event.status === 'PAID'
-                          ? 'مسدد'
-                          : event.status === 'APPROVED'
-                          ? 'معتمد'
-                          : 'مسودة'}
-                      </span>
+                    <td className="p-3 text-[11px] text-stone-600">
+                      {event.fundAccount === 'BANK' ? 'بنك' : event.fundAccount === 'CASH' ? 'نقد' : 'غير محدد'} · {event.paymentMethod || '—'}
                     </td>
+
+                    <td className="p-3 text-[11px] text-stone-600">{event.receiver || '—'}</td>
 
                     <td className="p-3 text-[11px] text-stone-600 font-mono truncate max-w-[120px]">
                       {event.admin || 'النظام'}
@@ -1585,87 +1468,6 @@ export default function ProfitsClientTabs({
                   className="w-full sm:flex-1 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 disabled:bg-stone-300 disabled:cursor-not-allowed text-white font-bold transition flex items-center justify-center gap-2 text-xs min-h-[42px] sm:min-h-0"
                 >
                   {isPending ? 'جاري التحويل...' : 'تأكيد صرف دفعة الشريك'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 3. Modal: Period Close Wizard */}
-      {closeWizardModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-xs">
-          <div className="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-4 border border-stone-200 animate-in slide-in-from-bottom sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-stone-100 pb-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-500" />
-                <h3 className="font-extrabold text-sm text-stone-900">
-                  معالج إغلاق الفترة المالية وتوزيع الأرباح
-                </h3>
-              </div>
-              <button
-                onClick={() => setCloseWizardModal(false)}
-                className="text-stone-400 hover:text-stone-600 p-1.5 rounded-lg hover:bg-stone-100 transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="space-y-4 text-xs">
-              <p className="text-stone-500 leading-relaxed">
-                يقوم هذا المعالج بحساب صافي الربح للفترة المحددة، وحجز الاحتياطي التشغيلي (20%)، والتأكد من توافر السيولة الحرة قبل تمكين التوزيع بالتساوي بين الشريكين.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="font-bold text-stone-700 block">من تاريخ:</label>
-                  <input
-                    type="date"
-                    value={closeFromDate}
-                    onChange={(e) => setCloseFromDate(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-900 focus:outline-none min-h-[42px]"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="font-bold text-stone-700 block">إلى تاريخ:</label>
-                  <input
-                    type="date"
-                    value={closeToDate}
-                    onChange={(e) => setCloseToDate(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-900 focus:outline-none min-h-[42px]"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-stone-700 block">ملاحظات الإغلاق:</label>
-                <textarea
-                  rows={2}
-                  value={closeNotes}
-                  onChange={(e) => setCloseNotes(e.target.value)}
-                  placeholder="ملاحظات حول إغلاق هذه الفترة المالية..."
-                  className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-900 focus:outline-none"
-                />
-              </div>
-
-              <div className="bg-amber-50 border border-amber-200 p-3 rounded-2xl text-[11px] text-amber-900">
-                <strong>تنبيه:</strong> سيتم إنشاء مسودة إغلاق تتطلب توقيع الشريكين معاً (Dual Approval) قبل تحويل أي مبالغ.
-              </div>
-
-              <div className="pt-3 border-t border-stone-100 flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2">
-                <button
-                  onClick={() => setCloseWizardModal(false)}
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold transition text-xs min-h-[42px] sm:min-h-0"
-                >
-                  إلغاء
-                </button>
-                <button
-                  onClick={handleCreatePeriodClose}
-                  disabled={isPending}
-                  className="w-full sm:flex-1 py-2.5 rounded-xl bg-[#3F4832] hover:bg-[#2d3424] text-white font-bold transition flex items-center justify-center gap-2 text-xs min-h-[42px] sm:min-h-0"
-                >
-                  {isPending ? 'جاري المعالجة...' : 'إنشاء مسودة الإغلاق المالي'}
                 </button>
               </div>
             </div>

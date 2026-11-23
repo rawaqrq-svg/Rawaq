@@ -36,7 +36,7 @@ interface Props {
   expenses?: any[];
   categories?: { id: string; name: string }[];
   initialReport?: any;
-  currentEmployee?: { name: string; role: string };
+  currentEmployee?: { name: string; role: string; id: string };
 }
 
 export function ReconciliationClientTabs({
@@ -1050,7 +1050,13 @@ export function ReconciliationClientTabs({
                     <option value="BANK_TRANSFER">حوالة بنكية / كليك (CliQ)</option>
                     <option value="CASH">نقداً في صندوق المتجر</option>
                     <option value="CARD">بطاقة / إيداع</option>
-                    <option value="OTHER">أخرى</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="receivedByEmployeeId" className="text-xs font-bold text-zinc-700 block mb-1">الأدمن مستلم النقد (مطلوب عند اختيار نقداً)</label>
+                  <select id="receivedByEmployeeId" name="receivedByEmployeeId" defaultValue={currentEmployee?.id || ''} className="w-full rounded-lg border border-zinc-300 p-2 text-sm">
+                    <option value="">اختر الأدمن المستلم</option>
+                    {employees.map(employee => <option key={employee.id} value={employee.id}>{employee.name}</option>)}
                   </select>
                 </div>
               </div>

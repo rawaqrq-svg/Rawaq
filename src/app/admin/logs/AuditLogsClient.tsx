@@ -357,7 +357,7 @@ export function AuditLogsClient({
       return { href: `/admin/settings?tab=batches`, label: `كشف التوصيل (${correlation.slice(0, 10)})` };
     }
     if (item.category === 'REPORTS') {
-      return { href: `/admin/reports`, label: `مركز التقارير الرسمية` };
+      return { href: `/admin/reconciliation?v=reports`, label: `مركز التقارير الرسمية` };
     }
     if (item.category === 'ACCOUNTING') {
       return { href: `/admin/reconciliation`, label: `مركز الجرد والتسويات` };

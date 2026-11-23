@@ -1,5 +1,5 @@
 import React from 'react';
-import { requireAuth, requirePermission } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
@@ -7,8 +7,7 @@ import { getHeroSlides, getHeroCarouselSettings, getStoreLocationSettings } from
 import { CMSHomepageForm } from '@/components/CMSHomepageForm';
 
 export default async function AdminCMSHomepagePage() {
-  const session = await requireAuth();
-  await requirePermission('manage:settings'); // Enforce admin settings permission
+  const session = await requirePermission('section:content');
 
   // Load select options for slide links
   const products = await prisma.product.findMany({

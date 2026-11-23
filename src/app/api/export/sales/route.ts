@@ -6,7 +6,7 @@ import { escapeCsvCell } from '@/lib/csv';
 export async function GET(request: Request) {
   try {
     await requireAuth();
-    await requirePermission('manage:settings');
+    await requirePermission('manage:financials');
   } catch {
     return new NextResponse('Forbidden', { status: 403 });
   }

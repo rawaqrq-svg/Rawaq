@@ -301,6 +301,10 @@ export async function generateDeliveryReport(filter: DeliveryReportFilter = {}):
       else if (order.deliveryJob?.area) citiesSet.add(order.deliveryJob.area);
     }
 
+    if (batch.tariffEvaluatedAt) {
+      batchCarrierCostFils = batch.carrierTariffCostFils ?? 0;
+    }
+
     const shopsCount = batchShopsSet.size > 0 ? batchShopsSet.size : 1;
 
     // المطلوب = سعر الطلبيات - سعر التوصيل الإجمالي من كل طلبية

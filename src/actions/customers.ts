@@ -1,11 +1,11 @@
 'use server';
 
-import { requirePermission } from '@/lib/dal';
+import { requireSuperAdmin } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
 export async function updateCustomerNotes(customerId: string, notes: string) {
-  await requirePermission('manage:settings'); // Replace with specific permission if available
+  await requireSuperAdmin();
 
   await prisma.customer.update({
     where: { id: customerId },
@@ -17,7 +17,7 @@ export async function updateCustomerNotes(customerId: string, notes: string) {
 }
 
 export async function toggleCustomerStatus(customerId: string, isActive: boolean) {
-  await requirePermission('manage:settings');
+  await requireSuperAdmin();
 
   await prisma.customer.update({
     where: { id: customerId },

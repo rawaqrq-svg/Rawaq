@@ -1,12 +1,12 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { WarehouseForm } from '../WarehouseForm';
 import { notFound } from 'next/navigation';
 
 export default async function EditWarehousePage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await requireAuth();
+  const session = await requirePermission('section:inventory');
   const { id } = await params;
   
   const warehouse = await prisma.warehouse.findUnique({

@@ -160,10 +160,14 @@ export async function confirmStorefrontOrder(orderId: string) {
         description: `Customer delivery fee for ${order.reference}`, createdByEmployeeId: employeeId,
       } });
       const carrierCost = order.actualDeliveryCost ?? 2000;
-      if (carrierCost > 0) await tx.financialTransaction.create({ data: {
-        type: 'DELIVERY_COST', direction: 'OUT', amount: carrierCost, orderId: order.id,
-        description: `Carrier cost for ${order.reference}`, createdByEmployeeId: employeeId,
-      } });
+      if (carrierCost > 0 && !order.deliveryBatchId) {
+        const existingDeliveryCost = await tx.financialTransaction.findFirst({ where: { orderId: order.id, type: 'DELIVERY_COST' } });
+        if (!existingDeliveryCost) await tx.financialTransaction.create({ data: {
+          businessEventKey: `order-delivery-cost:${order.id}`,
+          type: 'DELIVERY_COST', direction: 'OUT', amount: carrierCost, orderId: order.id,
+          description: `Carrier cost for ${order.reference}`, createdByEmployeeId: employeeId,
+        } });
+      }
       const normalDiscount = Math.max(0, order.discountAmount - order.couponDiscount - order.rewardDiscount);
       for (const [type, amount, label] of [
         ['DISCOUNT', normalDiscount, 'regular discount'],
@@ -627,7 +631,7 @@ export async function syncOrderProfits(orderId: string) {
 }
 
 export async function registerOrderPayment(orderId: string, amountFils: number, method: 'CASH' | 'CARD') {
-  const session = await requirePermission('manage:orders');
+  const session = await requirePermission('manage:financials');
   try {
     return await prisma.$transaction(async (tx) => {
       let invoice = await tx.invoice.findUnique({ where: { orderId } });
@@ -642,20 +646,27 @@ export async function registerOrderPayment(orderId: string, amountFils: number, 
           }
         });
       }
-      
-      const updateData = method === 'CASH' 
-        ? { cashAppliedFils: invoice.cashAppliedFils + amountFils }
-        : { cardAppliedFils: invoice.cardAppliedFils + amountFils }; // Assuming cardAppliedFils doesn't exist, wait, need to check schema. Let's just use cashAppliedFils for now or check if cardAppliedFils exists.
-
-      await tx.invoice.update({
-        where: { id: invoice.id },
-        data: { cashAppliedFils: invoice.cashAppliedFils + amountFils } // Fallback to cash if we don't have card column
-      });
+      if (!Number.isSafeInteger(amountFils) || amountFils <= 0) throw new Error('مبلغ الدفع غير صالح.');
+      const due = Math.max(0, invoice.grossTotalFils - invoice.cashAppliedFils - invoice.cardAppliedFils);
+      if (amountFils > due) throw new Error('مبلغ الدفع أكبر من المتبقي على الفاتورة.');
+      const cashAppliedFils = invoice.cashAppliedFils + (method === 'CASH' ? amountFils : 0);
+      const cardAppliedFils = invoice.cardAppliedFils + (method === 'CARD' ? amountFils : 0);
+      const isPaid = cashAppliedFils + cardAppliedFils >= invoice.grossTotalFils;
+      await tx.invoice.update({ where: { id: invoice.id }, data: {
+        cashAppliedFils, cardAppliedFils, paymentStatus: isPaid ? 'PAID' : 'PARTIALLY_PAID',
+      } });
 
       await tx.order.update({
         where: { id: orderId },
-        data: { paymentStatus: 'PAID' }
+        data: { paymentStatus: isPaid ? 'PAID' : 'PARTIALLY_PAID' }
       });
+      await tx.financialTransaction.create({ data: {
+        businessEventKey: `order-payment:${invoice.id}:${Date.now()}:${session.employeeId}`,
+        type: 'ORDER_PAYMENT', direction: 'IN', amount: amountFils, orderId,
+        fundAccount: method === 'CASH' ? 'CASH' : 'BANK', paymentMethod: method,
+        receivedByEmployeeId: method === 'CASH' ? session.employeeId : null,
+        description: `تسجيل دفعة طلب ${orderId} (${method})`, createdByEmployeeId: session.employeeId,
+      } });
       return { success: true };
     });
   } catch (error: any) {

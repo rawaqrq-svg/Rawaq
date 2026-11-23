@@ -1,10 +1,10 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { WarehouseForm } from '../WarehouseForm';
 
 export default async function NewWarehousePage() {
-  const session = await requireAuth();
+  const session = await requirePermission('section:inventory');
 
   return (
     <div className="flex min-h-screen flex-col bg-[var(--color-ivory-100)] md:flex-row" dir="rtl">

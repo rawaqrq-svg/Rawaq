@@ -5,6 +5,7 @@ export interface RewardRedemptionWithRule {
   rewardRuleId: string;
   amount: number;
   isVoided: boolean;
+  giftVariantId?: string | null;
   rewardRule: {
     id: string;
     name: string;
@@ -42,6 +43,7 @@ export interface OrderRewardProtectionInput {
     rewardNameSnapshot?: string | null;
     shippingZoneNameSnapshot?: string | null;
     rewardRedemptions?: RewardRedemptionWithRule[];
+    items?: Array<{ id: string; variantId: string; isGift: boolean; isRemoved: boolean }>;
     couponRedemption?: CouponRedemptionWithCoupon | null;
   };
   newItemsTotal: number;
@@ -60,11 +62,12 @@ export interface OrderRewardProtectionInput {
     rewardValue: number;
   }>;
   allowRewardBelowThreshold?: boolean;
+  removedItemId?: string;
 }
 
 export interface OrderRewardProtectionResult {
   hasViolatedThreshold: boolean;
-  violatedRewardType: 'FREE_DELIVERY' | 'REWARD_DISCOUNT' | 'COUPON' | null;
+  violatedRewardType: 'FREE_DELIVERY' | 'FREE_PRODUCT' | 'REWARD_DISCOUNT' | 'COUPON' | null;
   thresholdAmount: number | null;
   ruleName: string | null;
   standardShippingFee: number;
@@ -100,6 +103,7 @@ export function evaluateOrderRewardProtection(
     shippingZone,
     activeRewardRules = [],
     allowRewardBelowThreshold = false,
+    removedItemId,
   } = input;
 
   const standardShippingFee =
@@ -160,7 +164,7 @@ export function evaluateOrderRewardProtection(
 
   if (hadRewardDiscount) {
     const rdRedemption = order.rewardRedemptions?.find(
-      (r) => !r.isVoided && r.rewardRule.rewardType !== 'FREE_DELIVERY'
+      (r) => !r.isVoided && r.rewardRule.rewardType !== 'FREE_DELIVERY' && r.rewardRule.rewardType !== 'FREE_PRODUCT'
     );
     if (rdRedemption && rdRedemption.rewardRule.minimumAmount > 0) {
       rewardDiscountRedemption = rdRedemption;
@@ -199,10 +203,17 @@ export function evaluateOrderRewardProtection(
     couponThreshold !== null &&
     newItemsTotal < couponThreshold;
 
-  const hasViolatedThreshold =
-    isFreeDeliveryViolated || isRewardDiscountViolated || isCouponViolated;
+  const giftRedemptionsToVoid = (order.rewardRedemptions ?? []).filter(redemption => {
+    if (redemption.isVoided || redemption.rewardRule.rewardType !== 'FREE_PRODUCT') return false;
+    const manuallyRemovedGift = order.items?.some(item => item.id === removedItemId && item.isGift && item.variantId === redemption.giftVariantId);
+    return Boolean(manuallyRemovedGift) || newItemsTotal < redemption.rewardRule.minimumAmount;
+  });
+  const isFreeGiftViolated = giftRedemptionsToVoid.length > 0;
 
-  let violatedRewardType: 'FREE_DELIVERY' | 'REWARD_DISCOUNT' | 'COUPON' | null = null;
+  const hasViolatedThreshold =
+    isFreeDeliveryViolated || isRewardDiscountViolated || isCouponViolated || isFreeGiftViolated;
+
+  let violatedRewardType: 'FREE_DELIVERY' | 'FREE_PRODUCT' | 'REWARD_DISCOUNT' | 'COUPON' | null = null;
   let thresholdAmount: number | null = null;
   let ruleName: string | null = null;
 
@@ -214,6 +225,10 @@ export function evaluateOrderRewardProtection(
     violatedRewardType = 'REWARD_DISCOUNT';
     thresholdAmount = rewardDiscountThreshold;
     ruleName = rewardDiscountRuleName;
+  } else if (isFreeGiftViolated) {
+    violatedRewardType = 'FREE_PRODUCT';
+    thresholdAmount = giftRedemptionsToVoid[0].rewardRule.minimumAmount;
+    ruleName = giftRedemptionsToVoid[0].rewardRule.name;
   } else if (isCouponViolated) {
     violatedRewardType = 'COUPON';
     thresholdAmount = couponThreshold;
@@ -261,6 +276,13 @@ export function evaluateOrderRewardProtection(
         if (rewardDiscountRedemption) {
           voidRewardRedemptionIds.push(rewardDiscountRedemption.id);
           decrementRewardRuleIds.push(rewardDiscountRedemption.rewardRuleId);
+        }
+      }
+
+      if (isFreeGiftViolated) {
+        for (const redemption of giftRedemptionsToVoid) {
+          voidRewardRedemptionIds.push(redemption.id);
+          decrementRewardRuleIds.push(redemption.rewardRuleId);
         }
       }
 
@@ -315,7 +337,7 @@ export function checkOrderRewardThresholdDrop(
     actualDeliveryCost?: number | null;
     rewardDiscount: number;
     couponDiscount: number;
-    items: Array<{ id: string; total: number; isRemoved: boolean }>;
+    items: Array<{ id: string; total: number; isRemoved: boolean; isGift?: boolean; variantId?: string }>;
     rewardRedemptions?: RewardRedemptionWithRule[];
     couponRedemption?: CouponRedemptionWithCoupon | null;
   },
@@ -336,7 +358,13 @@ export function checkOrderRewardThresholdDrop(
   let threshold: number | null = null;
   let ruleName = 'توصيل مجاني';
 
-  if (order.shippingCost === 0) {
+  const giftRedemption = order.rewardRedemptions?.find(r => !r.isVoided && r.rewardRule.rewardType === 'FREE_PRODUCT');
+  if (giftRedemption) {
+    threshold = giftRedemption.rewardRule.minimumAmount;
+    ruleName = giftRedemption.rewardRule.name;
+  }
+
+  if (threshold === null && order.shippingCost === 0) {
     const fdRedemption = order.rewardRedemptions?.find(
       (r) => !r.isVoided && r.rewardRule.rewardType === 'FREE_DELIVERY'
     );

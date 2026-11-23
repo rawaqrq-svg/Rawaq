@@ -1,5 +1,5 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { getOrdersCommandCenterSummaryAction } from '@/actions/unified-orders';
@@ -10,7 +10,7 @@ export default async function AdminOrdersPage({
 }: {
   searchParams: Promise<{ tab?: string; search?: string; orderId?: string }>;
 }) {
-  const session = await requireAuth();
+  const session = await requirePermission('section:orders');
   const params = await searchParams;
 
   const summary = await getOrdersCommandCenterSummaryAction({

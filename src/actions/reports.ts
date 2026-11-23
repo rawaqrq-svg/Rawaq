@@ -64,7 +64,7 @@ export async function fetchReportDataAction(params: {
   department: string;
   filter?: any;
 }) {
-  await requirePermission('manage:settings');
+  await requirePermission('manage:financials');
 
   const { department, filter = {} } = params;
   const normalizedFilter = {
@@ -96,7 +96,7 @@ export async function fetchReportDataAction(params: {
  * يتم تجميد البيانات والختم واسم المسؤول وتاريخ الاعتماد بشكل نهائي غير قابل للتعديل
  */
 export async function issueAndArchiveReportAction(input: IssueOfficialReportInput) {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('manage:financials');
 
   const reference = await generateNextReportReference();
   const verificationToken = randomBytes(16).toString('hex');
@@ -179,7 +179,7 @@ export async function getArchivedReportsAction(filters?: {
   search?: string;
   limit?: number;
 }) {
-  await requirePermission('manage:settings');
+  await requirePermission('manage:financials');
 
   const where: any = {};
   if (filters?.department && filters.department !== 'ALL') {
@@ -208,7 +208,7 @@ export async function getArchivedReportsAction(filters?: {
  * جلب تفاصيل تقرير مؤرشف محدد بالرقم المرجعي
  */
 export async function getArchivedReportByReferenceAction(reference: string) {
-  await requirePermission('manage:settings');
+  await requirePermission('manage:financials');
 
   const report = await prisma.officialReport.findUnique({
     where: { reference },

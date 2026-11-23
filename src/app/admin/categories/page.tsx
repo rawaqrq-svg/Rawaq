@@ -9,7 +9,7 @@ import { ensureDefaultTaxonomyInstalled } from '@/lib/taxonomy-defaults';
 import { ensureProductTemplatesInstalled } from '@/lib/product-templates';
 
 export default async function AdminCategoriesPage() {
-  const session = await requirePermission('manage:products');
+  const session = await requirePermission('section:products');
   const user = await prisma.employee.findUnique({
     where: { id: session.employeeId },
     include: { role: true },

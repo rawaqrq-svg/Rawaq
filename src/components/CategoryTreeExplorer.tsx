@@ -7,7 +7,6 @@ import {
   updateCategory,
   deleteCategory,
   toggleCategoryVisibility,
-  initRawaqTaxonomyAction,
   moveCategory,
   type CategoryWithChildren,
   type MoveCategoryPosition,
@@ -271,14 +270,6 @@ export function CategoryTreeExplorer({
         setDeleteTarget(null);
         router.refresh();
       }
-    });
-  }
-
-  async function handleSeedTaxonomy() {
-    if (!confirm('هل تريد تثبيت شجرة الأقسام الافتراضية لمتجر رَواق (المكياج، الأزياء، العطور، العناية، الهدايا، الإكسسوارات)؟')) return;
-    startTransition(async () => {
-      await initRawaqTaxonomyAction();
-      router.refresh();
     });
   }
 
@@ -746,14 +737,6 @@ export function CategoryTreeExplorer({
         <div className="flex items-center gap-3">
           <button
             type="button"
-            disabled={isPending}
-            onClick={handleSeedTaxonomy}
-            className="text-xs font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-4 py-2.5 rounded-xl transition-colors shadow-sm disabled:opacity-50"
-          >
-            ⚡ استيراد شجرة رَواق القياسية
-          </button>
-          <button
-            type="button"
             onClick={() => openCreate(null)}
             className="text-xs font-bold text-white bg-[#3F4832] hover:bg-[#2d3623] px-5 py-2.5 rounded-xl transition-colors shadow-sm"
           >
@@ -796,16 +779,8 @@ export function CategoryTreeExplorer({
           <span className="text-4xl block mb-3">🗂️</span>
           <h3 className="font-bold text-base text-zinc-800">لا توجد أقسام مسجلة في شجرة الكتالوج بعد</h3>
           <p className="text-xs text-zinc-500 mt-1 max-w-md mx-auto">
-            يمكنك إنشاء قسم رئيسي جديد، أو تثبيت شجرة أقسام رَواق القياسية بضغطة زر واحدة لإنشاء شجرة المكياج والأزياء والعطور والعناية تلقائياً.
+            ابدأ بإنشاء قسم رئيسي جديد، ثم أضف الأقسام الفرعية حسب بنية متجرك.
           </p>
-          <button
-            type="button"
-            disabled={isPending}
-            onClick={handleSeedTaxonomy}
-            className="mt-4 px-6 py-2.5 bg-[#3F4832] text-white text-xs font-bold rounded-xl shadow-sm hover:bg-[#2d3623]"
-          >
-            ⚡ تثبيت شجرة أقسام رَواق الجاهزة الآن
-          </button>
         </div>
       ) : (
         <div className="bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-sm space-y-3">

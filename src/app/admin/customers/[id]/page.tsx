@@ -1,5 +1,5 @@
 import React from 'react';
-import { requirePermission } from '@/lib/dal';
+import { requireSuperAdmin } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { notFound } from 'next/navigation';
@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { CustomerActions } from './CustomerActions';
 
 export default async function CustomerProfilePage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await requirePermission('manage:settings');
+  const session = await requireSuperAdmin();
   const { id } = await params;
 
   const customer = await prisma.customer.findUnique({

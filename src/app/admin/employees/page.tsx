@@ -1,18 +1,19 @@
 import React from 'react';
-import { requireAuth, getEmployeePermissions } from '@/lib/dal';
+import { requireSuperAdmin } from '@/lib/dal';
+import { ADMIN_SECTIONS, defaultSectionsForRole, isMainAdminRole } from '@/lib/admin-permissions';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { createEmployee, updateEmployee, toggleEmployeeStatus, deleteEmployee } from '@/actions/employees';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { EmployeePermissionsFields } from './EmployeePermissionsFields';
 
 export default async function AdminEmployeesPage({
   searchParams
 }: {
   searchParams: Promise<{ action?: string; id?: string; error?: string; message?: string }>;
 }) {
-  const session = await requireAuth();
-  const activePermissions = await getEmployeePermissions(session.employeeId);
+  const session = await requireSuperAdmin();
 
   // Resolve searchParams promise
   const resolvedParams = await searchParams;
@@ -33,25 +34,20 @@ export default async function AdminEmployeesPage({
 
   // Only fetch Main Admin and Operational Admin roles
   const roles = await prisma.role.findMany({
-    where: { name: { in: allowedRoles } }
+    where: { name: { in: allowedRoles } },
+    include: { permissions: { include: { permission: { select: { action: true } } } } },
   });
-  let allPermissions = await prisma.permission.findMany();
-
-  // Auto-seed missing POS permissions
-  const requiredPerms = [
-    { action: 'pos.orders.view', description: 'عرض طلبات المتجر في شاشة الكاشير' },
-    { action: 'pos.orders.manage', description: 'إدارة وتغيير حالة طلبات المتجر في الكاشير' }
-  ];
-  let permAdded = false;
-  for (const rp of requiredPerms) {
-    if (!allPermissions.find(p => p.action === rp.action)) {
-      await prisma.permission.create({ data: rp });
-      permAdded = true;
-    }
-  }
-  if (permAdded) {
-    allPermissions = await prisma.permission.findMany();
-  }
+  const roleOptions = roles.map((role) => ({
+    id: role.id,
+    name: role.name,
+    defaultSections: defaultSectionsForRole(role.name, role.permissions.map((entry) => entry.permission.action)),
+    isMainAdmin: isMainAdminRole(role.name),
+  }));
+  await Promise.all(ADMIN_SECTIONS.map((section) => prisma.permission.upsert({
+    where: { action: section.action },
+    update: { description: section.description },
+    create: { action: section.action, description: section.description },
+  })));
 
   // Load employee list
   const employees = await prisma.employee.findMany({
@@ -67,16 +63,28 @@ export default async function AdminEmployeesPage({
 
   // Handle Edit employee load
   let editEmployee = null;
-  let editEmployeePermIds: string[] = [];
+  let editEmployeePermActions: string[] = [];
   if (action === 'edit' && editId) {
     editEmployee = await prisma.employee.findUnique({
       where: { id: editId },
       include: {
-        permissions: true
+        role: true,
+        permissions: { include: { permission: true } }
       }
     });
     if (editEmployee) {
-      editEmployeePermIds = editEmployee.permissions.map((p) => p.permissionId);
+      const storedSectionActions = editEmployee.permissions
+        .map((permission) => permission.permission.action)
+        .filter((action): action is typeof ADMIN_SECTIONS[number]['action'] => ADMIN_SECTIONS.some((section) => section.action === action));
+      const storedSectionOverrides = editEmployee.permissions.filter((permission) =>
+        ADMIN_SECTIONS.some((section) => section.action === permission.permission.action)
+      );
+      const explicitlyAllowedSections = new Set(storedSectionOverrides
+        .filter((permission) => permission.effect === 'ALLOW')
+        .map((permission) => permission.permission.action));
+      editEmployeePermActions = storedSectionOverrides.length
+        ? storedSectionActions.filter((action) => explicitlyAllowedSections.has(action))
+        : defaultSectionsForRole(editEmployee.role.name, roleOptions.find((role) => role.id === editEmployee!.roleId)?.defaultSections || []);
     }
   }
 
@@ -92,7 +100,7 @@ export default async function AdminEmployeesPage({
     const isActive = formData.get('isActive') === 'true';
     
     // Roles dictate permissions completely now.
-    const selectedPermissionIds: string[] = [];
+    const selectedPermissionActions = formData.getAll('permissions').filter((value): value is string => typeof value === 'string');
 
     if (empId) {
       // Update
@@ -103,7 +111,7 @@ export default async function AdminEmployeesPage({
         password: password || undefined,
         roleId,
         isActive,
-        selectedPermissionIds,
+        selectedPermissionActions,
         adminId: session.employeeId
       });
       if (!res.success) {
@@ -117,7 +125,7 @@ export default async function AdminEmployeesPage({
         password: password || undefined,
         roleId,
         isActive,
-        selectedPermissionIds,
+        selectedPermissionActions,
         bootstrapAdminId: session.employeeId
       });
       if (!res.success) {
@@ -130,6 +138,8 @@ export default async function AdminEmployeesPage({
 
   async function handleRevoke(formData: FormData) {
     'use server';
+    const { requireSuperAdmin } = await import('@/lib/dal');
+    const actor = await requireSuperAdmin();
     const targetId = formData.get('targetId') as string;
     try {
       await prisma.session.deleteMany({
@@ -138,7 +148,7 @@ export default async function AdminEmployeesPage({
       
       await prisma.auditLog.create({
         data: {
-          employeeId: session.employeeId,
+          employeeId: actor.employeeId,
           action: 'SESSIONS_REVOKED',
           entityType: 'Employee',
           entityId: targetId,
@@ -180,7 +190,7 @@ export default async function AdminEmployeesPage({
       <main className="min-w-0 max-w-full flex-1 p-4 md:p-8 font-sans w-full max-w-4xl mx-auto">
         {/* Feedback Alerts */}
         {errorMsg && (
-          <div className="mb-5 p-4 rounded-xl bg-red-50 border border-red-200 text-red-900 text-sm font-semibold flex items-center justify-between shadow-xs">
+          <div role="alert" className="mb-5 p-4 rounded-xl bg-red-50 border border-red-200 text-red-900 text-sm font-semibold flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-2">
               <span className="text-lg">⚠️</span>
               <span>{errorMsg}</span>
@@ -192,7 +202,7 @@ export default async function AdminEmployeesPage({
         )}
 
         {successMsg && (
-          <div className="mb-5 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm font-semibold flex items-center justify-between shadow-xs">
+          <div role="status" aria-live="polite" className="mb-5 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm font-semibold flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-2">
               <span className="text-lg">✅</span>
               <span>{successMsg}</span>
@@ -260,27 +270,12 @@ export default async function AdminEmployeesPage({
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-bold text-zinc-700 mb-1">الدور الوظيفي الرئيسي</label>
-                <select
-                  name="roleId"
-                  required
-                  defaultValue={editEmployee?.roleId || ''}
-                  className="w-full border border-zinc-200 rounded px-3 py-2 text-sm outline-none bg-white focus:border-[#2d3623]"
-                >
-                  <option value="">اختر الدور الوظيفي...</option>
-                  {roles.map((role) => {
-                    let displayName = role.name;
-                    if (role.name === 'أدمن رئيسي') displayName = 'أدمن رئيسي (Super Admin)';
-                    if (role.name === 'أدمن تشغيلي') displayName = 'أدمن تشغيلي (Operational Admin)';
-                    return (
-                      <option key={role.id} value={role.id}>
-                        {displayName}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
+                <EmployeePermissionsFields
+                  roles={roleOptions}
+                  sections={ADMIN_SECTIONS.map(({ action, label, description }) => ({ action, label, description }))}
+                  initialRoleId={editEmployee?.roleId || ''}
+                  initialPermissions={editEmployeePermActions}
+                />
 
               <div>
                 <label className="block text-sm font-bold text-zinc-700 mb-1">حالة الحساب</label>
@@ -334,9 +329,9 @@ export default async function AdminEmployeesPage({
                     الدور: {emp.role.name === 'Admin' ? 'أدمن رئيسي' : emp.role.name === 'Cashier' ? 'كاشير' : emp.role.name}
                   </span>
                   
-                  {emp.permissions.map((ep) => (
+                  {emp.permissions.filter((ep) => ep.effect === 'ALLOW').map((ep) => (
                     <span key={ep.permissionId} className="bg-emerald-50 text-emerald-800 border border-emerald-100 px-2 py-0.5 rounded font-bold">
-                      {ep.permission.action === 'pos:access' ? 'الكاشير' : ep.permission.action.split(':')[1] || ep.permission.action}
+                      {ADMIN_SECTIONS.find((section) => section.action === ep.permission.action)?.label || ep.permission.action}
                     </span>
                   ))}
                 </div>

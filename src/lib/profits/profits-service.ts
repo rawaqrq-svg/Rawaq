@@ -84,6 +84,8 @@ export class ProfitsService {
         ...periodFilter,
       },
       select: {
+        id: true,
+        deliveryBatchId: true,
         totalAmount: true,
         actualDeliveryCost: true,
         shippingCost: true,
@@ -116,10 +118,21 @@ export class ProfitsService {
 
     // 3. تكاليف التوصيل وإيراداته (الزبون يدفع 3 د.أ افتراضياً، شركة التوصيل تستحق 2 د.أ، والفارق 1 د.أ ربح صاف للمنصة)
     const deliveryRevenueFils = deliveredOrders.reduce((sum, o) => sum + (o.shippingCost || 0), 0);
-    const courierCostsFils = deliveredOrders.reduce(
-      (sum, o) => sum + (o.actualDeliveryCost ?? 2000),
-      0
-    );
+    const batchedOrders = new Map<string, typeof deliveredOrders>();
+    let courierCostsFils = 0;
+    for (const order of deliveredOrders) {
+      if (!order.deliveryBatchId) courierCostsFils += order.actualDeliveryCost ?? 2000;
+      else batchedOrders.set(order.deliveryBatchId, [...(batchedOrders.get(order.deliveryBatchId) || []), order]);
+    }
+    if (batchedOrders.size) {
+      const batches = await prisma.deliveryBatch.findMany({ where: { id: { in: [...batchedOrders.keys()] } }, select: { id: true, tariffEvaluatedAt: true, carrierTariffCostFils: true } });
+      for (const batch of batches) {
+        const orders = batchedOrders.get(batch.id) || [];
+        courierCostsFils += batch.tariffEvaluatedAt
+          ? (batch.carrierTariffCostFils ?? 0)
+          : orders.reduce((sum, order) => sum + (order.actualDeliveryCost ?? 2000), 0);
+      }
+    }
     const deliveryProfitMarginFils = Math.max(0, deliveryRevenueFils - courierCostsFils);
 
     // 4. المصاريف التشغيلية (تسويق، برمجيات، ضيافة...)
@@ -526,6 +539,8 @@ export class ProfitsService {
           type: 'SALARY_PAYMENT',
           direction: 'OUT',
           amount: payAmount,
+          fundAccount: input.paymentMethod === 'CASH' ? 'CASH' : 'BANK',
+          paymentMethod: input.paymentMethod,
           businessEventKey: idempotencyKey,
           description: `سداد راتب الموظف ${period.employee.name} للفترة ${period.reference}`,
           createdByEmployeeId: adminEmployeeId,
@@ -826,6 +841,8 @@ export class ProfitsService {
               : 'ADMINISTRATIVE_EXPENSE',
           direction: 'OUT',
           amount: input.amountFils,
+          fundAccount: input.paymentMethod === 'CASH' ? 'CASH' : 'BANK',
+          paymentMethod: input.paymentMethod,
           businessEventKey: idempotencyKey,
           description: `صرف ${
             input.payoutType === 'PROFIT_DISTRIBUTION'
@@ -989,76 +1006,50 @@ export class ProfitsService {
   /**
    * 7. سجل القيود التاريخي المتكامل (Full Ledger)
    */
-  static async getProfitsFullLedger(limit = 50, fromDate?: Date, toDate?: Date) {
-    const dateFilter = fromDate && toDate ? { gte: fromDate, lte: toDate } : undefined;
-
-    const [payments, payouts, closes] = await Promise.all([
-      prisma.payrollPayment.findMany({
-        where: dateFilter ? { paidAt: dateFilter } : {},
-        take: limit,
-        orderBy: { paidAt: 'desc' },
-        include: { payrollPeriod: { include: { employee: true } } },
-      }),
-      prisma.partnerPayout.findMany({
-        where: dateFilter ? { paidAt: dateFilter } : {},
-        take: limit,
-        orderBy: { paidAt: 'desc' },
-        include: { partnerRule: true },
-      }),
-      prisma.profitClose.findMany({
-        where: dateFilter ? { createdAt: dateFilter } : {},
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-      }),
-    ]);
-
-    const events: any[] = [];
-
-    for (const p of payments) {
-      events.push({
-        id: p.id,
-        reference: p.reference,
-        category: 'PAYROLL',
-        title: `سداد راتب: ${p.payrollPeriod.employee.name}`,
-        subtitle: `الفترة: ${p.payrollPeriod.reference} • ${p.paymentMethod}`,
-        amountFils: p.amountFils,
-        direction: 'OUT',
-        date: p.paidAt,
-        status: 'PAID',
-        admin: p.paidByEmployeeId,
-      });
+  static async getFundBalances() {
+    const rows = await prisma.financialTransaction.findMany({
+      where: { fundAccount: { in: ['BANK', 'CASH'] } },
+      select: { fundAccount: true, transferToFundAccount: true, direction: true, amount: true },
+    });
+    const balances = { bankFils: 0, cashFils: 0 };
+    for (const row of rows) {
+      const source = row.fundAccount === 'BANK' ? 'bankFils' : 'cashFils';
+      if (row.direction === 'IN') balances[source] += row.amount;
+      if (row.direction === 'OUT') balances[source] -= row.amount;
+      if (row.direction === 'TRANSFER' && row.transferToFundAccount) {
+        balances[source] -= row.amount;
+        if (row.transferToFundAccount === 'BANK') balances.bankFils += row.amount;
+        if (row.transferToFundAccount === 'CASH') balances.cashFils += row.amount;
+      }
     }
-
-    for (const p of payouts) {
-      events.push({
-        id: p.id,
-        reference: p.reference,
-        category: 'PARTNER',
-        title: `دفعة شريك: ${p.partnerRule.partnerName}`,
-        subtitle: `${p.payoutType === 'PROFIT_DISTRIBUTION' ? 'توزيع أرباح معتمدة' : p.payoutType === 'DRAWING_ON_ACCOUNT' ? 'سحب على الحساب' : 'أجر إداري'} • ${p.paymentMethod}`,
-        amountFils: p.amountFils,
-        direction: 'OUT',
-        date: p.paidAt,
-        status: 'PAID',
-        admin: p.authorizedByAdmin,
-      });
-    }
-
-    for (const c of closes) {
-      events.push({
-        id: c.id,
-        reference: c.reference,
-        category: 'PERIOD_CLOSE',
-        title: `إغلاق مالي: ${c.reference}`,
-        subtitle: `صافي الربح: ${(c.netProfitFils / 1000).toFixed(3)} د.أ • المعتمد: ${(c.actualApprovedDistributionFils / 1000).toFixed(3)} د.أ`,
-        amountFils: c.actualApprovedDistributionFils,
-        direction: 'HOLD',
-        date: c.closedAt || c.createdAt,
-        status: c.status,
-        admin: c.closedByEmployeeId || 'النظام',
-      });
-    }
-
-    return events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return balances;
   }
+
+  static async getProfitsFullLedger(limit = 500, fromDate?: Date, toDate?: Date, receiverId?: string, paymentMethod?: string) {
+    void limit;
+    const where: any = {};
+    if (fromDate || toDate) where.createdAt = { ...(fromDate ? { gte: fromDate } : {}), ...(toDate ? { lte: toDate } : {}) };
+    if (receiverId) where.receivedByEmployeeId = receiverId;
+    if (paymentMethod) where.paymentMethod = paymentMethod;
+    const transactions = await prisma.financialTransaction.findMany({ where, orderBy: { createdAt: 'desc' } });
+    const employeeIds = [...new Set(transactions.flatMap(t => [t.createdByEmployeeId, t.receivedByEmployeeId]).filter(Boolean))] as string[];
+    const employees = employeeIds.length ? await prisma.employee.findMany({ where: { id: { in: employeeIds } }, select: { id: true, name: true } }) : [];
+    const employeeNames = new Map(employees.map(e => [e.id, e.name]));
+    const labels: Record<string, string> = {
+      COD_SETTLEMENT: 'توريد من شركة التوصيل', SUPPLIER_PAYMENT: 'دفعة مورد', SUPPLIER_PAYMENT_REVERSAL: 'عكس دفعة مورد',
+      CAPTAIN_PAYMENT: 'دفعة مندوب التوصيل', CAPTAIN_PAYMENT_REVERSAL: 'عكس دفعة مندوب', EXPENSE: 'مصروف',
+      SALARY_PAYMENT: 'سداد راتب', PARTNER_DISTRIBUTION_PAYOUT: 'توزيع أرباح شريك', PARTNER_DRAWING: 'سحب شريك',
+      ADMINISTRATIVE_EXPENSE: 'أجر إداري لشريك', CASH_DEPOSIT: 'إيداع نقدي في البنك', BANK_OPENING_BALANCE: 'رصيد افتتاحي للبنك', CASH_OPENING_BALANCE: 'رصيد افتتاحي للصندوق',
+      SALE: 'عملية بيع', RECONCILIATION_CLEARING: 'تسوية محاسبية',
+      POS_PAYMENT: 'تحصيل نقطة البيع', ORDER_PAYMENT: 'تحصيل دفعة طلب',
+    };
+    return transactions.map(t => ({
+      id: t.id, reference: t.businessEventKey || t.id.slice(0, 8), category: t.type,
+      title: labels[t.type] || t.type, subtitle: t.description, amountFils: t.amount,
+      direction: t.direction, date: t.createdAt, status: 'RECORDED', admin: employeeNames.get(t.createdByEmployeeId || '') || 'النظام',
+      receiver: employeeNames.get(t.receivedByEmployeeId || '') || '', fundAccount: t.fundAccount,
+      paymentMethod: t.paymentMethod || '', transferToFundAccount: t.transferToFundAccount || '',
+    }));
+  }
+
 }

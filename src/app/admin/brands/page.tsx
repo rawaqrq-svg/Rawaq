@@ -1,12 +1,12 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { BrandNewForm } from '@/components/BrandNewForm';
 import { BrandActionsMenu } from '@/components/BrandActionsMenu';
 
 export default async function AdminBrandsPage() {
-  const session = await requireAuth();
+  const session = await requirePermission('section:products');
 
   const brands = await prisma.brand.findMany({
     include: {

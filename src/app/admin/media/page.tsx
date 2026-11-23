@@ -5,7 +5,7 @@ import { AdminSidebar } from '@/components/AdminSidebar';
 
 export default async function AdminPage() {
   // Enforce server-side authorization check
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('section:content');
   const user = await prisma.employee.findUnique({
     where: { id: session.employeeId },
     include: { role: true }

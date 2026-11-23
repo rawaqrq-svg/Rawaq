@@ -8,6 +8,7 @@ export const checkoutSchema = z.object({
   addressApartment: z.string().optional(),
   shippingZoneId: z.string().optional(),
   couponCode: z.string().trim().max(80).optional(),
+  giftVariantId: z.preprocess(value => value === '' ? undefined : value, z.string().uuid().optional()),
   idempotencyKey: z.string().max(100).optional(),
   items: z.string(), // JSON string of [{ productId, variantId, quantity }]
   termsAccepted: z.string().optional()

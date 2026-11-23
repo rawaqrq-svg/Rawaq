@@ -22,7 +22,7 @@ function quota(name: string, used: number) {
 }
 
 export default async function OverviewDbPage() {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('section:settings');
   await connection();
   const [databaseSize, storageSize, products, variants, categories, orders, customers, images, tables] = await Promise.all([
     prisma.$queryRaw<Array<{ size: bigint }>>`SELECT pg_database_size(current_database())::bigint AS size`,

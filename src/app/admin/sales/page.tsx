@@ -1,5 +1,5 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { filsToDisplay } from '@/lib/money';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
@@ -11,7 +11,7 @@ export default async function AdminSalesPage({
 }: {
   searchParams: Promise<{ employeeId?: string; source?: string; payMethod?: string; startDate?: string; endDate?: string }>;
 }) {
-  const session = await requireAuth();
+  const session = await requirePermission('section:financials');
 
   const resolvedParams = await searchParams;
   const filterEmployee = resolvedParams.employeeId;

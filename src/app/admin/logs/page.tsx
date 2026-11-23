@@ -1,5 +1,5 @@
 import React from 'react';
-import { requirePermission } from '@/lib/dal';
+import { requireSuperAdmin } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { AuditLogsClient, AuditLogItem } from './AuditLogsClient';
@@ -10,7 +10,7 @@ export default async function AdminLogsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const session = await requirePermission('manage:settings');
+  const session = await requireSuperAdmin();
   const params = await searchParams;
 
   const view = typeof params.view === 'string' ? params.view : 'all';

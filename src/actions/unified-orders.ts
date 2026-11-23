@@ -540,6 +540,7 @@ export async function removeShortageOrderItemAction(
     shippingZone,
     activeRewardRules,
     allowRewardBelowThreshold,
+    removedItemId: targetItem.id,
   });
 
   const previousTotal = order.previousTotalAmount || order.totalAmount;
@@ -572,6 +573,8 @@ export async function removeShortageOrderItemAction(
         data: { isVoided: true },
       });
     }
+    const giftVariantIdsToRemove = order.rewardRedemptions.filter((redemption: any) => rewardEval.voidRewardRedemptionIds.includes(redemption.id) && redemption.rewardRule.rewardType === 'FREE_PRODUCT').map((redemption: any) => redemption.giftVariantId).filter(Boolean);
+    if (giftVariantIdsToRemove.length) await tx.orderItem.updateMany({ where: { orderId, isGift: true, variantId: { in: giftVariantIdsToRemove }, isRemoved: false }, data: { isRemoved: true, removalReason: 'لم تعد السلة مستوفية لحد الهدية المجانية' } });
     for (const ruleId of rewardEval.decrementRewardRuleIds) {
       await tx.rewardRule.updateMany({
         where: { id: ruleId, usageCount: { gt: 0 } },
@@ -842,6 +845,7 @@ export async function replaceShortageOrderItemAction(
     shippingZone,
     activeRewardRules,
     allowRewardBelowThreshold,
+    removedItemId: targetItem.id,
   });
 
   const offer = variant.supplierOffers[0];
@@ -972,6 +976,8 @@ export async function replaceShortageOrderItemAction(
         data: { isVoided: true },
       });
     }
+    const giftVariantIdsToRemove = order.rewardRedemptions.filter((redemption: any) => rewardEval.voidRewardRedemptionIds.includes(redemption.id) && redemption.rewardRule.rewardType === 'FREE_PRODUCT').map((redemption: any) => redemption.giftVariantId).filter(Boolean);
+    if (giftVariantIdsToRemove.length) await tx.orderItem.updateMany({ where: { orderId, isGift: true, variantId: { in: giftVariantIdsToRemove }, isRemoved: false }, data: { isRemoved: true, removalReason: 'لم تعد السلة مستوفية لحد الهدية المجانية' } });
     for (const ruleId of rewardEval.decrementRewardRuleIds) {
       await tx.rewardRule.updateMany({
         where: { id: ruleId, usageCount: { gt: 0 } },

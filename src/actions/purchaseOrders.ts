@@ -121,7 +121,7 @@ export async function receiveGoods(formData: FormData) {
 }
 
 export async function createSupplierInvoice(formData: FormData) {
-  const session = await requirePermission('manage:financials');
+  const session = await requirePermission('section:inventory');
   const purchaseOrderId = formData.get('purchaseOrderId') as string;
 
   await prisma.$transaction(async tx => {
@@ -142,7 +142,7 @@ export async function createSupplierInvoice(formData: FormData) {
 }
 
 export async function paySupplierInvoice(invoiceId: string) {
-  const session = await requirePermission('manage:financials');
+  const session = await requirePermission('section:inventory');
 
   await prisma.$transaction(async tx => {
     const inv = await tx.supplierInvoice.findUnique({ 
@@ -161,6 +161,8 @@ export async function paySupplierInvoice(invoiceId: string) {
         type: 'SUPPLIER_PAYMENT',
         direction: 'OUT',
         amount: inv.totalAmount,
+        fundAccount: 'BANK',
+        paymentMethod: 'BANK_TRANSFER',
         supplierId: inv.supplierId,
         description: `Payment for Invoice ${inv.reference}`,
         createdByEmployeeId: session.employee.id,

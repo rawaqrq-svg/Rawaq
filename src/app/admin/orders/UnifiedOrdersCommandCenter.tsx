@@ -1680,6 +1680,7 @@ export default function UnifiedOrdersCommandCenter({
                                 >
                                   {item.name}
                                 </span>
+                                {item.isGift && <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800">🎁 هدية مجانية</span>}
                                 {isRemoved && (
                                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
                                     مستبعد: {item.removalReason || 'غير متوفر'}
@@ -1727,7 +1728,7 @@ export default function UnifiedOrdersCommandCenter({
                                     >
                                       حذف وتعديل الفاتورة
                                     </button>
-                                    <button
+                                    {!item.isGift && <button
                                       type="button"
                                       disabled={isSubmittingAdjustment}
                                       onClick={() => {
@@ -1740,7 +1741,7 @@ export default function UnifiedOrdersCommandCenter({
                                       className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-[#3F4832] text-white hover:bg-[#2d3424] shadow-xs transition"
                                     >
                                       استبدال ببديل
-                                    </button>
+                                    </button>}
                                   </div>
                                 ) : isRemoved ? (
                                   <span className="text-[11px] text-stone-400 italic">تم الاستبعاد</span>

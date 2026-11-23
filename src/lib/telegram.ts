@@ -6,6 +6,7 @@ interface OrderItemForTelegram {
   size?: string;
   quantity: number;
   total: number;
+  isGift?: boolean;
 }
 
 interface OrderNotificationPayload {
@@ -92,7 +93,7 @@ export async function sendTelegramNewOrderNotification(payload: OrderNotificatio
   text += `\n🛒 <b>المنتجات:</b>\n`;
   for (const it of payload.items) {
     const sizeStr = it.size && it.size !== 'افتراضي' ? ` (${it.size})` : '';
-    text += `• ${escapeHtml(it.name)}${escapeHtml(sizeStr)} × ${it.quantity} = ${escapeHtml(filsToDisplay(it.total, 'ar'))}\n`;
+    text += `• ${escapeHtml(it.name)}${escapeHtml(sizeStr)} × ${it.quantity} = ${escapeHtml(filsToDisplay(it.total, 'ar'))}${it.isGift ? ' 🎁 هدية مجانية' : ''}\n`;
   }
 
   if (payload.discountAmount && payload.discountAmount > 0) {

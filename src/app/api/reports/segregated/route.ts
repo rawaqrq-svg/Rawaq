@@ -9,7 +9,7 @@ import { generateFinancialSummaryReport } from '@/lib/reports/financial-summary-
 
 export async function GET(request: NextRequest) {
   try {
-    await requirePermission('manage:settings');
+    await requirePermission('manage:financials');
     const { searchParams } = new URL(request.url);
 
     const dept = (searchParams.get('dept') || 'DELIVERY').toUpperCase();

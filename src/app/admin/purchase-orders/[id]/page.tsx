@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { POClientActions } from './POActions';
 
 export default async function PurchaseOrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await requirePermission('manage:inventory');
+  const session = await requirePermission('section:inventory');
   const { id } = await params;
   
   const po = await prisma.purchaseOrder.findUnique({

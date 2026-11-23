@@ -8,7 +8,7 @@ import { initializeShippingZones, updateShippingZone, updateAllShippingZonesActi
 import { Truck, DollarSign, ShieldAlert, CheckCircle2, ArrowUpDown, Sparkles, Building2 } from 'lucide-react';
 
 export default async function DeliveriesPage() {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('section:delivery');
   
   await initializeShippingZones();
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { getCMSContent, updateCMSContent } from '@/lib/cms';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import Link from 'next/link';
@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { STORE_INSTAGRAM_URL, STORE_WHATSAPP_URL } from '@/lib/contact';
 
 export default async function AdminContentPage() {
-  const session = await requireAuth();
+  const session = await requirePermission('section:content');
 
   const announcement = await getCMSContent('announcement_bar', {
     textAr: 'توصيل مجاني للطلبات فوق 50 د.أ',

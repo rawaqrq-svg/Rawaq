@@ -27,6 +27,9 @@ export function FloatingCart({ locale = 'ar', rewardRule }: { locale?: string, r
       const fixedAmount = filsToDisplay(rewardRule.rewardValue, displayLocale);
       rewardNameAr = `خصم ${fixedAmount}`;
       rewardNameEn = `${fixedAmount} Discount`;
+    } else if (rewardRule.rewardType === 'FREE_PRODUCT') {
+      rewardNameAr = rewardRule.name || 'هدية مجانية';
+      rewardNameEn = rewardRule.name || 'Free gift';
     }
   }
 

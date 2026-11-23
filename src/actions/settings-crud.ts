@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/db';
-import { requirePermission, requireSuperAdmin } from '@/lib/dal';
+import { requireAnyPermission, requirePermission, requireSuperAdmin } from '@/lib/dal';
 import { z } from 'zod';
 
 /**
@@ -317,7 +317,7 @@ export interface InventorySettings {
   lowStockThreshold: number;
 }
 export async function getInventorySettings(): Promise<InventorySettings> {
-  await requirePermission('manage:settings');
+  await requireAnyPermission(['section:products', 'section:inventory']);
   return await getSiteSettings<InventorySettings>('inventory_settings', { lowStockThreshold: 1.0 });
 }
 export async function updateInventorySettings(data: InventorySettings, adminId: string) {

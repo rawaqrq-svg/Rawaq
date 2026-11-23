@@ -5,6 +5,7 @@ import { processCheckout } from '@/actions/checkout';
 import { filsToDisplay } from '@/lib/money';
 import Link from 'next/link';
 import { FileText } from 'lucide-react';
+import { normalizeMediaUrl } from '@/lib/media';
 
 export default function CheckoutPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = React.use(params);
@@ -15,7 +16,8 @@ export default function CheckoutPage({ params }: { params: Promise<{ locale: str
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [mounted, setMounted] = useState(false);
   const [zones, setZones] = useState<any[]>([]);
-  const [rewardRules, setRewardRules] = useState<{ name: string; minimumAmount: number; rewardType: string; rewardValue: number }[]>([]);
+  const [rewardRules, setRewardRules] = useState<{ id: string; name: string; minimumAmount: number; rewardType: string; rewardValue: number; priority?: number; giftSelectionMode?: string; giftVariants?: { id: string; size: string; price: number; mainImage?: string | null; colorName?: string | null; product: { nameAr: string; nameEn: string; images?: { url: string }[] } }[] }[]>([]);
+  const [selectedGiftVariantId, setSelectedGiftVariantId] = useState('');
   const [selectedZoneId, setSelectedZoneId] = useState<string>('');
   const [isSubmittingLocal, setIsSubmittingLocal] = useState(false);
   const [isOrderConfirmed, setIsOrderConfirmed] = useState(false);
@@ -152,13 +154,22 @@ export default function CheckoutPage({ params }: { params: Promise<{ locale: str
 
   const getRewardDiscount = () => {
     const subtotal = getSubtotal();
-    const eligible = rewardRules.filter(rule => rule.rewardType !== 'FREE_DELIVERY' && subtotal >= rule.minimumAmount);
+    const eligible = rewardRules.filter(rule => rule.rewardType !== 'FREE_DELIVERY' && rule.rewardType !== 'FREE_PRODUCT' && subtotal >= rule.minimumAmount);
     return Math.max(0, ...eligible.map(rule => rule.rewardType === 'PERCENT'
       ? Math.floor(subtotal * Math.min(rule.rewardValue, 100) / 100)
       : Math.min(subtotal, rule.rewardValue)));
   };
 
-  const getBestReward = () => rewardRules.filter(rule => getSubtotal() >= rule.minimumAmount).at(-1);
+  const getBestReward = () => rewardRules.filter(rule => rule.rewardType !== 'FREE_PRODUCT' && getSubtotal() >= rule.minimumAmount).at(-1);
+  const getFreeGiftReward = () => rewardRules.filter(rule => rule.rewardType === 'FREE_PRODUCT' && (rule.giftVariants?.length ?? 0) > 0 && getSubtotal() >= rule.minimumAmount).sort((a, b) => b.minimumAmount - a.minimumAmount || (b.priority ?? 0) - (a.priority ?? 0))[0];
+
+  useEffect(() => {
+    const reward = getFreeGiftReward();
+    if (!reward) { setSelectedGiftVariantId(''); return; }
+    const options = reward.giftVariants ?? [];
+    if (reward.giftSelectionMode !== 'CUSTOMER_CHOICE') setSelectedGiftVariantId(options[0]?.id ?? '');
+    else if (!options.some(option => option.id === selectedGiftVariantId)) setSelectedGiftVariantId('');
+  }, [cartItems, rewardRules]);
 
   const getGrandTotal = () => {
     return Math.max(0, getSubtotal() - getRewardDiscount()) + getShippingFee();
@@ -260,6 +271,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ locale: str
               {/* Hidden payload inputs */}
               <input type="hidden" name="items" value={JSON.stringify(cartItems)} />
               <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
+              <input type="hidden" name="giftVariantId" value={selectedGiftVariantId} />
             </div>
 
             {state && 'error' in state && state.error && (
@@ -317,7 +329,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ locale: str
             <div className="mt-6 space-y-3">
               <button
                 type="submit"
-                disabled={isPending || isSubmittingLocal || isOrderConfirmed || cooldown > 0 || cartItems.length === 0 || isBelowMinimum || !termsAccepted}
+                disabled={isPending || isSubmittingLocal || isOrderConfirmed || cooldown > 0 || cartItems.length === 0 || isBelowMinimum || !termsAccepted || (!!getFreeGiftReward() && getFreeGiftReward()?.giftSelectionMode === 'CUSTOMER_CHOICE' && !selectedGiftVariantId)}
                 className="w-full btn-rawaq-primary py-4 rounded-full text-base font-bold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 {!termsAccepted ? (
@@ -395,6 +407,16 @@ export default function CheckoutPage({ params }: { params: Promise<{ locale: str
                     </div>
                   </div>
                 ))}
+                {getFreeGiftReward() && (() => {
+                  const giftReward = getFreeGiftReward()!;
+                  const options = giftReward.giftVariants ?? [];
+                  const choiceRequired = giftReward.giftSelectionMode === 'CUSTOMER_CHOICE';
+                  const selectedGift = options.find(option => option.id === selectedGiftVariantId) ?? (!choiceRequired ? options[0] : undefined);
+                  return <section className="rounded-2xl border border-[#D9C6A8] bg-[#FBF8F2] p-4" aria-label={isAr ? 'اختيار الهدية' : 'Choose your gift'}>
+                    <div className="flex items-start gap-3"><span className="text-2xl" aria-hidden="true">🎁</span><div className="min-w-0 flex-1"><p className="font-black text-[#3F4832]">{isAr ? `مبروك! ${giftReward.name}` : `Congratulations! ${giftReward.name}`}</p><p className="mt-1 text-xs leading-5 text-zinc-600">{isAr ? (choiceRequired ? 'اختاري هديتك المجانية لإضافتها إلى الطلب.' : 'أُضيفت هديتك المحددة إلى الطلب مجانًا.') : (choiceRequired ? 'Choose one free gift to add to your order.' : 'Your selected gift is added to the order for free.')}</p></div></div>
+                    {choiceRequired ? <div className="mt-3 grid gap-2 sm:grid-cols-2">{options.map(option => <label key={option.id} className={`flex cursor-pointer items-center gap-3 rounded-xl border bg-white p-3 transition ${selectedGiftVariantId === option.id ? 'border-[#3F4832] ring-2 ring-[#3F4832]/20' : 'border-[#E9DDCC]'}`}><input type="radio" name="giftPicker" value={option.id} checked={selectedGiftVariantId === option.id} onChange={() => setSelectedGiftVariantId(option.id)} className="h-4 w-4 accent-[#3F4832]" />{(option.mainImage || option.product.images?.[0]?.url) ? <img src={normalizeMediaUrl(option.mainImage || option.product.images?.[0]?.url)} alt="" className="h-12 w-12 rounded-lg object-cover" /> : <span aria-hidden="true" className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#F7F3EA]">✦</span>}<span className="min-w-0 flex-1"><span className="block truncate text-sm font-bold">{isAr ? option.product.nameAr : option.product.nameEn}</span><span className="block text-xs text-zinc-500">{option.size}{option.colorName ? ` · ${option.colorName}` : ''}</span></span><span className="text-left text-xs font-bold text-emerald-700"><span className="block">{isAr ? 'مجانًا' : 'Free'}</span><span className="block font-normal text-zinc-400 line-through">{filsToDisplay(option.price, isAr ? 'ar' : 'en')}</span></span></label>)}</div> : selectedGift && <div className="mt-3 flex items-center gap-3 rounded-xl bg-white p-3 text-sm font-bold">{(selectedGift.mainImage || selectedGift.product.images?.[0]?.url) ? <img src={normalizeMediaUrl(selectedGift.mainImage || selectedGift.product.images?.[0]?.url)} alt="" className="h-12 w-12 rounded-lg object-cover" /> : <span aria-hidden="true" className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#F7F3EA]">✦</span>}<span className="min-w-0 flex-1">{isAr ? selectedGift.product.nameAr : selectedGift.product.nameEn} · {selectedGift.size}</span><span className="text-left text-xs font-bold text-emerald-700">{isAr ? 'مجانًا' : 'Free'}<span className="block font-normal text-zinc-400 line-through">{filsToDisplay(selectedGift.price, isAr ? 'ar' : 'en')}</span></span></div>}
+                  </section>;
+                })()}
                 
                 <div className="pt-4 space-y-2 border-t border-zinc-200">
                   <div className="flex justify-between text-zinc-600">

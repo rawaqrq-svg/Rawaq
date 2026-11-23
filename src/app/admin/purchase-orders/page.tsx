@@ -4,7 +4,7 @@ import { AdminSidebar } from '@/components/AdminSidebar';
 import Link from 'next/link';
 
 export default async function PurchaseOrdersPage() {
-  const session = await requirePermission('manage:inventory');
+  const session = await requirePermission('section:inventory');
   
   const purchaseOrders = await prisma.purchaseOrder.findMany({
     orderBy: { createdAt: 'desc' },

@@ -29,6 +29,7 @@ type Order = {
     location?: { label: string; city?: string } | null;
     packages?: Array<{ id: string; packageCode: string }>;
   }>;
+  items?: Array<{ supplierIdSnapshot: string | null }>;
 };
 
 type Batch = {
@@ -37,8 +38,15 @@ type Batch = {
   secureToken: string | null;
   status: string;
   createdAt: Date;
+  courierCompany: string | null;
+  courierTariffVersionId: string | null;
+  pickupLocationCount: number | null;
+  carrierTariffCostFils: number | null;
+  tariffEvaluatedAt: Date | null;
   orders: Order[];
 };
+
+type CurrentTariff = { companyName: string; companyKey: string; effectiveFrom: Date; tiers: Array<{ minLocations: number; maxLocations: number | null; costFils: number }> };
 
 const statusLabel: Record<string, string> = {
   NOT_DELIVERED: 'لم تُسلّم للشركة',
@@ -112,7 +120,8 @@ function BatchEditor({ batch, preparedOrders }: { batch: Batch; preparedOrders: 
       <div className="flex flex-wrap items-start justify-between gap-4 border-b p-5">
         <div>
           <div className="flex flex-wrap items-center gap-2"><h2 className="text-lg font-bold">{batch.reference}</h2><span className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-semibold">{statusLabel[batch.status] || batch.status}</span></div>
-          <p className="mt-1 text-xs text-zinc-500">أُنشئت <span dir="ltr">{new Date(batch.createdAt).toLocaleString('en-GB')}</span> · {batch.orders.length} طلب</p>
+          <p className="mt-1 text-xs text-zinc-500">أُنشئت <span dir="ltr">{new Date(batch.createdAt).toLocaleString('en-GB')}</span> · {batch.orders.length} طلب · الناقل: {batch.courierCompany || 'غير محدد'}</p>
+          {batch.tariffEvaluatedAt && <p className="mt-1 text-xs text-zinc-600">تعرفة الطلبية: {batch.pickupLocationCount ?? '—'} محطة · {batch.carrierTariffCostFils === null ? <span className="font-bold text-amber-700">لا توجد شريحة مغطية عند إنشاء الطلبية</span> : <strong>{filsToDisplay(batch.carrierTariffCostFils, 'ar')}</strong>}</p>}
         </div>
         <div className="w-full sm:w-72"><BatchActions batchId={batch.id} reference={batch.reference} secureToken={batch.secureToken} deleteAction={deleteDeliveryBatch} status={batch.status} /></div>
       </div>
@@ -131,11 +140,12 @@ function BatchEditor({ batch, preparedOrders }: { batch: Batch; preparedOrders: 
   );
 }
 
-export function DeliveryBatchWorkspace({ preparedOrders, batches }: { preparedOrders: Order[]; batches: Batch[] }) {
+export function DeliveryBatchWorkspace({ preparedOrders, batches, currentTariffs, knownCompanies }: { preparedOrders: Order[]; batches: Batch[]; currentTariffs: CurrentTariff[]; knownCompanies: string[] }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [selected, setSelected] = useState<string[]>([]);
   const [message, setMessage] = useState('');
+  const [courierCompany, setCourierCompany] = useState('');
   const toggle = (id: string, checked: boolean) => setSelected(current => checked ? [...new Set([...current, id])] : current.filter(value => value !== id));
 
   const selectedOrders = useMemo(() => {
@@ -150,13 +160,16 @@ export function DeliveryBatchWorkspace({ preparedOrders, batches }: { preparedOr
 
     selectedOrders.forEach(order => {
       totalCodFils += order.totalAmount;
-      if (order.fulfillmentOrders && order.fulfillmentOrders.length > 0) {
-        order.fulfillmentOrders.forEach(fo => {
+      const pickupOrders = (order.fulfillmentOrders || []).filter(fo => fo.status !== 'CANCELLED');
+      if (pickupOrders.length > 0) {
+        pickupOrders.forEach(fo => {
           uniqueLocations.add(fo.locationId || fo.supplierId);
           parcelsCount += fo.packages?.length || 1;
         });
       } else {
-        uniqueLocations.add('default');
+        const suppliers = [...new Set((order.items || []).map(item => item.supplierIdSnapshot).filter(Boolean))] as string[];
+        if (suppliers.length) suppliers.forEach(id => uniqueLocations.add(`supplier:${id}`));
+        else uniqueLocations.add('rawaq:central');
         parcelsCount += 1;
       }
     });
@@ -166,8 +179,13 @@ export function DeliveryBatchWorkspace({ preparedOrders, batches }: { preparedOr
       uniqueShopsCount: uniqueLocations.size,
       parcelsCount,
       totalCodFils,
+      shippingRevenueFils: selectedOrders.reduce((sum, order) => sum + order.shippingCost, 0),
     };
   }, [selectedOrders]);
+
+  const normalizedCompanyKey = courierCompany.trim().replace(/\s+/g, ' ').toLocaleLowerCase('ar');
+  const selectedTariff = currentTariffs.find(tariff => tariff.companyKey === normalizedCompanyKey);
+  const activeTier = selectedTariff?.tiers.find(tier => tier.minLocations <= selectedMetrics.uniqueShopsCount && (tier.maxLocations === null || selectedMetrics.uniqueShopsCount <= tier.maxLocations));
 
   const create = () => startTransition(async () => {
     if (!selected.length) {
@@ -177,6 +195,7 @@ export function DeliveryBatchWorkspace({ preparedOrders, batches }: { preparedOr
     try {
       const formData = new FormData();
       selected.forEach(id => formData.append('orderIds', id));
+      formData.set('courierCompany', courierCompany);
       await createDeliveryBatch(formData);
       setSelected([]);
       setMessage('تم إنشاء طلبية شركة التوصيل بنجاح.');
@@ -225,6 +244,10 @@ export function DeliveryBatchWorkspace({ preparedOrders, batches }: { preparedOr
 
         {selected.length > 0 && (
           <div className="border-t border-zinc-200 bg-zinc-50/70 p-4 space-y-3">
+            <label className="block max-w-xl text-xs font-bold text-zinc-700">شركة التوصيل
+              <input list="courier-company-options" value={courierCompany} onChange={event => setCourierCompany(event.target.value)} placeholder="اختر أو اكتب اسم الشركة" className="mt-1 w-full rounded-xl border border-zinc-300 bg-white p-2.5 text-sm" />
+              <datalist id="courier-company-options">{knownCompanies.map(company => <option key={company} value={company} />)}</datalist>
+            </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               <div className="bg-white p-3 rounded-xl border border-zinc-200 text-center">
                 <span className="text-[11px] text-zinc-500 block">الطلبات المحددة</span>
@@ -242,16 +265,20 @@ export function DeliveryBatchWorkspace({ preparedOrders, batches }: { preparedOr
                 <span className="text-[11px] text-emerald-700 block">مجموع تحصيل COD</span>
                 <span className="text-base font-extrabold text-emerald-900 font-mono">{filsToDisplay(selectedMetrics.totalCodFils)}</span>
               </div>
+              <div className={`col-span-2 sm:col-span-4 rounded-xl border p-3 text-xs ${activeTier ? 'border-blue-200 bg-blue-50' : 'border-amber-200 bg-amber-50'}`}>
+                {activeTier ? <div className="grid gap-1 sm:grid-cols-3"><span>تكلفة الشركة للرحلة: <strong>{filsToDisplay(activeTier.costFils, 'ar')}</strong></span><span>رسوم التوصيل من الطلبات: <strong>{filsToDisplay(selectedMetrics.shippingRevenueFils, 'ar')}</strong></span><span>الفرق التقديري لرَواق: <strong>{filsToDisplay(selectedMetrics.shippingRevenueFils - activeTier.costFils, 'ar')}</strong></span></div> : <span className="font-bold text-amber-900">{selectedTariff ? `لا توجد شريحة تغطي ${selectedMetrics.uniqueShopsCount} محطة لدى ${courierCompany}.` : 'لا توجد تعرفة فعالة لهذه الشركة.'} أنشئ طلبية بلا تكلفة مفترضة أو أضف الشريحة من إعدادات أسعار التوصيل.</span>}
+                <p className="mt-1 text-[11px] text-zinc-600">رسوم العميل تبقى وفق إعداد المنطقة، وهذه التعرفة تحدد تكلفة الشركة للرحلة كاملة مرة واحدة.</p>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
               <p className="text-xs text-zinc-600 font-medium">
-                جاهز لإنشاء طلبية موحدة تضم {selected.length} طلب و {selectedMetrics.uniqueShopsCount} محطة استلام.
+                جاهز لإنشاء طلبية موحدة تضم {selected.length} طلب و {selectedMetrics.uniqueShopsCount} محطة استلام{activeTier ? ` بتكلفة ${filsToDisplay(activeTier.costFils, 'ar')}` : ' دون تكلفة شركة محددة'}.
               </p>
               <button
                 type="button"
                 onClick={create}
-                disabled={pending || !selected.length}
+                disabled={pending || !selected.length || courierCompany.trim().length < 2}
                 className="rounded-xl bg-[#3F4832] hover:bg-[#2d3424] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition disabled:opacity-50"
               >
                 {pending ? 'جارٍ إنشاء الطلبية...' : 'إنشاء وتجهيز كشف شركة التوصيل'}

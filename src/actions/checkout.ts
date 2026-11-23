@@ -42,7 +42,7 @@ async function buildOrderWhatsAppResponse(order: any, itemsOverride?: any[], isD
 
   const items = itemsOverride || order.items || [];
   for (const it of items) {
-    msg += `- ${it.name} (${it.size}) x${it.quantity} = ${(it.total / 1000).toFixed(3)} د.أ\n`;
+    msg += `- ${it.name} (${it.size}) x${it.quantity} = ${(it.total / 1000).toFixed(3)} د.أ${it.isGift ? ' — هدية مجانية' : ''}\n`;
   }
 
   if (order.discountAmount > 0) {
@@ -86,7 +86,7 @@ export async function processCheckout(prevState: any, formData: FormData) {
     return { error: 'يجب الموافقة على شروط وأحكام الشراء وسياسة الاستبدال والإرجاع للمتابعة وإتمام الطلب.' };
   }
 
-  const { customerName, customerPhone, addressStreet, addressBuilding, addressApartment, shippingZoneId, couponCode, idempotencyKey, items: itemsJson } = parsed.data;
+  const { customerName, customerPhone, addressStreet, addressBuilding, addressApartment, shippingZoneId, couponCode, giftVariantId: requestedGiftVariantId, idempotencyKey, items: itemsJson } = parsed.data;
   
   let parsedItems: { productId: string; variantId: string; quantity: number }[];
   try {
@@ -193,6 +193,7 @@ export async function processCheckout(prevState: any, formData: FormData) {
       supplierProfitShareBpsSnapshot: number | null;
       supplierAmountSnapshot: number | null;
       platformProductProfitSnapshot: number | null;
+      isGift: boolean;
   }[] = [];
 
   for (const item of parsedItems) {
@@ -239,6 +240,7 @@ export async function processCheckout(prevState: any, formData: FormData) {
       platformProductProfitSnapshot: productMargin !== null && supplierAmount !== null
         ? productMargin - supplierAmount
         : null,
+      isGift: false,
     });
   }
 
@@ -261,7 +263,8 @@ export async function processCheckout(prevState: any, formData: FormData) {
   });
   const availableRewards = rewardRules.filter(rule => rule.usageLimit === null || rule.usageCount < rule.usageLimit);
   const freeDeliveryReward = availableRewards.find(rule => rule.rewardType === 'FREE_DELIVERY') ?? null;
-  const reward = availableRewards.filter(rule => rule.rewardType !== 'FREE_DELIVERY').sort((a, b) => {
+  let freeGiftReward: (typeof availableRewards)[number] | null = availableRewards.filter(rule => rule.rewardType === 'FREE_PRODUCT').sort((a, b) => b.minimumAmount - a.minimumAmount || b.priority - a.priority)[0] ?? null;
+  const reward = availableRewards.filter(rule => rule.rewardType !== 'FREE_DELIVERY' && rule.rewardType !== 'FREE_PRODUCT').sort((a, b) => {
     const amountA = a.rewardType === 'PERCENT' ? totalAmount * Math.min(a.rewardValue, 100) / 100 : Math.min(totalAmount, a.rewardValue);
     const amountB = b.rewardType === 'PERCENT' ? totalAmount * Math.min(b.rewardValue, 100) / 100 : Math.min(totalAmount, b.rewardValue);
     return amountB - amountA || b.priority - a.priority;
@@ -269,6 +272,35 @@ export async function processCheckout(prevState: any, formData: FormData) {
   let rewardDiscount = 0;
   if (reward?.rewardType === 'PERCENT') rewardDiscount = Math.floor(totalAmount * Math.min(reward.rewardValue, 100) / 100);
   if (reward?.rewardType === 'FIXED') rewardDiscount = Math.min(totalAmount, reward.rewardValue);
+
+  let giftVariant: any = null;
+  let giftNameSnapshot: string | null = null;
+  if (freeGiftReward) {
+    let configuredGiftIds: string[];
+    try {
+      const parsedIds: unknown = JSON.parse(freeGiftReward.giftVariantIds);
+      if (!Array.isArray(parsedIds) || parsedIds.some(id => typeof id !== 'string')) throw new Error('invalid gift ids');
+      configuredGiftIds = [...new Set(parsedIds as string[])];
+    } catch { configuredGiftIds = []; }
+    const availableGiftVariants = configuredGiftIds.length ? await prisma.productVariant.findMany({
+      where: { id: { in: configuredGiftIds }, isActive: true, product: { isVisible: true } },
+      select: { id: true },
+    }) : [];
+    if (!availableGiftVariants.length) freeGiftReward = null;
+    if (freeGiftReward) {
+    const availableGiftIds = availableGiftVariants.map(variant => variant.id);
+    const chosenGiftId = freeGiftReward.giftSelectionMode === 'CUSTOMER_CHOICE' ? requestedGiftVariantId : availableGiftIds.find(id => configuredGiftIds.includes(id));
+    if (freeGiftReward.giftSelectionMode === 'CUSTOMER_CHOICE' && !chosenGiftId) return { error: 'اختاري الهدية المؤهلة قبل تأكيد الطلب.' };
+    if (!chosenGiftId || !availableGiftIds.includes(chosenGiftId)) return { error: 'الهدية التي اخترتِها لم تعد متاحة، حدّثي الصفحة واختاري هدية أخرى.' };
+    giftVariant = await prisma.productVariant.findFirst({
+      where: { id: chosenGiftId, isActive: true, product: { isVisible: true } },
+      include: { product: { select: { id: true, nameAr: true, nameEn: true, categoryId: true } }, supplierOffers: { include: { supplier: { select: { id: true, name: true, isActive: true } } }, orderBy: [{ unitCost: 'asc' }, { createdAt: 'asc' }] } },
+    });
+    if (!giftVariant) return { error: 'الهدية التي اخترتِها لم تعد متاحة، حدّثي الصفحة واختاري هدية أخرى.' };
+    if (giftVariant.inventorySource === 'SUPPLIER' && !giftVariant.supplierOffers.some((offer: any) => offer.isActive && offer.supplier.isActive)) return { error: 'الهدية المختارة غير متوفرة حالياً.' };
+    giftNameSnapshot = `${giftVariant.product.nameAr} · ${giftVariant.size}`;
+    }
+  }
 
   const marketingSettingsRow = await prisma.siteSettings.findUnique({ where: { key: 'marketing_settings' } });
   let allowNegativeMarginPromotions = false;
@@ -405,6 +437,32 @@ export async function processCheckout(prevState: any, formData: FormData) {
       : item.total - item.unitCostSnapshot * item.quantity - (item.supplierAmountSnapshot ?? 0);
   });
 
+  let giftOffer: any = null;
+  if (giftVariant) {
+    giftOffer = giftVariant.inventorySource === 'SUPPLIER'
+      ? giftVariant.supplierOffers?.find((offer: any) => offer.isActive && offer.supplier.isActive) ?? null
+      : null;
+    orderItemsData.push({
+      productId: giftVariant.productId,
+      variantId: giftVariant.id,
+      sku: giftVariant.sku,
+      name: giftVariant.product.nameAr,
+      size: giftVariant.size,
+      quantity: 1,
+      unitPrice: 0,
+      total: 0,
+      discountAmountSnapshot: 0,
+      supplierOfferIdSnapshot: giftOffer?.id ?? null,
+      supplierIdSnapshot: giftOffer?.supplierId ?? null,
+      supplierNameSnapshot: giftOffer?.supplier.name ?? null,
+      unitCostSnapshot: giftOffer?.unitCost ?? null,
+      supplierProfitShareBpsSnapshot: giftOffer?.supplierProfitShareBps ?? 0,
+      supplierAmountSnapshot: 0,
+      platformProductProfitSnapshot: giftOffer ? -giftOffer.unitCost : null,
+      isGift: true,
+    });
+  }
+
   rewardDiscount = appliedRewardDiscount;
   couponDiscount = appliedCouponDiscount;
   totalDiscount = rewardDiscount + couponDiscount;
@@ -434,7 +492,7 @@ export async function processCheckout(prevState: any, formData: FormData) {
         couponDiscount,
         rewardDiscount,
         couponCodeSnapshot: coupon?.code ?? null,
-        rewardNameSnapshot: [freeDeliveryReward?.name, rewardDiscount > 0 ? reward?.name : null].filter(Boolean).join(' + ') || null,
+        rewardNameSnapshot: [freeDeliveryReward?.name, rewardDiscount > 0 ? reward?.name : null, freeGiftReward?.name].filter(Boolean).join(' + ') || null,
         shippingZoneNameSnapshot: zoneName,
         notes: `${detailedAddress}\n[إقرار وموافقة إلكترونية موثقة]: تم قبول الشروط والأحكام وسياسة الإرجاع والاستبدال (إصدار JO-2026-v1.0) في ${new Date().toISOString()}`,
         idempotencyKey: idempotencyKey || undefined,
@@ -473,17 +531,20 @@ export async function processCheckout(prevState: any, formData: FormData) {
       if (claimed.count !== 1) throw new Error('انتهى عدد مرات استخدام الرمز');
       await tx.couponRedemption.create({ data: { couponId: coupon.id, orderId: newOrder.id, customerKey, amount: couponDiscount } });
     }
-    for (const appliedReward of [freeDeliveryReward, rewardDiscount > 0 ? reward : null].filter((rule): rule is NonNullable<typeof rule> => rule !== null)) {
-      if (appliedReward.usageLimit === null) continue;
-      const claimed = await tx.rewardRule.updateMany({
-        where: { id: appliedReward.id, usageCount: { lt: appliedReward.usageLimit } },
-        data: { usageCount: { increment: 1 } },
-      });
-      if (claimed.count !== 1) throw new Error('انتهى عدد مرات استخدام المكافأة');
+    for (const appliedReward of [freeDeliveryReward, rewardDiscount > 0 ? reward : null, freeGiftReward].filter((rule): rule is NonNullable<typeof rule> => rule !== null)) {
+      if (appliedReward.usageLimit !== null) {
+        const claimed = await tx.rewardRule.updateMany({
+          where: { id: appliedReward.id, isActive: true, usageCount: { lt: appliedReward.usageLimit } },
+          data: { usageCount: { increment: 1 } },
+        });
+        if (claimed.count !== 1) throw new Error('انتهى عدد مرات استخدام المكافأة');
+      }
       await tx.rewardRedemption.create({ data: {
         rewardRuleId: appliedReward.id,
         orderId: newOrder.id,
-        amount: appliedReward.rewardType === 'FIXED' ? Math.min(totalAmount, appliedReward.rewardValue) : appliedReward.rewardType === 'PERCENT' ? rewardDiscount : 0,
+        amount: appliedReward.rewardType === 'FIXED' ? Math.min(totalAmount, appliedReward.rewardValue) : appliedReward.rewardType === 'PERCENT' ? rewardDiscount : appliedReward.rewardType === 'FREE_PRODUCT' ? giftVariant?.price ?? 0 : 0,
+        giftVariantId: appliedReward.rewardType === 'FREE_PRODUCT' ? giftVariant?.id ?? null : null,
+        giftNameSnapshot: appliedReward.rewardType === 'FREE_PRODUCT' ? giftNameSnapshot : null,
       } });
     }
     return newOrder;
@@ -509,6 +570,7 @@ export async function processCheckout(prevState: any, formData: FormData) {
         size: it.size,
         quantity: it.quantity,
         total: it.total,
+        isGift: it.isGift,
       })),
     });
 

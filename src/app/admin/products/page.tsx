@@ -1,5 +1,5 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 
@@ -9,7 +9,7 @@ import { filsToDisplay } from '@/lib/money';
 
 
 export default async function AdminProductsPage() {
-  const session = await requireAuth();
+  const session = await requirePermission('section:products');
 
   let products: any[] = [];
   let categories: any[] = [];

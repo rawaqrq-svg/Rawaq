@@ -1,12 +1,12 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { IngredientNewForm } from '@/components/IngredientNewForm';
 import { IngredientActionsMenu } from '@/components/IngredientActionsMenu';
 
 export default async function AdminIngredientsPage() {
-  const session = await requireAuth();
+  const session = await requirePermission('section:products');
 
   const ingredients = await prisma.ingredient.findMany({
     include: {

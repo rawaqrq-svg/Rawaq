@@ -1,10 +1,28 @@
 'use server';
 
 import { prisma } from '@/lib/db';
-import { requirePermission, requireSuperAdmin } from '@/lib/dal';
+import { requireSuperAdmin } from '@/lib/dal';
 import * as argon2 from 'argon2';
 import crypto from 'crypto';
 import { revalidatePath } from 'next/cache';
+import { ADMIN_SECTIONS, ADMIN_SECTION_ACTIONS, isMainAdminRole } from '@/lib/admin-permissions';
+
+async function resolveSectionPermissions(actions: string[]) {
+  if (!Array.isArray(actions) || actions.some((action) => !ADMIN_SECTION_ACTIONS.includes(action as typeof ADMIN_SECTION_ACTIONS[number]))) {
+    throw new Error('صلاحيات الأقسام المحددة غير صالحة');
+  }
+  await Promise.all(ADMIN_SECTIONS.map((section) => prisma.permission.upsert({
+    where: { action: section.action },
+    update: { description: section.description },
+    create: { action: section.action, description: section.description },
+  })));
+  const permissions = await prisma.permission.findMany({
+    where: { action: { in: [...ADMIN_SECTION_ACTIONS] } },
+    select: { id: true, action: true },
+  });
+  if (permissions.length !== ADMIN_SECTIONS.length) throw new Error('تعذر التحقق من صلاحيات الأقسام');
+  return permissions;
+}
 
 export async function createEmployee(data: {
   name: string;
@@ -12,11 +30,21 @@ export async function createEmployee(data: {
   password?: string;
   roleId: string;
   isActive: boolean;
-  selectedPermissionIds: string[];
+  selectedPermissionActions: string[];
   bootstrapAdminId: string; // The performing employee (Admin)
 }) {
   try {
     const session = await requireSuperAdmin();
+    const role = await prisma.role.findUnique({ where: { id: data.roleId } });
+    if (!role || !['أدمن رئيسي', 'أدمن تشغيلي'].includes(role.name)) {
+      return { success: false, error: 'الدور الوظيفي المحدد غير صالح' };
+    }
+    const sectionPermissions = await resolveSectionPermissions(data.selectedPermissionActions);
+    const selectedActions = new Set(data.selectedPermissionActions);
+    const employeePermissionRows = isMainAdminRole(role.name) ? [] : sectionPermissions.map((permission) => ({
+      permissionId: permission.id,
+      effect: selectedActions.has(permission.action) ? 'ALLOW' : 'DENY',
+    }));
 
     const existing = await prisma.employee.findUnique({
       where: { email: data.email }
@@ -42,13 +70,13 @@ export async function createEmployee(data: {
     });
 
     // Save custom checkbox permissions
-    if (data.selectedPermissionIds.length > 0) {
+    if (employeePermissionRows.length > 0) {
       await prisma.employeePermission.createMany({
-        data: data.selectedPermissionIds.map((pId) => ({
+        data: employeePermissionRows.map((permission) => ({
           employeeId: employee.id,
-          permissionId: pId,
-          grantedByEmployeeId: data.bootstrapAdminId,
-          effect: 'ALLOW',
+          permissionId: permission.permissionId,
+          grantedByEmployeeId: session.employeeId,
+          effect: permission.effect,
           reason: 'Direct Admin Assignment'
         }))
       });
@@ -60,12 +88,12 @@ export async function createEmployee(data: {
     // Write audit log
     await prisma.auditLog.create({
       data: {
-        employeeId: data.bootstrapAdminId,
+        employeeId: session.employeeId,
         action: 'EMPLOYEE_CREATED',
         entityType: 'Employee',
         entityId: employee.id,
         ipAddress,
-        details: JSON.stringify({ name: data.name, email: data.email, roleId: data.roleId })
+        details: JSON.stringify({ name: data.name, email: data.email, roleId: data.roleId, selectedPermissionActions: data.selectedPermissionActions })
       }
     });
 
@@ -83,11 +111,22 @@ export async function updateEmployee(data: {
   roleId: string;
   isActive: boolean;
   password?: string;
-  selectedPermissionIds: string[];
+  selectedPermissionActions: string[];
   adminId: string;
 }) {
   try {
     const session = await requireSuperAdmin();
+
+    const role = await prisma.role.findUnique({ where: { id: data.roleId } });
+    if (!role || !['أدمن رئيسي', 'أدمن تشغيلي'].includes(role.name)) {
+      return { success: false, error: 'الدور الوظيفي المحدد غير صالح' };
+    }
+    const sectionPermissions = await resolveSectionPermissions(data.selectedPermissionActions);
+    const selectedActions = new Set(data.selectedPermissionActions);
+    const employeePermissionRows = isMainAdminRole(role.name) ? [] : sectionPermissions.map((permission) => ({
+      permissionId: permission.id,
+      effect: selectedActions.has(permission.action) ? 'ALLOW' : 'DENY',
+    }));
 
     const targetEmployee = await prisma.employee.findUnique({
       where: { id: data.id },
@@ -95,15 +134,10 @@ export async function updateEmployee(data: {
     });
 
     // Protect against disabling/removing last active Admin
-    if (targetEmployee?.role.name === 'Admin' && targetEmployee.isActive) {
-      const activeAdminsCount = await prisma.employee.count({
-        where: {
-          role: { name: 'Admin' },
-          isActive: true,
-          id: { not: data.id }
-        }
-      });
-      if (activeAdminsCount === 0 && !data.isActive) {
+    if (targetEmployee && isMainAdminRole(targetEmployee.role.name) && targetEmployee.isActive) {
+      const activeAdmins = await prisma.employee.findMany({ where: { isActive: true, id: { not: data.id }, role: { name: { in: ['Admin', 'Super Admin', 'أدمن رئيسي', 'ادمن رئيسي'] } } }, include: { role: true } });
+      const activeAdminsCount = activeAdmins.filter((employee) => isMainAdminRole(employee.role.name)).length;
+      if (activeAdminsCount === 0 && (!data.isActive || !isMainAdminRole(role.name))) {
         return { success: false, error: 'لا يمكن تعطيل آخر مدير نشط في النظام لحماية الإدارة' };
       }
     }
@@ -130,13 +164,13 @@ export async function updateEmployee(data: {
       where: { employeeId: data.id }
     });
 
-    if (data.selectedPermissionIds.length > 0) {
+    if (employeePermissionRows.length > 0) {
       await prisma.employeePermission.createMany({
-        data: data.selectedPermissionIds.map((pId) => ({
+        data: employeePermissionRows.map((permission) => ({
           employeeId: data.id,
-          permissionId: pId,
-          grantedByEmployeeId: data.adminId,
-          effect: 'ALLOW',
+          permissionId: permission.permissionId,
+          grantedByEmployeeId: session.employeeId,
+          effect: permission.effect,
           reason: 'Direct Admin Assignment'
         }))
       });
@@ -153,12 +187,12 @@ export async function updateEmployee(data: {
     // Write audit log
     await prisma.auditLog.create({
       data: {
-        employeeId: data.adminId,
+        employeeId: session.employeeId,
         action: 'EMPLOYEE_UPDATED',
         entityType: 'Employee',
         entityId: data.id,
         ipAddress,
-        details: JSON.stringify({ name: data.name, email: data.email })
+        details: JSON.stringify({ name: data.name, email: data.email, roleId: data.roleId, selectedPermissionActions: data.selectedPermissionActions })
       }
     });
 
@@ -179,6 +213,13 @@ export async function addEmployeePermissionOverride(data: {
 }) {
   try {
     const session = await requireSuperAdmin();
+    const permission = await prisma.permission.findUnique({ where: { id: data.permissionId } });
+    if (!permission || !ADMIN_SECTION_ACTIONS.includes(permission.action as typeof ADMIN_SECTION_ACTIONS[number])) {
+      return { success: false, error: 'صلاحية القسم المحددة غير صالحة' };
+    }
+    if (data.effect !== 'ALLOW' && data.effect !== 'DENY') {
+      return { success: false, error: 'نوع تعديل الصلاحية غير صالح' };
+    }
 
     const expiresAt = data.expiresInMinutes
       ? new Date(Date.now() + data.expiresInMinutes * 60 * 1000)
@@ -195,7 +236,7 @@ export async function addEmployeePermissionOverride(data: {
         effect: data.effect,
         reason: data.reason,
         expiresAt,
-        grantedByEmployeeId: data.adminId
+        grantedByEmployeeId: session.employeeId
       },
       create: {
         employeeId: data.employeeId,
@@ -203,7 +244,7 @@ export async function addEmployeePermissionOverride(data: {
         effect: data.effect,
         reason: data.reason,
         expiresAt,
-        grantedByEmployeeId: data.adminId
+        grantedByEmployeeId: session.employeeId
       }
     });
 
@@ -217,12 +258,12 @@ export async function addEmployeePermissionOverride(data: {
 
     await prisma.auditLog.create({
       data: {
-        employeeId: data.adminId,
+        employeeId: session.employeeId,
         action: 'PERMISSION_OVERRIDE_ADDED',
         entityType: 'EmployeePermission',
         entityId: `${data.employeeId}:${data.permissionId}`,
         ipAddress,
-        details: JSON.stringify(data)
+        details: JSON.stringify({ employeeId: data.employeeId, permissionId: data.permissionId, effect: data.effect, reason: data.reason, expiresAt })
       }
     });
 
@@ -245,14 +286,9 @@ export async function toggleEmployeeStatus(employeeId: string, adminId: string) 
     const newActiveState = !employee.isActive;
 
     // Protect against disabling last active Admin
-    if (employee.role.name === 'Admin' && employee.isActive && !newActiveState) {
-      const activeAdminsCount = await prisma.employee.count({
-        where: {
-          role: { name: 'Admin' },
-          isActive: true,
-          id: { not: employeeId }
-        }
-      });
+    if (isMainAdminRole(employee.role.name) && employee.isActive && !newActiveState) {
+      const activeAdmins = await prisma.employee.findMany({ where: { isActive: true, id: { not: employeeId }, role: { name: { in: ['Admin', 'Super Admin', 'أدمن رئيسي', 'ادمن رئيسي'] } } }, include: { role: true } });
+      const activeAdminsCount = activeAdmins.filter((item) => isMainAdminRole(item.role.name)).length;
       if (activeAdminsCount === 0) {
         return { success: false, error: 'لا يمكن تعطيل آخر مدير نشط في النظام لحماية الإدارة' };
       }
@@ -273,7 +309,7 @@ export async function toggleEmployeeStatus(employeeId: string, adminId: string) 
 
     await prisma.auditLog.create({
       data: {
-        employeeId: adminId,
+        employeeId: session.employeeId,
         action: 'EMPLOYEE_STATUS_TOGGLED',
         entityType: 'Employee',
         entityId: employeeId,
@@ -307,7 +343,7 @@ export async function forcePasswordChange(employeeId: string, adminId: string) {
 
     await prisma.auditLog.create({
       data: {
-        employeeId: adminId,
+        employeeId: session.employeeId,
         action: 'FORCE_PASSWORD_CHANGE',
         entityType: 'Employee',
         entityId: employeeId,
@@ -324,7 +360,7 @@ export async function forcePasswordChange(employeeId: string, adminId: string) {
 
 export async function getEmployeeSessions(employeeId: string) {
   try {
-    await requirePermission('manage:settings');
+    await requireSuperAdmin();
     return await prisma.session.findMany({
       where: { employeeId },
       orderBy: { createdAt: 'desc' }
@@ -349,7 +385,7 @@ export async function revokeEmployeeSession(sessionId: string, adminId: string) 
 
     await prisma.auditLog.create({
       data: {
-        employeeId: adminId,
+        employeeId: session.employeeId,
         action: 'SESSION_REVOKED',
         entityType: 'Session',
         entityId: sessionId,
@@ -376,7 +412,7 @@ export async function revokeAllEmployeeSessions(employeeId: string, adminId: str
 
     await prisma.auditLog.create({
       data: {
-        employeeId: adminId,
+        employeeId: session.employeeId,
         action: 'ALL_SESSIONS_REVOKED',
         entityType: 'Employee',
         entityId: employeeId,
@@ -464,7 +500,7 @@ export async function deleteEmployee(employeeId: string, adminId: string) {
 
       await prisma.auditLog.create({
         data: {
-          employeeId: adminId,
+          employeeId: session.employeeId,
           action: 'EMPLOYEE_DEACTIVATED_INSTEAD_OF_DELETE',
           entityType: 'Employee',
           entityId: employeeId,
@@ -498,7 +534,7 @@ export async function deleteEmployee(employeeId: string, adminId: string) {
 
     await prisma.auditLog.create({
       data: {
-        employeeId: adminId,
+      employeeId: session.employeeId,
         action: 'EMPLOYEE_DELETED',
         entityType: 'Employee',
         entityId: employeeId,

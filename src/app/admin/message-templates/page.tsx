@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function MessageTemplatesPage() {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('section:content');
   const templates = await getAllMessageTemplatesAction();
 
   return (

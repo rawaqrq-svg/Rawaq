@@ -1,6 +1,7 @@
 import { getCurrentSession } from './auth';
-import { redirect } from 'next/navigation';
+import { forbidden, redirect } from 'next/navigation';
 import { prisma } from './db';
+import { ADMIN_SECTION_ACTIONS, defaultSectionsForRole, isMainAdminRole, permissionAllowsAction } from './admin-permissions';
 import 'server-only';
 
 export async function requireAuth() {
@@ -18,36 +19,38 @@ export async function requireAuth() {
 
 export async function requirePermission(action: string) {
   const session = await requireAuth();
-  const roleName = session.employee.role.name.trim().toUpperCase().replace(/[_-]+/g, ' ');
-  if (roleName === 'ADMIN' || roleName === 'SUPER ADMIN' || roleName === 'أدمن رئيسي' || roleName === 'ادمن رئيسي') {
+  const roleName = session.employee.role.name;
+  if (isMainAdminRole(roleName)) {
     return session;
   }
 
-  if (roleName === 'CASHIER' && action.startsWith('pos:')) {
+  if (roleName.trim().toUpperCase() === 'CASHIER' && action.startsWith('pos:')) {
     return session;
   }
 
-  if ((roleName === 'أدمن تشغيلي' || roleName === 'ادمن تشغيلي') && (action.startsWith('manage:orders') || action.startsWith('orders.'))) {
-    return session;
-  }
-
-  const aliases: Record<string, string[]> = {
-    manage_orders: ['manage:orders'],
-    'orders.confirm': ['manage:orders'],
-  };
   const granted = await getEmployeePermissions(session.employeeId);
-  if ([action, ...(aliases[action] || [])].some(permission => granted.includes(permission))) return session;
+  if (permissionAllowsAction(granted, action)) return session;
 
-  throw new Error(`Unauthorized Access: ${roleName} does not have permission for ${action}`);
+  forbidden();
+}
+
+export async function requireAnyPermission(actions: string[]) {
+  const session = await requireAuth();
+  if (isMainAdminRole(session.employee.role.name)) return session;
+
+  const roleName = session.employee.role.name.trim().toUpperCase();
+  if (roleName === 'CASHIER' && actions.some((action) => action.startsWith('pos:'))) return session;
+
+  const granted = await getEmployeePermissions(session.employeeId);
+  if (actions.some((action) => permissionAllowsAction(granted, action))) return session;
+
+  forbidden();
 }
 
 export async function requireSuperAdmin() {
   const session = await requireAuth();
   
-  const roleName = session.employee.role.name.trim().toUpperCase().replace(/[_-]+/g, ' ');
-  if (roleName !== 'ADMIN' && roleName !== 'SUPER ADMIN' && roleName !== 'أدمن رئيسي' && roleName !== 'ادمن رئيسي') {
-    throw new Error('Unauthorized Access: Super Admin required');
-  }
+  if (!isMainAdminRole(session.employee.role.name)) forbidden();
   
   return session;
 }
@@ -55,17 +58,16 @@ export async function requireSuperAdmin() {
 export async function getEmployeePermissions(employeeId: string): Promise<string[]> {
   const employee = await prisma.employee.findUnique({
     where: { id: employeeId },
-    select: { roleId: true }
+    select: { role: { select: { name: true, permissions: { include: { permission: { select: { action: true } } } } } } }
   });
 
-  const rolePermissions = employee?.roleId ? await prisma.role.findUnique({
-    where: { id: employee.roleId },
-    include: { permissions: { include: { permission: true } } }
-  }) : null;
+  if (!employee) return [];
+  if (isMainAdminRole(employee.role.name)) {
+    return [...ADMIN_SECTION_ACTIONS];
+  }
 
-  let allowed = new Set<string>(
-    rolePermissions?.permissions.map(p => p.permission.action) || []
-  );
+  const roleActions = employee.role.permissions.map((entry) => entry.permission.action);
+  const allowed = new Set<string>(defaultSectionsForRole(employee.role.name, roleActions));
 
   const overrides = await prisma.employeePermission.findMany({
     where: { employeeId },
@@ -73,17 +75,23 @@ export async function getEmployeePermissions(employeeId: string): Promise<string
   });
 
   const now = new Date();
+  const retiredInventoryActions = new Set(['section:inventory', 'manage:inventory', 'inventory.view']);
 
   // Apply explicit DENY overrides
   for (const o of overrides) {
     if (o.effect === 'DENY' && (!o.expiresAt || o.expiresAt > now)) {
-      allowed.delete(o.permission.action);
+      const deniedAction = o.permission.action;
+      allowed.delete(deniedAction);
+      // A direct section setting replaces any legacy role permission for that section.
+      if (ADMIN_SECTION_ACTIONS.includes(deniedAction as typeof ADMIN_SECTION_ACTIONS[number])) {
+        allowed.delete(deniedAction);
+      }
     }
   }
 
   // Apply explicit ALLOW overrides (if not expired)
   for (const o of overrides) {
-    if (o.effect === 'ALLOW' && (!o.expiresAt || o.expiresAt > now)) {
+    if (o.effect === 'ALLOW' && !retiredInventoryActions.has(o.permission.action) && (!o.expiresAt || o.expiresAt > now)) {
       allowed.add(o.permission.action);
     }
   }

@@ -1,11 +1,11 @@
 import React from 'react';
-import { requirePermission } from '@/lib/dal';
+import { requireSuperAdmin } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { AdminSidebar } from '@/components/AdminSidebar';
 
 export default async function AdminPage() {
   // Enforce server-side authorization check
-  const session = await requirePermission('manage:settings');
+  const session = await requireSuperAdmin();
   const user = await prisma.employee.findUnique({
     where: { id: session.employeeId },
     include: { role: true }

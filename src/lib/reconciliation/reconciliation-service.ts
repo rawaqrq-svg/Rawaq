@@ -258,9 +258,10 @@ export class ReconciliationService {
         return acc + (o.deliveryJob?.codAmountToCollect || o.totalAmount || 0);
       }, 0);
 
-      const fees = deliveredOrders.reduce((acc, o) => {
+      const legacyFees = deliveredOrders.reduce((acc, o) => {
         return acc + (o.actualDeliveryCost ?? 2000);
       }, 0);
+      const fees = batch.tariffEvaluatedAt ? (batch.carrierTariffCostFils ?? 0) : legacyFees;
 
       const expectedRemittance = Math.max(0, collectedCod - fees);
 
@@ -539,7 +540,7 @@ export class ReconciliationService {
     for (const b of batches) {
       let expectedCodFils = 0;
       let collectedCodFils = 0;
-      let totalCarrierCostFils = 0;
+      let legacyCarrierCostFils = 0;
       let deliveredCount = 0;
       let failedCount = 0;
       let inProgressCount = 0;
@@ -565,7 +566,7 @@ export class ReconciliationService {
             ? (o.deliveryJob?.codAmountToCollect ?? codAmount)
             : (!o.deliveryJob ? codAmount : (o.deliveryJob?.isCodCollected ? codAmount : 0));
           collectedCodFils += actualCollected;
-          totalCarrierCostFils += orderCarrierCost;
+          legacyCarrierCostFils += orderCarrierCost;
         } else if (['CANCELLED', 'REFUNDED', 'FAILED_DELIVERY'].includes(o.status)) {
           failedCount++;
         } else {
@@ -573,6 +574,9 @@ export class ReconciliationService {
         }
       }
 
+      const totalCarrierCostFils = b.tariffEvaluatedAt
+        ? (b.carrierTariffCostFils ?? 0)
+        : legacyCarrierCostFils;
       const netExpectedRemittanceFils = Math.max(0, collectedCodFils - totalCarrierCostFils);
 
       // جلب كافة التوريدات السابقة (لدعم التسويات الجزئية)

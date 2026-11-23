@@ -445,6 +445,7 @@ model OrderItem {
   isRemoved                      Boolean @default(false)
   removalReason                  String?
   missingQuantity                Int     @default(0)
+  isGift                         Boolean @default(false)
   order                          Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product                        Product @relation(fields: [productId], references: [id])
   fulfillmentItems               FulfillmentItem[]
@@ -679,6 +680,8 @@ model RewardRule {
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
   priority      Int                @default(0)
+  giftVariantIds String             @default("[]")
+  giftSelectionMode String          @default("FIXED")
   redemptions   RewardRedemption[]
 
   @@index([isActive, minimumAmount])
@@ -737,6 +740,8 @@ model RewardRedemption {
   orderId      String
   amount       Int        @default(0)
   isVoided     Boolean    @default(false)
+  giftVariantId String?
+  giftNameSnapshot String?
   createdAt    DateTime   @default(now())
   order        Order      @relation(fields: [orderId], references: [id])
   rewardRule   RewardRule @relation(fields: [rewardRuleId], references: [id])
@@ -787,6 +792,7 @@ model SupplierSettlement {
   notes               String?
   createdByEmployeeId String?
   createdAt           DateTime @default(now())
+  financialTransactionId String? @unique
   supplier            Supplier @relation(fields: [supplierId], references: [id])
 
   @@index([supplierId, createdAt])
@@ -801,6 +807,7 @@ model CaptainSettlement {
   notes               String?
   createdByEmployeeId String?
   createdAt           DateTime @default(now())
+  financialTransactionId String? @unique
   captain             Captain  @relation(fields: [captainId], references: [id])
 
   @@index([captainId, createdAt])
@@ -816,6 +823,10 @@ model FinancialTransaction {
   supplierId           String?
   captainId            String?
   deliveryAssignmentId String?
+  fundAccount          String              @default("UNALLOCATED")
+  transferToFundAccount String?
+  paymentMethod        String?
+  receivedByEmployeeId String?
   description          String
   createdByEmployeeId  String?
   createdAt            DateTime            @default(now())
@@ -830,6 +841,8 @@ model FinancialTransaction {
   @@index([captainId, createdAt])
   @@index([orderId, type])
   @@index([saleId])
+  @@index([fundAccount, createdAt])
+  @@index([receivedByEmployeeId, createdAt])
 }
 
 model Expense {
@@ -1277,11 +1290,42 @@ model DeliveryBatch {
   courierCompany String?
   courierName    String?
   courierPhone   String?
+  courierTariffVersionId String?
+  pickupLocationCount Int?
+  carrierTariffCostFils Int?
+  tariffEvaluatedAt DateTime?
   secureToken    String?  @unique
   notes          String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   orders         Order[]
+  courierTariffVersion DeliveryTariffVersion? @relation(fields: [courierTariffVersionId], references: [id], onDelete: Restrict)
+}
+
+model DeliveryTariffVersion {
+  id           String   @id @default(uuid())
+  companyName  String
+  companyKey   String
+  effectiveFrom DateTime
+  note         String?
+  createdByEmployeeId String
+  createdAt    DateTime @default(now())
+  tiers        DeliveryTariffTier[]
+  deliveryBatches DeliveryBatch[]
+
+  @@unique([companyKey, effectiveFrom])
+  @@index([companyKey, effectiveFrom])
+}
+
+model DeliveryTariffTier {
+  id          String   @id @default(uuid())
+  versionId   String
+  minLocations Int
+  maxLocations Int?
+  costFils    Int
+  version     DeliveryTariffVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId, minLocations])
 }
 
 model PurchaseOrder {

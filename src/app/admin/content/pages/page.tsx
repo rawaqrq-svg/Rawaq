@@ -1,12 +1,12 @@
 import React from 'react';
-import { requireAuth } from '@/lib/dal';
+import { requirePermission } from '@/lib/dal';
 import { getCMSContent, updateCMSContent } from '@/lib/cms';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 
 export default async function AdminPagesCMS() {
-  const session = await requireAuth();
+  const session = await requirePermission('section:content');
 
   // Fetch all current CMS texts for the pages
   const about = await getCMSContent('brand_story', { titleAr: 'قصتنا', titleEn: 'Our Story', contentAr: 'تأسست فيلورا بيوتي لتقديم أفضل المكياج.', contentEn: 'Velora Beauty was founded to provide the best makeup.' });

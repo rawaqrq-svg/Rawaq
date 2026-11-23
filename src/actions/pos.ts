@@ -348,6 +348,16 @@ export async function processPOSCheckout(rawData: any): Promise<
         type: 'SALE', direction: 'IN', amount: calculatedSubtotal, saleId: sale.id,
         description: `POS product sale ${sale.reference}`, createdByEmployeeId: employeeId,
       } });
+      for (const [paymentIndex, payment] of (paymentsData as Array<{ method: string; amount: number }>).entries()) {
+        await tx.financialTransaction.create({ data: {
+          businessEventKey: `pos:${sale.id}:payment:${paymentIndex}`,
+          type: 'POS_PAYMENT', direction: 'IN', amount: payment.amount, saleId: sale.id,
+          fundAccount: payment.method === 'CASH' ? 'CASH' : 'BANK', paymentMethod: payment.method,
+          receivedByEmployeeId: payment.method === 'CASH' ? employeeId : null,
+          description: `تحصيل نقطة البيع (${payment.method}) للفاتورة ${sale.reference}`,
+          createdByEmployeeId: employeeId,
+        } });
+      }
       if (discount > 0) await tx.financialTransaction.create({ data: {
         businessEventKey: `pos:${sale.id}:discount`,
         type: 'DISCOUNT', direction: 'OUT', amount: discount, saleId: sale.id,
@@ -587,7 +597,7 @@ export async function processPOSRefund(saleId: string, itemsToReturn: { variantI
     return await prisma.$transaction(async (tx) => {
       const sale = await tx.sale.findUnique({
         where: { id: saleId },
-        include: { items: true, invoice: true }
+        include: { items: true, invoice: true, payments: { orderBy: { createdAt: 'asc' } } }
       });
 
       if (!sale) throw new Error('الطلب غير موجود');
@@ -658,17 +668,28 @@ export async function processPOSRefund(saleId: string, itemsToReturn: { variantI
         }
       });
 
-      await tx.financialTransaction.create({
-        data: {
-          businessEventKey: `pos:${sale.id}:refund:${returnDoc.id}`,
-          type: 'REFUND_PRODUCT',
-          direction: 'OUT',
-          amount: totalRefundAmount,
-          saleId: sale.id,
-          description: `POS Refund for ${sale.reference}`,
-          createdByEmployeeId: employeeId,
-        }
+      let priorRefundAmount = previouslyRefunded;
+      const remainingTender = sale.payments.map(payment => {
+        const usedForPriorRefunds = Math.min(payment.amount, priorRefundAmount);
+        priorRefundAmount -= usedForPriorRefunds;
+        return { method: payment.method, amount: payment.amount - usedForPriorRefunds };
       });
+      let refundRemaining = totalRefundAmount;
+      let refundIndex = 0;
+      for (const tender of remainingTender) {
+        const refundPart = Math.min(tender.amount, refundRemaining);
+        if (refundPart <= 0) continue;
+        await tx.financialTransaction.create({
+          data: {
+            businessEventKey: `pos:${sale.id}:refund:${returnDoc.id}:${refundIndex++}`,
+            type: 'REFUND_PRODUCT', direction: 'OUT', amount: refundPart, saleId: sale.id,
+            fundAccount: tender.method === 'CASH' ? 'CASH' : 'BANK', paymentMethod: tender.method,
+            description: `POS refund for ${sale.reference} (${tender.method})`, createdByEmployeeId: employeeId,
+          }
+        });
+        refundRemaining -= refundPart;
+      }
+      if (refundRemaining > 0) throw new Error('تعذر توزيع الاسترداد على وسائل الدفع الأصلية للفاتورة.');
 
       return { success: true, returnId: returnDoc.id, totalRefundAmount };
     });

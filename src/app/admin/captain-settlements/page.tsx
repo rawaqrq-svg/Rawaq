@@ -7,7 +7,7 @@ import { randomUUID } from 'crypto';
 import { DeleteSettlement } from './DeleteSettlement';
 
 export default async function CaptainSettlementsPage() {
-  const session = await requirePermission('manage:settings');
+  const session = await requirePermission('section:financials');
   
   const [captains, settlements, allTransactions] = await Promise.all([
     prisma.captain.findMany({ 
