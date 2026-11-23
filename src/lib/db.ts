@@ -8,7 +8,7 @@ declare global {
   var __prismaClientVersion: string | undefined;
 }
 
-const PRISMA_SCHEMA_VERSION = 'v5_profits_payroll_2026';
+const PRISMA_SCHEMA_VERSION = 'v6_financial_counterparty_20261123';
 
 const connectionString = (process.env.NODE_ENV === 'test' && process.env.TEST_DATABASE_URL)
   ? process.env.TEST_DATABASE_URL
