@@ -32,7 +32,6 @@ export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarP
       { href: '/admin/orders', label: 'إدارة الطلبات', permission: 'section:orders' },
       { href: '/admin/products', label: 'المنتجات والأسعار', permission: 'section:products' },
       { href: '/admin/categories', label: 'المجموعات', permission: 'section:products' },
-      { href: '/admin/financials', label: 'المالية', permission: 'section:financials' },
       { href: '/admin/profits', label: 'الأرباح والمستحقات', permission: 'section:financials' },
       { href: '/admin/reconciliation', label: 'التسويات', permission: 'section:financials' },
       { href: '/admin/settings', label: 'طلبيات التوصيل', permission: 'section:delivery' },

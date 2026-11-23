@@ -196,6 +196,8 @@ export async function settleSupplier(supplierId: string, formData: FormData) {
         }
       });
 
+      const supplier = await tx.supplier.findUnique({ where: { id: supplierId }, select: { name: true } });
+
       const financialTransaction = await tx.financialTransaction.create({
         data: {
           businessEventKey: `supplier-settlement:${data.idempotencyKey}`,
@@ -205,6 +207,7 @@ export async function settleSupplier(supplierId: string, formData: FormData) {
           paymentMethod: data.paymentMethod,
           amount,
           supplierId,
+          counterpartyName: supplier?.name || 'المحل',
           description: data.notes ? `دفعة مورد: ${data.notes}` : `تسوية دفعة مورد (${data.paymentMethod})`,
           createdByEmployeeId: session.employeeId,
         }
@@ -240,6 +243,7 @@ export async function reverseSupplierSettlement(settlementId: string, reason: st
     await prisma.$transaction(async tx => {
       const settlement = await tx.supplierSettlement.findUnique({ where: { id: settlementId } });
       if (!settlement) throw new Error('سجل التسوية غير موجود.');
+      const supplier = await tx.supplier.findUnique({ where: { id: settlement.supplierId }, select: { name: true } });
       const originalFinancialTx = settlement.financialTransactionId
         ? await tx.financialTransaction.findUnique({ where: { id: settlement.financialTransactionId }, select: { fundAccount: true, paymentMethod: true } })
         : null;
@@ -259,6 +263,7 @@ export async function reverseSupplierSettlement(settlementId: string, reason: st
           paymentMethod: originalFinancialTx?.paymentMethod || null,
           amount: settlement.amount,
           supplierId: settlement.supplierId,
+          counterpartyName: supplier?.name || 'المحل',
           description: `تسوية عكسية معتمدة للدفعة #${settlement.id} — السبب: ${reason.trim()}`,
           createdByEmployeeId: session.employeeId,
         }
@@ -311,6 +316,7 @@ export async function settleCaptain(captainId: string, formData: FormData) {
           createdByEmployeeId: session.employeeId,
         }
       });
+      const captain = await tx.captain.findUnique({ where: { id: captainId }, select: { name: true } });
 
       // إصدار قيد سداد التزام المندوب فقط. لا ننشئ قيد EXPENSE حتى لا تتضاعف تكلفة التوصيل في الأرباح.
       const financialTransaction = await tx.financialTransaction.create({
@@ -322,6 +328,7 @@ export async function settleCaptain(captainId: string, formData: FormData) {
           paymentMethod: data.paymentMethod,
           amount,
           captainId,
+          counterpartyName: captain?.name || 'مندوب التوصيل',
           description: data.notes ? `سداد أجر مندوب: ${data.notes}` : `تسوية أجر مندوب / شركة توصيل (${data.paymentMethod})`,
           createdByEmployeeId: session.employeeId,
         }
@@ -408,16 +415,16 @@ export async function deleteCaptainSettlement(settlementId: string) {
 
 export async function createExpense(formData: FormData) {
   const session = await requirePermission('manage:financials');
-  const parsed = z.object({ category: z.enum(['MARKETING', 'PACKAGING', 'SOFTWARE', 'SALARIES', 'OPERATIONS', 'MISC', 'OTHER']), amount: z.coerce.number().finite().positive().max(1000000), expenseDate: z.string().optional(), description: z.string().trim().min(2).max(500), reference: z.string().trim().max(120).optional() }).safeParse(Object.fromEntries(formData));
+  const parsed = z.object({ category: z.enum(['MARKETING', 'PACKAGING', 'SOFTWARE', 'OPERATIONS', 'MISC', 'OTHER']), amount: z.coerce.number().finite().positive().max(1000000), expenseDate: z.string().optional(), description: z.string().trim().min(2).max(500), reference: z.string().trim().max(120).optional(), paymentMethod: z.enum(['CASH', 'BANK_TRANSFER', 'CARD', 'CLIK']).default('BANK_TRANSFER'), counterpartyName: z.string().trim().min(2).max(160) }).safeParse(Object.fromEntries(formData));
   if (!parsed.success) return;
   const data = parsed.data;
   const amount = Math.round(data.amount * 1000);
   await prisma.$transaction(async tx => {
-    const transaction = await tx.financialTransaction.create({ data: { type: 'EXPENSE', direction: 'OUT', amount, fundAccount: 'BANK', paymentMethod: 'BANK_TRANSFER', description: data.description, createdByEmployeeId: session.employeeId } });
+    const transaction = await tx.financialTransaction.create({ data: { type: 'EXPENSE', direction: 'OUT', amount, fundAccount: data.paymentMethod === 'CASH' ? 'CASH' : 'BANK', paymentMethod: data.paymentMethod, counterpartyName: data.counterpartyName, description: data.description, createdByEmployeeId: session.employeeId } });
     await tx.expense.create({ data: { category: data.category, amount, description: data.description, reference: data.reference || null, expenseDate: data.expenseDate ? new Date(data.expenseDate) : new Date(), createdByEmployeeId: session.employeeId, financialTransactionId: transaction.id } });
   });
   revalidatePath('/admin/expenses');
-  revalidatePath('/admin/financials');
+  revalidatePath('/admin/profits');
   revalidatePath('/admin/reconciliation');
 }
 

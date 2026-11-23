@@ -26,6 +26,7 @@ export default async function proxy(request: NextRequest) {
     '/admin/sales',
     '/admin/roles',
     '/admin/transactions',
+    '/admin/financials',
   ];
   if (retiredAdminSections.some((route) => pathname === route || pathname.startsWith(`${route}/`))) {
     return new NextResponse('Not Found', { status: 404 });

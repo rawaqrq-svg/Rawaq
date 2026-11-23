@@ -126,11 +126,12 @@ export async function settleDeliveryBatchAction(formData: FormData): Promise<Set
           OR: [
             { businessEventKey: `batch-settlement:${batch.id}` },
             { businessEventKey: { startsWith: `batch-remittance:${batch.id}:` } },
+            { businessEventKey: { startsWith: `reverse-batch-settlement:${batch.id}:` } },
           ],
-          type: 'COD_SETTLEMENT',
+          type: { in: ['COD_SETTLEMENT', 'COD_SETTLEMENT_REVERSAL'] },
         },
       });
-      const previouslyRemittedFils = previousRemittances.reduce((sum, r) => sum + r.amount, 0);
+      const previouslyRemittedFils = Math.max(0, previousRemittances.reduce((sum, r) => sum + (r.type === 'COD_SETTLEMENT_REVERSAL' ? -r.amount : r.amount), 0));
       const remainingBeforeThisFils = Math.max(0, expectedRemittanceFils - previouslyRemittedFils);
 
       if (remainingBeforeThisFils <= 0 && previouslyRemittedFils > 0 && actualReceivedFils === 0) {
@@ -147,6 +148,7 @@ export async function settleDeliveryBatchAction(formData: FormData): Promise<Set
             amount: actualReceivedFils,
             fundAccount: paymentMethod === 'CASH' ? 'CASH' : 'BANK',
             paymentMethod,
+            counterpartyName: batch.courierCompany || 'شركة التوصيل',
             receivedByEmployeeId: paymentMethod === 'CASH' ? receivedByEmployeeId : null,
             description: `توريد نقد COD من شركة التوصيل (${batch.courierCompany || 'الناقل'}) لطلبية ${batch.reference} [${reference || 'دفعة'}]`,
             createdByEmployeeId: session.employeeId,
@@ -283,6 +285,7 @@ export async function settleCaptainClearingAction(formData: FormData) {
             fundAccount: 'CASH',
             paymentMethod: 'CASH',
             captainId,
+            counterpartyName: captain.name,
             description: `مقاصة أجر توصيل مقابل عهدة نقدية لـ ${captain.name} ${notes ? `(${notes})` : ''}`,
             createdByEmployeeId: session.employeeId,
           },
@@ -299,6 +302,7 @@ export async function settleCaptainClearingAction(formData: FormData) {
             paymentMethod: 'CASH',
             receivedByEmployeeId: session.employeeId,
             captainId,
+            counterpartyName: captain.name,
             description: `مقاصة توريد عهدة COD مقيدة مقابل أجر التوصيل لـ ${captain.name}`,
             createdByEmployeeId: session.employeeId,
           },
@@ -325,6 +329,7 @@ export async function settleCaptainClearingAction(formData: FormData) {
             paymentMethod,
             receivedByEmployeeId: paymentMethod === 'CASH' ? session.employeeId : null,
             captainId,
+            counterpartyName: captain.name,
             description: `توريد عهدة نقدية من المندوب (${captain.name}) للخزينة ${notes ? `· ${notes}` : ''}`,
             createdByEmployeeId: session.employeeId,
           },
@@ -490,6 +495,7 @@ export async function cancelDeliveryBatchSettlementAction(formData: FormData): P
               amount: amountToReverse,
               fundAccount: remittance.fundAccount,
               paymentMethod: remittance.paymentMethod,
+              counterpartyName: remittance.counterpartyName,
               receivedByEmployeeId: remittance.receivedByEmployeeId,
               description: `إلغاء توريد ${remittance.fundAccount === 'CASH' ? 'نقدي' : 'بنكي'} لطلبية ${batch.reference} · السبب: ${reason}`,
               createdByEmployeeId: session.employeeId,

@@ -15,7 +15,7 @@ const AdminIndexPage = async () => {
     ['section:dashboard', '/admin/dashboard'],
     ['section:orders', '/admin/orders'],
     ['section:products', '/admin/products'],
-    ['section:financials', '/admin/financials'],
+    ['section:financials', '/admin/profits'],
     ['section:delivery', '/admin/settings'],
     ['section:suppliers', '/admin/suppliers'],
     ['section:settings', '/admin/shipping-zones'],

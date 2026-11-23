@@ -6,7 +6,6 @@ import {
   settleDeliveryBatchAction,
   settleCaptainClearingAction,
   resolveDiscrepancyAction,
-  universalReverseSettlementAction,
 } from '@/actions/reconciliation';
 import { settleSupplier, settleCaptain, createExpense } from '@/actions/operations';
 import { PrintButton } from './PrintButton';
@@ -60,7 +59,7 @@ export function ReconciliationClientTabs({
     if (val === 'suppliers' || val === 'shops' || val === 'stores') return 'suppliers';
     if (val === 'expenses') return 'expenses';
     if (val === 'reports') return 'reports';
-    if (val === 'ledger' || val === 'differences') return 'ledger';
+    if (val === 'ledger' || val === 'differences') return 'differences';
     return 'delivery';
   };
 
@@ -296,7 +295,7 @@ export function ReconciliationClientTabs({
           { id: 'suppliers', label: 'الموردون (المحلات)', subtitle: 'مستحقات • دفعات • تعديلات', count: suppliers.length },
           { id: 'expenses', label: 'المصروفات', subtitle: 'المصروفات التشغيلية والإدارية', count: expenses.length },
           { id: 'reports', label: 'التقارير وكشوف الحساب', subtitle: 'PDF • Excel • طباعة', count: undefined },
-          { id: 'ledger', label: 'السجل والفروقات', subtitle: 'المطابقة • التصحيحات • الاعتمادات', count: differences.filter(d => d.status === 'OPEN').length, alert: true },
+          { id: 'differences', label: 'الفروقات المالية', subtitle: 'المطابقة • المعالجة • الاعتمادات', count: differences.filter(d => d.status === 'OPEN').length, alert: true },
         ].map(tab => (
           <button
             key={tab.id}
@@ -620,7 +619,7 @@ export function ReconciliationClientTabs({
             <div>
               <h2 className="text-xl font-bold text-zinc-900">المصروفات التشغيلية والإدارية</h2>
               <p className="text-xs text-zinc-600 mt-0.5">
-                إدارة المصروفات مع منع أي تكرار مع أجور التوصيل بالدفتر المالي، وتصنيف كل مصروف بدقة.
+                سجّل وسيلة الصرف والجهة المستفيدة؛ المصروف النقدي يتطلب تحديد مستلمه ويخصم من الصندوق النقدي.
               </p>
             </div>
           </div>
@@ -633,7 +632,6 @@ export function ReconciliationClientTabs({
                 <option value="PACKAGING">مواد التعبئة والتغليف والكراتين</option>
                 <option value="MARKETING">إعلانات وحملات تسويقية رقمية</option>
                 <option value="SOFTWARE">برمجيات وخوادم ورسائل WhatsApp API</option>
-                <option value="SALARIES">رواتب وبدل مواصلات ومكافآت</option>
                 <option value="OPERATIONS">لوجستيات المستودع والمناولة</option>
                 <option value="MISC">ضيافة ونثريات ومشتريات مكتبية</option>
                 <option value="MAINTENANCE">صيانة ومعدات ومصاريف بنكية</option>
@@ -655,6 +653,19 @@ export function ReconciliationClientTabs({
             <div>
               <label className="text-xs font-bold text-zinc-700 block mb-1">المرجع / رقم الفاتورة (اختياري)</label>
               <input name="reference" placeholder="رقم الإيصال أو الفاتورة..." className="w-full rounded-lg border border-zinc-300 p-2 text-xs" />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-zinc-700 block mb-1">طريقة الصرف</label>
+              <select name="paymentMethod" defaultValue="BANK_TRANSFER" className="w-full rounded-lg border border-zinc-300 p-2 text-xs">
+                <option value="BANK_TRANSFER">تحويل بنكي</option>
+                <option value="CARD">بطاقة</option>
+                <option value="CLIK">كليك</option>
+                <option value="CASH">نقداً من الصندوق</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-zinc-700 block mb-1">المستفيد / مستلم النقد</label>
+              <input name="counterpartyName" maxLength={160} minLength={2} required placeholder="اسم المورد أو الجهة المستفيدة" className="w-full rounded-lg border border-zinc-300 p-2 text-xs" />
             </div>
             <div className="md:col-span-3 flex justify-end">
               <button type="submit" className="rounded-lg bg-emerald-950 px-6 py-2 text-xs font-bold text-amber-300 hover:bg-emerald-900 transition-colors shadow-sm">
@@ -714,8 +725,8 @@ export function ReconciliationClientTabs({
         </section>
       )}
 
-      {/* TAB 5: السجل والفروقات (?v=ledger أو ?v=differences) */}
-      {activeTab === 'ledger' && (
+      {/* TAB 5: الفروقات المالية */}
+      {activeTab === 'differences' && (
         <section className="no-print space-y-6">
           {/* قسم الفروقات المالية */}
           <div className="space-y-4">
@@ -799,82 +810,6 @@ export function ReconciliationClientTabs({
             </div>
           </div>
 
-          {/* قسم سجل العمليات العامة */}
-          <div className="space-y-4 pt-6 border-t border-zinc-200">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 className="text-xl font-bold text-zinc-900">سجل التسويات والعمليات المالية</h2>
-                <p className="text-xs text-zinc-600 mt-0.5">
-                  سجل تدقيق كامل لكافة حركات التسوية والعكس المالي المعتمدة، مع ربط كل عملية برقم تسويتها ومسؤولها.
-                </p>
-              </div>
-              <PrintButton documentTitle="رواق_سجل_التسويات_المالية_A4" />
-            </div>
-
-            <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm">
-              <table className="w-full text-right text-sm">
-                <thead className="bg-zinc-50 border-b border-zinc-200 text-xs font-semibold text-zinc-600">
-                  <tr>
-                    <th className="p-3">التاريخ والوقت</th>
-                    <th className="p-3">نوع الحركة</th>
-                    <th className="p-3">المرجع</th>
-                    <th className="p-3">البيان والملاحظات</th>
-                    <th className="p-3">المبلغ</th>
-                    <th className="p-3">المسؤول</th>
-                    <th className="p-3 text-center">إجراء عكسي</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100">
-                  {transactions.map(t => {
-                    const isReversal = t.type.includes('REVERSAL');
-                    return (
-                      <tr key={t.id} className={isReversal ? 'bg-amber-50/40 text-amber-950' : 'hover:bg-zinc-50/70'}>
-                        <td className="p-3 text-xs text-zinc-600">{new Date(t.createdAt).toLocaleString('en-GB')}</td>
-                        <td className="p-3">
-                          <span className={`font-bold ${isReversal ? 'text-amber-800' : 'text-zinc-900'}`}>{t.type}</span>
-                        </td>
-                        <td className="p-3 font-mono text-xs">{t.order?.reference || t.businessEventKey || '—'}</td>
-                        <td className="p-3 text-xs text-zinc-700">{t.description}</td>
-                        <td className="p-3 font-mono font-bold" dir="ltr">
-                          {t.direction === 'OUT' ? '-' : '+'}
-                          {filsToDisplay(t.amount)}
-                        </td>
-                        <td className="p-3 text-xs text-zinc-600">
-                          {t.createdByEmployeeId ? employeeMap.get(t.createdByEmployeeId) || 'النظام' : 'النظام'}
-                        </td>
-                        <td className="p-3 text-center">
-                          {['SUPPLIER_PAYMENT', 'CAPTAIN_PAYMENT'].includes(t.type) && (
-                            <button
-                              onClick={async () => {
-                                const reason = window.prompt('أدخل سبباً موثقاً لعكس هذه العملية المالية:');
-                                if (!reason || !reason.trim()) return;
-                                const form = new FormData();
-                                form.set('settlementType', t.type === 'SUPPLIER_PAYMENT' ? 'SUPPLIER' : 'CAPTAIN');
-                                form.set('settlementId', t.id);
-                                form.set('reason', reason.trim());
-                                await universalReverseSettlementAction(form);
-                                window.location.reload();
-                              }}
-                              className="text-xs text-amber-700 hover:text-amber-900 font-bold underline"
-                            >
-                              عكس مالي
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {transactions.length === 0 && (
-                    <tr>
-                      <td colSpan={7} className="p-6 text-center text-zinc-500">
-                        لا توجد عمليات مسجلة بالدفتر المالي.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
         </section>
       )}
 
@@ -1047,9 +982,9 @@ export function ReconciliationClientTabs({
                 <div>
                   <label className="text-xs font-bold text-zinc-700 block mb-1">طريقة الاستلام / التحويل</label>
                   <select name="paymentMethod" className="w-full rounded-lg border border-zinc-300 p-2 text-sm">
-                    <option value="BANK_TRANSFER">حوالة بنكية / كليك (CliQ)</option>
+                    <option value="BANK_TRANSFER">تحويل بنكي</option>
                     <option value="CASH">نقداً في صندوق المتجر</option>
-                    <option value="CARD">بطاقة / إيداع</option>
+                    <option value="CARD">دفع بالبطاقة</option>
                   </select>
                 </div>
                 <div>

@@ -73,8 +73,8 @@ export class ProfitsService {
    * 1. احتساب المؤشرات المالية الرئيسية (KPIs)
    */
   static async getProfitsKPIs(fromDate?: Date, toDate?: Date): Promise<ProfitsKPIs> {
-    const periodFilter = fromDate && toDate ? {
-      createdAt: { gte: fromDate, lte: toDate },
+    const periodFilter = fromDate || toDate ? {
+      createdAt: { ...(fromDate ? { gte: fromDate } : {}), ...(toDate ? { lte: toDate } : {}) },
     } : {};
 
     // 1. إيرادات الطلبات المسلمة فعلياً
@@ -89,6 +89,7 @@ export class ProfitsService {
         totalAmount: true,
         actualDeliveryCost: true,
         shippingCost: true,
+        deliveryAssignment: { select: { captainEarning: true } },
       },
     });
 
@@ -114,7 +115,7 @@ export class ProfitsService {
     }, 0);
 
     // هامش نشاط رَواق (Platform Gross Margin)
-    const platformGrossMarginFils = Math.max(0, grossRevenueFils - supplierObligationsFils);
+    const platformGrossMarginFils = grossRevenueFils - supplierObligationsFils;
 
     // 3. تكاليف التوصيل وإيراداته (الزبون يدفع 3 د.أ افتراضياً، شركة التوصيل تستحق 2 د.أ، والفارق 1 د.أ ربح صاف للمنصة)
     const deliveryRevenueFils = deliveredOrders.reduce((sum, o) => sum + (o.shippingCost || 0), 0);
@@ -133,11 +134,12 @@ export class ProfitsService {
           : orders.reduce((sum, order) => sum + (order.actualDeliveryCost ?? 2000), 0);
       }
     }
-    const deliveryProfitMarginFils = Math.max(0, deliveryRevenueFils - courierCostsFils);
+    const captainEarningsFils = deliveredOrders.reduce((sum, order) => sum + (order.deliveryAssignment?.captainEarning ?? 0), 0);
+    const deliveryProfitMarginFils = deliveryRevenueFils - courierCostsFils - captainEarningsFils;
 
     // 4. المصاريف التشغيلية (تسويق، برمجيات، ضيافة...)
-    const expenseDateFilter = fromDate && toDate ? {
-      expenseDate: { gte: fromDate, lte: toDate },
+    const expenseDateFilter = fromDate || toDate ? {
+      expenseDate: { ...(fromDate ? { gte: fromDate } : {}), ...(toDate ? { lte: toDate } : {}) },
     } : {};
 
     const expensesAgg = await prisma.expense.aggregate({
@@ -147,9 +149,9 @@ export class ProfitsService {
     const operatingExpensesFils = expensesAgg._sum.amount || 0;
 
     // 5. رواتب الموظفين (المستحقة والمدفوعة)
-    const payrollFilter = fromDate && toDate ? {
-      periodFrom: { gte: fromDate },
-      periodTo: { lte: toDate },
+    const payrollFilter = fromDate || toDate ? {
+      ...(toDate ? { periodFrom: { lte: toDate } } : {}),
+      ...(fromDate ? { periodTo: { gte: fromDate } } : {}),
     } : {};
 
     const [accruedSalariesAgg, paidSalariesAgg] = await Promise.all([
@@ -158,7 +160,7 @@ export class ProfitsService {
         _sum: { netPayableFils: true },
       }),
       prisma.payrollPayment.aggregate({
-        where: fromDate && toDate ? { paidAt: { gte: fromDate, lte: toDate } } : {},
+        where: fromDate || toDate ? { paidAt: { ...(fromDate ? { gte: fromDate } : {}), ...(toDate ? { lte: toDate } : {}) } } : {},
         _sum: { amountFils: true },
       }),
     ]);
@@ -169,7 +171,7 @@ export class ProfitsService {
 
     // 6. صافي الربح المحاسبي
     const estimatedNetProfitFils =
-      platformGrossMarginFils - courierCostsFils - operatingExpensesFils - accruedSalariesFils;
+      platformGrossMarginFils - courierCostsFils - captainEarningsFils - operatingExpensesFils - accruedSalariesFils;
 
     // 7. الاحتياطي التشغيلي الداخلي (20%)
     const internalReserveFils =
@@ -180,23 +182,22 @@ export class ProfitsService {
 
     // 9. فحص السيولة النقدية الحرة الآمنة وسحوبات الشركاء
     // النقد المحصل فعلياً لخزينة رَواق مطروحاً منه استحقاقات الموردين ومصاريف التشغيل والرواتب
-    const payoutFilter = fromDate && toDate ? {
-      paidAt: { gte: fromDate, lte: toDate },
+    const payoutFilter = fromDate || toDate ? {
+      paidAt: { ...(fromDate ? { gte: fromDate } : {}), ...(toDate ? { lte: toDate } : {}) },
     } : {};
 
-    const [totalCodSettledAgg, totalSupplierPaidAgg, totalPartnerPayoutsAgg, partnerRules] = await Promise.all([
-      prisma.financialTransaction.aggregate({
-        where: { type: 'COD_SETTLEMENT' },
+    const [liabilityGroups, fundBalances, totalAccruedPayrollAgg, totalPaidPayrollAgg, partnerRules] = await Promise.all([
+      prisma.financialTransaction.groupBy({
+        by: ['type'],
+        where: { type: { in: [
+          'SUPPLIER_OBLIGATION', 'SUPPLIER_OBLIGATION_REVERSAL', 'SUPPLIER_PAYMENT', 'SUPPLIER_PAYMENT_REVERSAL',
+          'CAPTAIN_EARNING', 'CAPTAIN_EARNING_REVERSAL', 'CAPTAIN_PAYMENT', 'CAPTAIN_PAYMENT_REVERSAL',
+        ] } },
         _sum: { amount: true },
       }),
-      prisma.financialTransaction.aggregate({
-        where: { type: 'SUPPLIER_PAYMENT' },
-        _sum: { amount: true },
-      }),
-      prisma.partnerPayout.aggregate({
-        where: payoutFilter,
-        _sum: { amountFils: true },
-      }),
+      this.getFundBalances(),
+      prisma.payrollPeriod.aggregate({ where: { status: { in: ['ACCRUED', 'PAID'] } }, _sum: { netPayableFils: true } }),
+      prisma.payrollPayment.aggregate({ _sum: { amountFils: true } }),
       prisma.partnerShareRule.findMany({
         where: { isActive: true },
         include: {
@@ -207,29 +208,19 @@ export class ProfitsService {
       }),
     ]);
 
-    const totalCashIn = totalCodSettledAgg._sum.amount || 0;
-    const operationalCashOut =
-      (totalSupplierPaidAgg._sum.amount || 0) +
-      operatingExpensesFils +
-      paidSalariesFils;
+    const liabilityByType = new Map(liabilityGroups.map(group => [group.type, group._sum.amount ?? 0]));
+    const liability = (type: string) => liabilityByType.get(type) ?? 0;
+    const supplierDueFils = Math.max(0, liability('SUPPLIER_OBLIGATION') - liability('SUPPLIER_OBLIGATION_REVERSAL') - liability('SUPPLIER_PAYMENT') + liability('SUPPLIER_PAYMENT_REVERSAL'));
+    const captainDueFils = Math.max(0, liability('CAPTAIN_EARNING') - liability('CAPTAIN_EARNING_REVERSAL') - liability('CAPTAIN_PAYMENT') + liability('CAPTAIN_PAYMENT_REVERSAL'));
+    const allDueSalariesFils = Math.max(0, (totalAccruedPayrollAgg._sum.netPayableFils ?? 0) - (totalPaidPayrollAgg._sum.amountFils ?? 0));
 
-    // السيولة النقدية التشغيلية المتاحة لتوزيعات الفترة (قبل خصم سحوبات الشركاء كحقوق ملكية):
-    const operationalLiquidCashBeforePartnerDraws = Math.max(
-      0,
-      totalCashIn - operationalCashOut - dueSalariesFils
-    );
+    // السيولة الحرة = الرصيد الفعلي للصندوق والبنك بعد حجز التزامات الموردين والمندوبين والرواتب القائمة.
+    const safeLiquidCashFils = Math.max(0, fundBalances.bankFils + fundBalances.cashFils - supplierDueFils - captainDueFils - allDueSalariesFils);
 
     // إجمالي وعاء أرباح الفترة المتاح للتوزيع بين الشركاء (مقيداً بالسيولة التشغيلية الكلية للمنصة):
     const totalPeriodPoolFils = Math.min(
       distributableProfitFils,
-      operationalLiquidCashBeforePartnerDraws
-    );
-
-    // النقد الفعلي المتبقي في الخزينة بعد خصم المسحوبات المصروفة فعلياً للشركاء:
-    const totalPartnerPayoutsFils = totalPartnerPayoutsAgg._sum.amountFils || 0;
-    const safeLiquidCashFils = Math.max(
-      0,
-      operationalLiquidCashBeforePartnerDraws - totalPartnerPayoutsFils
+      safeLiquidCashFils
     );
 
     // حساب استحقاقات كل شريك من وعاء أرباح الفترة مطروحاً منها مسحوباته الفردية:
@@ -528,7 +519,11 @@ export class ProfitsService {
       throw new Error('تم سداد راتب هذا الأسبوع مسبقاً ولا يجوز الصرف مرتين.');
     }
 
-    const payAmount = input.amountFils ?? period.netPayableFils;
+    if (period.netPayableFils <= 0 || (input.amountFils !== undefined && input.amountFils !== period.netPayableFils)) {
+      throw new Error('مبلغ الراتب غير صالح؛ يجب سداد كامل الاستحقاق المسجل للفترة.');
+    }
+
+    const payAmount = period.netPayableFils;
     const idempotencyKey = `payroll-payout:${period.id}`;
     const paymentRef = `PAY-${period.reference}-${Date.now().toString().slice(-4)}`;
 
@@ -541,6 +536,7 @@ export class ProfitsService {
           amount: payAmount,
           fundAccount: input.paymentMethod === 'CASH' ? 'CASH' : 'BANK',
           paymentMethod: input.paymentMethod,
+          counterpartyName: period.employee.name,
           businessEventKey: idempotencyKey,
           description: `سداد راتب الموظف ${period.employee.name} للفترة ${period.reference}`,
           createdByEmployeeId: adminEmployeeId,
@@ -807,29 +803,25 @@ export class ProfitsService {
     adminEmployeeId: string,
     adminEmployeeName: string
   ) {
-    const partner = await prisma.partnerShareRule.findUnique({
-      where: { id: partnerRuleId },
-    });
-
-    if (!partner) throw new Error('الشريك غير مسجل.');
     if (input.amountFils <= 0) throw new Error('مبلغ الصرف يجب أن يكون أكبر من صفر.');
 
-    // التحقق الصارم من الرصيد المستحق للشريك (منع السحب الزائد عن الاستحقاق نهائياً)
-    const partnersSummary = await this.getPartnersSummary();
-    const partnerCard = partnersSummary.find((p) => p.ruleId === partnerRuleId);
-
-    if (!partnerCard) throw new Error('بيانات الحساب المالي للشريك غير متوفرة.');
-
-    if (input.amountFils > partnerCard.remainingDueFils) {
-      throw new Error(
-        `المبلغ المطلوب (${(input.amountFils / 1000).toFixed(3)} د.أ) يتجاوز الرصيد المستحق للشريك (${(partnerCard.remainingDueFils / 1000).toFixed(3)} د.أ). يمنع النظام صرف مبالغ تتجاوز حصة الشريك المقررة لمنع أي ذمم أو تناقضات مالية.`
-      );
-    }
-
-    const idempotencyKey = `partner-payout:${partner.id}:${Date.now()}`;
-    const ref = `POUT-${partner.partnerName === 'الشريك الأول' ? 'P1' : 'P2'}-${Date.now().toString().slice(-5)}`;
-
     return await prisma.$transaction(async (tx) => {
+      // Serialize partner payouts so two simultaneous requests cannot spend the same free balance.
+      await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext('rwaq-partner-payout'))`;
+      const partner = await tx.partnerShareRule.findUnique({ where: { id: partnerRuleId } });
+      if (!partner) throw new Error('الشريك غير مسجل.');
+
+      const partnersSummary = await this.getPartnersSummary();
+      const partnerCard = partnersSummary.find((p) => p.ruleId === partnerRuleId);
+      if (!partnerCard) throw new Error('بيانات الحساب المالي للشريك غير متوفرة.');
+      if (input.amountFils > partnerCard.remainingDueFils) {
+        throw new Error(
+          `المبلغ المطلوب (${(input.amountFils / 1000).toFixed(3)} د.أ) يتجاوز الرصيد المستحق للشريك (${(partnerCard.remainingDueFils / 1000).toFixed(3)} د.أ). يمنع النظام صرف مبالغ تتجاوز حصة الشريك المقررة لمنع أي ذمم أو تناقضات مالية.`
+        );
+      }
+
+      const idempotencyKey = `partner-payout:${partner.id}:${Date.now()}`;
+      const ref = `POUT-${partner.partnerName === 'الشريك الأول' ? 'P1' : 'P2'}-${Date.now().toString().slice(-5)}`;
       // 1. تسجيل قيد مالي في الدفتر المركزي
       const finTx = await tx.financialTransaction.create({
         data: {
@@ -843,6 +835,7 @@ export class ProfitsService {
           amount: input.amountFils,
           fundAccount: input.paymentMethod === 'CASH' ? 'CASH' : 'BANK',
           paymentMethod: input.paymentMethod,
+          counterpartyName: partner.partnerName,
           businessEventKey: idempotencyKey,
           description: `صرف ${
             input.payoutType === 'PROFIT_DISTRIBUTION'
@@ -888,7 +881,7 @@ export class ProfitsService {
       });
 
       return payout;
-    });
+    }, { isolationLevel: 'Serializable' });
   }
 
   /**
@@ -1026,30 +1019,64 @@ export class ProfitsService {
   }
 
   static async getProfitsFullLedger(limit = 500, fromDate?: Date, toDate?: Date, receiverId?: string, paymentMethod?: string) {
-    void limit;
-    const where: any = {};
+    const movementTypes = [
+      'COD_SETTLEMENT', 'COD_SETTLEMENT_REVERSAL',
+      'SUPPLIER_PAYMENT', 'SUPPLIER_PAYMENT_REVERSAL',
+      'CAPTAIN_PAYMENT', 'CAPTAIN_PAYMENT_REVERSAL',
+      'EXPENSE', 'SALARY_PAYMENT', 'PARTNER_DISTRIBUTION_PAYOUT', 'PARTNER_DRAWING',
+      'ADMINISTRATIVE_EXPENSE', 'CASH_DEPOSIT', 'BANK_OPENING_BALANCE', 'CASH_OPENING_BALANCE',
+      'REFUND', 'REFUND_PRODUCT', 'REFUND_DELIVERY', 'REFUND_TAX',
+    ];
+    const where: any = { type: { in: movementTypes } };
     if (fromDate || toDate) where.createdAt = { ...(fromDate ? { gte: fromDate } : {}), ...(toDate ? { lte: toDate } : {}) };
     if (receiverId) where.receivedByEmployeeId = receiverId;
     if (paymentMethod) where.paymentMethod = paymentMethod;
-    const transactions = await prisma.financialTransaction.findMany({ where, orderBy: { createdAt: 'desc' } });
+    const transactions = await prisma.financialTransaction.findMany({ where, orderBy: { createdAt: 'desc' }, take: Math.max(1, Math.min(limit, 1000)) });
+    const ids = transactions.map(t => t.id);
+    const supplierIds = [...new Set(transactions.map(t => t.supplierId).filter(Boolean))] as string[];
+    const captainIds = [...new Set(transactions.map(t => t.captainId).filter(Boolean))] as string[];
+    const [suppliers, captains, expenses, salaryPayments, partnerPayouts, supplierSettlements] = ids.length ? await Promise.all([
+      supplierIds.length ? prisma.supplier.findMany({ where: { id: { in: supplierIds } }, select: { id: true, name: true } }) : Promise.resolve([]),
+      captainIds.length ? prisma.captain.findMany({ where: { id: { in: captainIds } }, select: { id: true, name: true } }) : Promise.resolve([]),
+      prisma.expense.findMany({ where: { financialTransactionId: { in: ids } }, select: { financialTransactionId: true, reference: true, category: true } }),
+      prisma.payrollPayment.findMany({ where: { financialTxId: { in: ids } }, select: { financialTxId: true, reference: true, payrollPeriod: { select: { employee: { select: { name: true } } } } } }),
+      prisma.partnerPayout.findMany({ where: { financialTxId: { in: ids } }, select: { financialTxId: true, reference: true, partnerRule: { select: { partnerName: true } } } }),
+      prisma.supplierSettlement.findMany({ where: { financialTransactionId: { in: ids } }, select: { financialTransactionId: true, reference: true } }),
+    ]) : [[], [], [], [], [], []];
+    const supplierNames = new Map(suppliers.map(s => [s.id, s.name]));
+    const captainNames = new Map(captains.map(c => [c.id, c.name]));
+    const expenseByTx = new Map(expenses.filter(e => e.financialTransactionId).map(e => [e.financialTransactionId!, e]));
+    const salaryByTx = new Map(salaryPayments.map(p => [p.financialTxId, p]));
+    const partnerByTx = new Map(partnerPayouts.map(p => [p.financialTxId, p]));
+    const supplierPaymentByTx = new Map(supplierSettlements.map(s => [s.financialTransactionId, s]));
     const employeeIds = [...new Set(transactions.flatMap(t => [t.createdByEmployeeId, t.receivedByEmployeeId]).filter(Boolean))] as string[];
     const employees = employeeIds.length ? await prisma.employee.findMany({ where: { id: { in: employeeIds } }, select: { id: true, name: true } }) : [];
     const employeeNames = new Map(employees.map(e => [e.id, e.name]));
     const labels: Record<string, string> = {
       COD_SETTLEMENT: 'توريد من شركة التوصيل', SUPPLIER_PAYMENT: 'دفعة مورد', SUPPLIER_PAYMENT_REVERSAL: 'عكس دفعة مورد',
-      CAPTAIN_PAYMENT: 'دفعة مندوب التوصيل', CAPTAIN_PAYMENT_REVERSAL: 'عكس دفعة مندوب', EXPENSE: 'مصروف',
+      COD_SETTLEMENT_REVERSAL: 'عكس توريد شركة التوصيل', CAPTAIN_PAYMENT: 'دفعة مندوب التوصيل', CAPTAIN_PAYMENT_REVERSAL: 'عكس دفعة مندوب', EXPENSE: 'مصروف',
       SALARY_PAYMENT: 'سداد راتب', PARTNER_DISTRIBUTION_PAYOUT: 'توزيع أرباح شريك', PARTNER_DRAWING: 'سحب شريك',
       ADMINISTRATIVE_EXPENSE: 'أجر إداري لشريك', CASH_DEPOSIT: 'إيداع نقدي في البنك', BANK_OPENING_BALANCE: 'رصيد افتتاحي للبنك', CASH_OPENING_BALANCE: 'رصيد افتتاحي للصندوق',
-      SALE: 'عملية بيع', RECONCILIATION_CLEARING: 'تسوية محاسبية',
-      POS_PAYMENT: 'تحصيل نقطة البيع', ORDER_PAYMENT: 'تحصيل دفعة طلب',
+      REFUND: 'مبلغ مسترد', REFUND_PRODUCT: 'استرداد قيمة منتجات', REFUND_DELIVERY: 'استرداد رسوم توصيل', REFUND_TAX: 'استرداد ضريبة',
     };
-    return transactions.map(t => ({
-      id: t.id, reference: t.businessEventKey || t.id.slice(0, 8), category: t.type,
-      title: labels[t.type] || t.type, subtitle: t.description, amountFils: t.amount,
-      direction: t.direction, date: t.createdAt, status: 'RECORDED', admin: employeeNames.get(t.createdByEmployeeId || '') || 'النظام',
-      receiver: employeeNames.get(t.receivedByEmployeeId || '') || '', fundAccount: t.fundAccount,
-      paymentMethod: t.paymentMethod || '', transferToFundAccount: t.transferToFundAccount || '',
-    }));
+    return transactions.map(t => {
+      const expense = expenseByTx.get(t.id);
+      const salary = salaryByTx.get(t.id);
+      const partner = partnerByTx.get(t.id);
+      const supplierSettlement = supplierPaymentByTx.get(t.id);
+      const batchReference = t.description.match(/طلبية\s+([^\s\[]+)/)?.[1];
+      const referencePrefix = t.type.includes('SUPPLIER') ? 'SHOP' : t.type.includes('CAPTAIN') ? 'COURIER' : t.type.includes('SALARY') ? 'PAY' : t.type.includes('PARTNER') || t.type === 'ADMINISTRATIVE_EXPENSE' ? 'PARTNER' : t.type.includes('COD_SETTLEMENT') ? 'COD' : t.type === 'EXPENSE' ? 'EXP' : t.type.replaceAll('_', '-');
+      const reference = expense?.reference || salary?.reference || partner?.reference || supplierSettlement?.reference || batchReference || `${referencePrefix}-${t.id.slice(0, 8).toUpperCase()}`;
+      const counterparty = t.counterpartyName || supplierNames.get(t.supplierId || '') || captainNames.get(t.captainId || '') || salary?.payrollPeriod.employee.name || partner?.partnerRule.partnerName || (t.type === 'COD_SETTLEMENT' || t.type === 'COD_SETTLEMENT_REVERSAL' ? t.description.match(/\(([^)]+)\)/)?.[1] : '') || '';
+      const cashRecipient = t.direction === 'IN' ? employeeNames.get(t.receivedByEmployeeId || '') || counterparty : counterparty;
+      return {
+        id: t.id, reference, category: t.type,
+        title: expense ? `مصروف · ${expense.category}` : labels[t.type] || t.type, subtitle: t.description, amountFils: t.amount,
+        direction: t.direction, date: t.createdAt, status: 'RECORDED', admin: employeeNames.get(t.createdByEmployeeId || '') || 'النظام',
+        receiver: cashRecipient, fundAccount: t.fundAccount,
+        paymentMethod: t.paymentMethod || '', transferToFundAccount: t.transferToFundAccount || '',
+      };
+    });
   }
 
 }

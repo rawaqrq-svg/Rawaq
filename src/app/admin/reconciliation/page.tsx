@@ -13,6 +13,7 @@ import { ReconciliationClientTabs } from './ReconciliationClientTabs';
 import { ReconciliationPrintReport } from './ReconciliationPrintReport';
 import { PrintButton } from './PrintButton';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default async function ReconciliationPage({
   searchParams,
@@ -28,6 +29,7 @@ export default async function ReconciliationPage({
     params.shopId ||
     params.statement;
   const initialTab = params.v || params.tab || (initialSupplierId ? 'suppliers' : 'batches');
+  if (initialTab.toLowerCase() === 'ledger') redirect('/admin/reconciliation?v=differences');
 
   // 1. استعلامات متزامنة وسريعة دون تقطيع السجلات ودون take عشوائي للأرصدة
   const [kpis, actionItems, batches, suppliers, deliveryCompanies, differences, transactions, employees, expenses] =

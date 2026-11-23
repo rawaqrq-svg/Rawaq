@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function TransactionsPage() {
-  redirect('/admin/financials#transactions');
+  redirect('/admin/profits?tab=ledger');
 }

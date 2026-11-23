@@ -3,6 +3,12 @@
 import React, { useState, useTransition, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { filsToDisplay } from '@/lib/money';
+
+const paymentMethodLabels: Record<string, string> = {
+  CASH: 'نقداً', BANK_TRANSFER: 'تحويل بنكي', CARD: 'بطاقة', CLIK: 'كليك', OTHER: 'أخرى',
+};
+
+const fundAccountLabels: Record<string, string> = { CASH: 'الصندوق النقدي', BANK: 'الحساب البنكي', UNALLOCATED: 'غير محدد' };
 import {
   TrendingUp,
   DollarSign,
@@ -1189,8 +1195,8 @@ export default function ProfitsClientTabs({
 
                   <div>
                     <span className="font-bold text-stone-900 block">{event.title}</span>
-                    <span className="text-[11px] text-stone-500">{event.subtitle} • {event.fundAccount === 'BANK' ? 'بنك' : event.fundAccount === 'CASH' ? 'نقد' : 'غير محدد'}</span>
-                    {event.receiver && <span className="text-[11px] text-stone-600 block">استلمها: {event.receiver}</span>}
+                    <span className="text-[11px] text-stone-500">{event.subtitle} • {fundAccountLabels[event.fundAccount] || 'غير محدد'} · {paymentMethodLabels[event.paymentMethod] || event.paymentMethod || '—'}</span>
+                    {event.receiver && <span className="text-[11px] text-stone-600 block">مستلم النقد / المستفيد: {event.receiver}</span>}
                   </div>
 
                   <div className="pt-2 border-t border-stone-200/60 flex items-center justify-between">
@@ -1221,7 +1227,7 @@ export default function ProfitsClientTabs({
                   <th className="p-3">التصنيف والبيان</th>
                   <th className="p-3 text-left">المبلغ</th>
                   <th className="p-3">الصندوق وطريقة الدفع</th>
-                  <th className="p-3">مستلم النقد</th>
+                    <th className="p-3">مستلم النقد</th>
                   <th className="p-3">سجلها</th>
                 </tr>
               </thead>
@@ -1247,7 +1253,7 @@ export default function ProfitsClientTabs({
                     </td>
 
                     <td className="p-3 text-[11px] text-stone-600">
-                      {event.fundAccount === 'BANK' ? 'بنك' : event.fundAccount === 'CASH' ? 'نقد' : 'غير محدد'} · {event.paymentMethod || '—'}
+                      {fundAccountLabels[event.fundAccount] || 'غير محدد'} · {paymentMethodLabels[event.paymentMethod] || event.paymentMethod || '—'}
                     </td>
 
                     <td className="p-3 text-[11px] text-stone-600">{event.receiver || '—'}</td>

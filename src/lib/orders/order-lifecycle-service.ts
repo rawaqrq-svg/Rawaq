@@ -463,6 +463,7 @@ export class OrderLifecycleService {
           amount: input.amountFils,
           fundAccount: input.paymentMethod === 'CASH' ? 'CASH' : 'BANK',
           paymentMethod: input.paymentMethod,
+          counterpartyName: job.collectedByCourier || 'مندوب التوصيل',
           receivedByEmployeeId: input.paymentMethod === 'CASH' ? input.employeeId : null,
           orderId: input.orderId,
           saleId: invoice.saleId,

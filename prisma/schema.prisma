@@ -827,6 +827,7 @@ model FinancialTransaction {
   transferToFundAccount String?
   paymentMethod        String?
   receivedByEmployeeId String?
+  counterpartyName     String?
   description          String
   createdByEmployeeId  String?
   createdAt            DateTime            @default(now())
