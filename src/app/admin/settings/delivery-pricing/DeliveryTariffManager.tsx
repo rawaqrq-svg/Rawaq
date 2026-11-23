@@ -7,13 +7,13 @@ import { filsToDisplay } from '@/lib/money';
 
 type Tier = { min: string; max: string; cost: string };
 type Version = { id: string; companyName: string; effectiveFrom: string; createdAt: string; note: string | null; tiers: Array<{ id: string; minLocations: number; maxLocations: number | null; costFils: number }> };
-const riyadhDate = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+const riyadhDate = (date: Date = new Date()) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh', year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
 const companyKey = (value: string) => value.trim().replace(/\s+/g, ' ').toLocaleLowerCase('ar');
 
-export default function DeliveryTariffManager({ initialVersions }: { initialVersions: Version[] }) {
+export default function DeliveryTariffManager({ initialVersions, now }: { initialVersions: Version[]; now: number }) {
   const router = useRouter();
   const [company, setCompany] = useState('');
-  const [effectiveFrom, setEffectiveFrom] = useState(riyadhDate);
+  const [effectiveFrom, setEffectiveFrom] = useState(() => riyadhDate(new Date(now)));
   const [note, setNote] = useState('');
   const [tiers, setTiers] = useState<Tier[]>([{ min: '1', max: '1', cost: '2' }, { min: '2', max: '', cost: '3' }]);
   const [previewCount, setPreviewCount] = useState('3');
@@ -22,13 +22,12 @@ export default function DeliveryTariffManager({ initialVersions }: { initialVers
   const [pending, setPending] = useState(false);
 
   const activeVersionByCompany = useMemo(() => {
-    const now = Date.now();
     const map = new Map<string, Version>();
     [...initialVersions].sort((a, b) => b.effectiveFrom.localeCompare(a.effectiveFrom)).forEach(version => {
       if (new Date(version.effectiveFrom).getTime() <= now && !map.has(companyKey(version.companyName))) map.set(companyKey(version.companyName), version);
     });
     return map;
-  }, [initialVersions]);
+  }, [initialVersions, now]);
 
   const previewTier = useMemo(() => {
     const count = Number(previewCount);
@@ -75,7 +74,7 @@ export default function DeliveryTariffManager({ initialVersions }: { initialVers
         <div><h2 className="font-extrabold text-stone-900">إنشاء إصدار تعرفة</h2><p className="mt-1 text-xs text-stone-500">للتعديل، أنشئ إصداراً جديداً وحدد تاريخ سريانه. لا تتغير الطلبيات المحفوظة.</p></div>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="text-xs font-bold text-stone-700">شركة التوصيل<input required minLength={2} maxLength={120} value={company} onChange={event => setCompany(event.target.value)} placeholder="مثال: شركة التوصيل" className="mt-1 w-full rounded-lg border border-stone-300 p-2.5 text-sm font-normal" /></label>
-          <label className="text-xs font-bold text-stone-700">تاريخ بدء التطبيق<input required type="date" min={riyadhDate()} value={effectiveFrom} onChange={event => setEffectiveFrom(event.target.value)} className="mt-1 w-full rounded-lg border border-stone-300 p-2.5 text-sm font-normal" /></label>
+          <label className="text-xs font-bold text-stone-700">تاريخ بدء التطبيق<input required type="date" min={riyadhDate(new Date(now))} value={effectiveFrom} onChange={event => setEffectiveFrom(event.target.value)} className="mt-1 w-full rounded-lg border border-stone-300 p-2.5 text-sm font-normal" /></label>
         </div>
         <div className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-sm font-bold text-stone-800">شرائح عدد محطات الاستلام</h3><p className="text-[11px] text-stone-500">اجعل الحد الأعلى فارغاً للشريحة المفتوحة. يمكن ترك فجوات؛ سيظهر تنبيه إذا لم تغطِ الشريحة العدد.</p></div><button type="button" onClick={addTier} className="rounded-lg border border-stone-300 px-3 py-2 text-xs font-bold">+ إضافة شريحة</button></div>
@@ -108,7 +107,7 @@ export default function DeliveryTariffManager({ initialVersions }: { initialVers
       <div><h2 className="font-extrabold text-stone-900">سجل إصدارات التعرفة</h2><p className="mt-1 text-xs text-stone-500">الإصدارات محفوظة للتدقيق ولا تُعدّل بعد اعتمادها؛ أنشئ إصداراً تالياً لتعديل الحدود أو الأسعار أو حذف شريحة.</p></div>
       {!initialVersions.length && <p className="rounded-xl bg-stone-50 p-5 text-center text-sm text-stone-500">لا توجد تعرفة مسجلة بعد.</p>}
       <div className="space-y-3">{initialVersions.map(version => {
-        const isScheduled = new Date(version.effectiveFrom).getTime() > Date.now();
+        const isScheduled = new Date(version.effectiveFrom).getTime() > now;
         const isActive = !isScheduled && activeVersionByCompany.get(companyKey(version.companyName))?.id === version.id;
         return <article key={version.id} className="rounded-xl border border-stone-200 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="font-bold text-stone-900">{version.companyName}</h3><p className="text-[11px] text-stone-500">سريان من {new Date(version.effectiveFrom).toLocaleDateString('ar-JO')} · أُنشئت {new Date(version.createdAt).toLocaleDateString('ar-JO')}</p></div><span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${isScheduled ? 'bg-blue-100 text-blue-900' : isActive ? 'bg-emerald-100 text-emerald-900' : 'bg-stone-100 text-stone-700'}`}>{isScheduled ? 'مجدولة' : isActive ? 'نشطة' : 'سابقة'}</span><button type="button" onClick={() => seedVersion(version)} className="rounded-lg border border-stone-300 px-3 py-2 text-xs font-bold">استخدامها كأساس لإصدار جديد</button></div>

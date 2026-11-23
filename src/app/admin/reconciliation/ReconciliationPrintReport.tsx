@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import { filsToDisplay } from '@/lib/money';
 
 export type ReconciliationPrintReportProps = {
@@ -74,6 +76,14 @@ export function ReconciliationPrintReport({
   verificationToken,
   isArchived = false,
 }: ReconciliationPrintReportProps) {
+  const [verificationOrigin, setVerificationOrigin] = useState(
+    () => process.env.NEXT_PUBLIC_APP_URL?.replace(/\/+$/, '') || 'https://rawaq.jo',
+  );
+
+  useEffect(() => {
+    setVerificationOrigin(window.location.origin);
+  }, []);
+
   const refCode = referenceCode || `RPT-2026-${generatedAt.replace(/[^0-9]/g, '').slice(0, 4) || '0001'}`;
   const issuerName = issuedByName || 'إدارة النظام المالية';
   const issuerRole = issuedByRole || 'المسؤول المالي المعتمد';
@@ -502,7 +512,7 @@ export function ReconciliationPrintReport({
         <div className="flex items-center gap-3 bg-zinc-50 border border-zinc-200 rounded-2xl p-2.5 shadow-2xs">
           <img
             src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
-              `${typeof window !== 'undefined' ? window.location.origin : 'https://rawaq.jo'}/verify/report/${refCode}`
+              `${verificationOrigin}/verify/report/${refCode}`
             )}`}
             alt={`QR التحقق من التقرير ${refCode}`}
             width={60}
