@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { logout } from '@/actions/auth';
 import Image from 'next/image';
 import { AdminNotificationsDropdown } from './AdminNotificationsDropdown';
@@ -12,6 +13,7 @@ interface AdminSidebarProps {
 }
 
 export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarProps) {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [permissions, setPermissions] = useState<string[] | null>(null);
@@ -26,6 +28,25 @@ export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarP
       .catch(() => { if (active) setPermissions([]); });
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    try {
+      setIsOpen(sessionStorage.getItem('rawaq-admin-sidebar-open') === 'true');
+      setIsCollapsed(sessionStorage.getItem('rawaq-admin-sidebar-collapsed') === 'true');
+    } catch {
+      // Keep the default expanded navigation when browser storage is unavailable.
+    }
+  }, []);
+
+  const setSidebarOpen = (open: boolean) => {
+    setIsOpen(open);
+    try { sessionStorage.setItem('rawaq-admin-sidebar-open', String(open)); } catch { /* ignore unavailable storage */ }
+  };
+
+  const setSidebarCollapsed = (collapsed: boolean) => {
+    setIsCollapsed(collapsed);
+    try { sessionStorage.setItem('rawaq-admin-sidebar-collapsed', String(collapsed)); } catch { /* ignore unavailable storage */ }
+  };
 
     const allLinks = [
       { href: '/admin/dashboard', label: 'لوحة الأعمال', permission: 'section:dashboard' },
@@ -61,9 +82,11 @@ export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarP
           رَواق
         </span>
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-2 text-zinc-100 focus:outline-none hover:text-[#B7935F]"
-          aria-label="Toggle Menu"
+          onClick={() => setSidebarOpen(!isOpen)}
+          className="p-2 text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B7935F] hover:text-[#B7935F]"
+          aria-label={isOpen ? 'إغلاق القائمة الجانبية' : 'فتح القائمة الجانبية'}
+          aria-expanded={isOpen}
+          aria-controls="admin-sidebar-navigation"
         >
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             {isOpen ? (
@@ -79,12 +102,13 @@ export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarP
       {isOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black/60 z-40 transition-opacity"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar Content container */}
       <aside
+        id="admin-sidebar-navigation"
         className={`no-print print:hidden fixed md:sticky top-0 right-0 z-50 bg-[#3F4832] text-white flex flex-col h-screen font-sans border-l-4 border-[#B7935F] transition-all duration-300 transform md:transform-none ${
           isOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'
         } ${isCollapsed ? 'md:w-16' : 'md:w-64'} w-64`}
@@ -92,8 +116,9 @@ export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarP
       >
         {/* Desktop Toggle Button */}
         <button 
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden md:flex absolute -left-4 top-6 bg-[#B7935F] text-white p-1 rounded-full shadow-md hover:bg-[#a68250] transition-colors z-50"
+          onClick={() => setSidebarCollapsed(!isCollapsed)}
+          className="hidden md:flex absolute -left-4 top-6 bg-[#B7935F] text-white p-1 rounded-full shadow-md hover:bg-[#a68250] transition-colors z-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          aria-label={isCollapsed ? 'توسيع القائمة الجانبية' : 'طي القائمة الجانبية'}
           title={isCollapsed ? "توسيع" : "طي"}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -108,8 +133,9 @@ export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarP
         <div className={`p-6 border-b border-[#2d3623] flex flex-col items-center transition-all relative ${isCollapsed ? 'md:p-3 md:pb-4' : ''}`}>
           {/* Mobile Close Button */}
           <button 
-            onClick={() => setIsOpen(false)}
-            className="md:hidden absolute top-4 left-4 p-2 text-zinc-400 hover:text-white rounded-full hover:bg-[#2d3623] transition-colors"
+            onClick={() => setSidebarOpen(false)}
+            className="md:hidden absolute top-4 left-4 p-2 text-zinc-400 hover:text-white rounded-full hover:bg-[#2d3623] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B7935F]"
+            aria-label="إغلاق القائمة الجانبية"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
           </button>
@@ -167,8 +193,8 @@ export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarP
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded hover:bg-[#2d3623] text-sm font-medium transition-colors text-zinc-200 hover:text-white ${isCollapsed ? 'md:justify-center md:px-2' : ''}`}
+                aria-current={pathname === link.href || pathname.startsWith(`${link.href}/`) ? 'page' : undefined}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded hover:bg-[#2d3623] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B7935F] ${pathname === link.href || pathname.startsWith(`${link.href}/`) ? 'bg-[#2d3623] text-white ring-1 ring-[#B7935F]/50' : 'text-zinc-200 hover:text-white'} ${isCollapsed ? 'md:justify-center md:px-2' : ''}`}
                 title={link.label}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">

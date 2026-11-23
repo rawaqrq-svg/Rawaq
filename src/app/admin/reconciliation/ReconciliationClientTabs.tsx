@@ -35,6 +35,9 @@ interface Props {
   expenses?: any[];
   categories?: { id: string; name: string }[];
   initialReport?: any;
+  reportGeneratedAt: string;
+  reportPeriod: string;
+  reportDate: string;
   currentEmployee?: { name: string; role: string; id: string };
 }
 
@@ -50,6 +53,9 @@ export function ReconciliationClientTabs({
   expenses = [],
   categories = [],
   initialReport,
+  reportGeneratedAt,
+  reportPeriod,
+  reportDate,
   currentEmployee,
 }: Props) {
   // Normalize tab key based on ?v= parameter
@@ -644,7 +650,7 @@ export function ReconciliationClientTabs({
             </div>
             <div>
               <label className="text-xs font-bold text-zinc-700 block mb-1">تاريخ المصروف</label>
-              <input name="expenseDate" type="date" defaultValue={new Date().toISOString().slice(0, 10)} className="w-full rounded-lg border border-zinc-300 p-2 text-xs" />
+              <input name="expenseDate" type="date" defaultValue={reportDate} className="w-full rounded-lg border border-zinc-300 p-2 text-xs" />
             </div>
             <div className="md:col-span-2">
               <label className="text-xs font-bold text-zinc-700 block mb-1">بيان ووصف المصروف</label>
@@ -820,9 +826,9 @@ export function ReconciliationClientTabs({
           <ReconciliationPrintReport
             title="كشف المطابقة والعهد والتسويات المالي الموحد"
             subject="المركز المالي الشامل لمنظومة رَواق"
-            period={new Date().toLocaleDateString('ar-JO', { year: 'numeric', month: 'long', day: 'numeric' })}
-            generatedAt={new Date().toLocaleString('ar-JO')}
-            referenceCode={`RQ-REC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`}
+            period={reportPeriod}
+            generatedAt={reportGeneratedAt}
+            referenceCode={`RQ-REC-${reportDate.replace(/-/g, '')}`}
             summaries={[
               { label: 'مستحق للمحلات (محاسبي)', value: filsToDisplay(suppliers.reduce((acc, s) => acc + s.totalAccountingObligationFils, 0)) },
               { label: 'القابل للصرف للمحلات حالياً', value: filsToDisplay(suppliers.reduce((acc, s) => acc + s.eligiblePayoutFils, 0)) },

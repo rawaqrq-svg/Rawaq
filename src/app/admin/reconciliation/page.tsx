@@ -22,6 +22,24 @@ export default async function ReconciliationPage({
 }) {
   const session = await requirePermission('section:financials');
   const params = await searchParams;
+  const renderedAt = new Date();
+  const reportGeneratedAt = new Intl.DateTimeFormat('ar-JO', {
+    timeZone: 'Asia/Riyadh',
+    dateStyle: 'short',
+    timeStyle: 'medium',
+  }).format(renderedAt);
+  const reportPeriod = new Intl.DateTimeFormat('ar-JO', {
+    timeZone: 'Asia/Riyadh',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(renderedAt);
+  const reportDate = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Riyadh',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(renderedAt);
   const initialSupplierId =
     params.supplierId ||
     params.supplier ||
@@ -215,6 +233,9 @@ export default async function ReconciliationPage({
             expenses={expenses}
             categories={categories}
             initialReport={initialReport}
+            reportGeneratedAt={reportGeneratedAt}
+            reportPeriod={reportPeriod}
+            reportDate={reportDate}
             currentEmployee={{ name: session.employee.name, role: session.employee.role.name, id: session.employeeId }}
           />
         </div>
