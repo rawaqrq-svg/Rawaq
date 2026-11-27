@@ -39,6 +39,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
       - name: Execute Backup Pipeline (Attempt 1)
         id: backup_attempt_1
         continue-on-error: true
@@ -66,10 +69,10 @@ jobs:
         run: |
           pnpm tsx scripts/backup/run-backup.ts
 
-      # First Retry after 15 minutes if attempt 1 fails
-      - name: Wait for Retry (15 Minutes)
+      # Short Retry delay if attempt 1 fails
+      - name: Wait for Retry (30 Seconds)
         if: steps.backup_attempt_1.outcome == 'failure'
-        run: sleep 900
+        run: sleep 30
 
       - name: Execute Backup Pipeline (Attempt 2 - Retry)
         if: steps.backup_attempt_1.outcome == 'failure'

@@ -34,6 +34,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
       - name: Run Restore Validation
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
