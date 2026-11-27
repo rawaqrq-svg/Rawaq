@@ -1,9 +1,54 @@
 import sharp from 'sharp';
 import path from 'path';
+import { setDefaultResultOrder } from 'node:dns';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
+// Vercel can prefer an unreachable IPv6 route for Supabase's Cloudflare endpoint.
+// Storage uploads then surface only the unhelpful `fetch failed` message.
+setDefaultResultOrder('ipv4first');
 
 // Supabase client instance caching
 let supabaseAdminInstance: SupabaseClient | null = null;
+
+const SUPABASE_FETCH_TIMEOUT_MS = 30_000;
+const SUPABASE_FETCH_ATTEMPTS = 4;
+
+function describeFetchError(error: unknown): string {
+  if (!error || typeof error !== 'object') return String(error ?? 'unknown error');
+  const candidate = error as { message?: unknown; cause?: { code?: unknown; message?: unknown } };
+  const message = typeof candidate.message === 'string' ? candidate.message : 'unknown error';
+  const cause = candidate.cause;
+  if (!cause) return message;
+  const causeMessage = typeof cause.message === 'string' ? cause.message : '';
+  const causeCode = typeof cause.code === 'string' ? cause.code : '';
+  return [message, causeCode, causeMessage].filter(Boolean).join(' | ');
+}
+
+async function supabaseFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= SUPABASE_FETCH_ATTEMPTS; attempt++) {
+    try {
+      return await fetch(input, {
+        ...init,
+        signal: init?.signal || AbortSignal.timeout(SUPABASE_FETCH_TIMEOUT_MS),
+        headers: {
+          ...(init?.headers || {}),
+          // Avoid reusing a broken socket between serverless invocations.
+          connection: 'close',
+        },
+      });
+    } catch (error) {
+      lastError = error;
+      console.warn(`[Supabase Storage] fetch attempt ${attempt}/${SUPABASE_FETCH_ATTEMPTS} failed: ${describeFetchError(error)}`);
+      if (attempt < SUPABASE_FETCH_ATTEMPTS) {
+        await new Promise(resolve => setTimeout(resolve, attempt * 500));
+      }
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error(describeFetchError(lastError));
+}
 
 function getSupabaseAdmin(): SupabaseClient | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -17,6 +62,7 @@ function getSupabaseAdmin(): SupabaseClient | null {
   if (!supabaseAdminInstance) {
     supabaseAdminInstance = createClient(url, key, {
       auth: { persistSession: false },
+      global: { fetch: supabaseFetch },
     });
   }
 
