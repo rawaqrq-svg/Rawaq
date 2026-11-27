@@ -332,7 +332,7 @@ function ProductSection({
                         fill
                         unoptimized={isRemoteMediaUrl(image)}
                         sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 270px"
-                        className="object-contain p-4 transition-transform duration-500 group-hover:scale-[1.04]"
+                        className="object-cover p-0 transition-transform duration-500 group-hover:scale-[1.04]"
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center text-4xl text-[#B7935F]/25">✦</div>

@@ -116,7 +116,7 @@ export async function OffersSection({ locale }: { locale: string }) {
                           fill
                           unoptimized={isRemoteMediaUrl(image)}
                           sizes="(max-width: 640px) 48vw, 270px"
-                          className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover p-0 transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center text-4xl text-[#C9A89E]/30">✦</div>
@@ -175,7 +175,7 @@ export async function OffersSection({ locale }: { locale: string }) {
                           alt={name} fill
                           unoptimized={isRemoteMediaUrl(image)}
                           sizes="(max-width: 640px) 48vw, 270px"
-                          className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover p-0 transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center text-4xl text-[#C9A89E]/30">✦</div>
