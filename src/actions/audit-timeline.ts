@@ -25,6 +25,7 @@ const ACTION_TITLES_AR: Record<string, string> = {
   ORDER_CANCELLED: 'إلغاء الطلب والتسويات العكسية',
   ORDER_ITEM_ADJUSTED: 'تعديل أو استبدال صنف في الطلب',
   ORDER_ITEM_ADDED: 'إضافة صنف جديد للطلب',
+  ORDER_ITEM_REMOVED_FROM_INVOICE: 'حذف صنف من فاتورة الزبونة',
   ORDER_STATUS_UPDATED: 'تحديث مسار حالة الطلب',
   UPDATE_ORDER_STATUS: 'تحديث حالة الطلب',
   INVOICE_ISSUED: 'إصدار الفاتورة الإلكترونية المعتمدة',

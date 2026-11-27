@@ -1135,9 +1135,9 @@ export default function UnifiedOrdersCommandCenter({
       {/* 3. Main Split View: Orders List (Right) & Command Center (Left) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Right Column: Orders Feed (5 cols on lg) */}
-        <div className="lg:col-span-5 space-y-2.5 max-h-[85vh] overflow-y-auto pr-1">
+        <div className="lg:col-span-5 flex min-w-0 flex-row gap-2.5 overflow-x-auto overflow-y-hidden overscroll-x-contain pb-2 pr-1 snap-x snap-mandatory touch-pan-x">
           {filteredOrders.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-stone-200 p-8 text-center text-xs text-stone-500">
+            <div className="w-full shrink-0 bg-white rounded-2xl border border-stone-200 p-8 text-center text-xs text-stone-500">
               لا توجد طلبات مطابقة لهذا الفلتر أو البحث.
             </div>
           ) : (
@@ -1149,7 +1149,7 @@ export default function UnifiedOrdersCommandCenter({
                 <div
                   key={ord.id}
                   onClick={() => setSelectedId(ord.id)}
-                  className={`p-4 rounded-2xl border text-right cursor-pointer transition shadow-xs ${
+                  className={`w-[min(86vw,22rem)] lg:w-[19rem] shrink-0 snap-start p-4 rounded-2xl border text-right cursor-pointer transition shadow-xs ${
                     isSelected
                       ? 'bg-stone-50 border-[#3F4832] ring-2 ring-[#3F4832]'
                       : 'bg-white border-stone-200 hover:border-stone-300'
@@ -1751,7 +1751,7 @@ export default function UnifiedOrdersCommandCenter({
                                     onClick={() => handleRemoveShortageItem(item.id, item.name)}
                                     className="text-[10px] text-stone-400 hover:text-rose-600 transition"
                                   >
-                                    حذف صنف
+                                    حذف من الفاتورة وتسجيل
                                   </button>
                                 )}
                               </td>

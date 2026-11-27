@@ -108,12 +108,14 @@ export async function uploadMedia(formData: FormData): Promise<{
     }
 
     const bucket = (formData.get('bucket') as string) || 'uploads';
+    const folder = String(formData.get('folder') || '').trim() || undefined;
 
     // Upload with automated Sharp WebP conversion
     const result = await uploadAndOptimizeFile({
       file,
       filename: file.name,
       bucket,
+      folder,
       quality: 80,
       forceWebp: true,
     });

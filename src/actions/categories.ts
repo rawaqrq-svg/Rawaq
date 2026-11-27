@@ -96,6 +96,8 @@ export async function createCategory(formData: FormData) {
     if (imageFile instanceof File && imageFile.size > 0) {
       const uploadData = new FormData();
       uploadData.append('file', imageFile);
+      uploadData.set('bucket', 'product-images');
+      uploadData.set('folder', 'categories');
       const res = await uploadMedia(uploadData);
       if (res.success && res.url) {
         imagePath = res.url;
@@ -165,6 +167,8 @@ export async function updateCategory(id: string, formData: FormData) {
       if (imageFile instanceof File && imageFile.size > 0) {
         const uploadData = new FormData();
         uploadData.append('file', imageFile);
+        uploadData.set('bucket', 'product-images');
+        uploadData.set('folder', 'categories');
         const res = await uploadMedia(uploadData);
         if (res.success && res.url) {
           imagePath = res.url;

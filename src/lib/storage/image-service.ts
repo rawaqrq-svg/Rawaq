@@ -53,6 +53,11 @@ async function ensureSupabaseBucket(supabase: SupabaseClient, bucketName: string
   }
 }
 
+function isTransientUploadError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error ?? '');
+  return /fetch failed|network|timeout|socket|econnreset|eai_again/i.test(message);
+}
+
 export interface OptimizationResult {
   buffer: Buffer;
   contentType: string;
@@ -202,16 +207,21 @@ export async function uploadAndOptimizeFile(options: UploadOptions): Promise<Upl
     if (supabase) {
       await ensureSupabaseBucket(supabase, bucket);
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from(bucket)
-        .upload(finalFileName, processResult.buffer, {
+      let uploadError: { message: string } | null = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        const response = await supabase.storage.from(bucket).upload(finalFileName, processResult.buffer, {
           contentType: processResult.contentType,
-          cacheControl: 'public, max-age=31536000, immutable',
+          // Supabase expects this option to be the max-age in seconds.
+          cacheControl: '31536000',
           upsert: true,
         });
+        uploadError = response.error;
+        if (!uploadError || !isTransientUploadError(uploadError.message) || attempt === 3) break;
+        await new Promise(resolve => setTimeout(resolve, attempt * 250));
+      }
 
       if (uploadError) {
-        throw new Error(`خطأ أثناء رفع الصورة إلى Supabase: ${uploadError.message}`);
+        throw new Error(`خطأ أثناء رفع الصورة إلى Supabase (${bucket}): ${uploadError.message}`);
       }
 
       const { data: publicUrlData } = supabase.storage

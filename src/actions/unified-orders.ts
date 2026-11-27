@@ -15,6 +15,7 @@ import { filsToDisplay } from '@/lib/money';
 import { evaluateOrderRewardProtection } from '@/lib/orders/reward-protection';
 import { retryOrderTelegramNotification } from '@/lib/telegram';
 import { getMessageTemplate } from '@/lib/message-templates';
+import { recordCriticalAudit } from '@/lib/audit';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
@@ -544,7 +545,11 @@ export async function removeShortageOrderItemAction(
   });
 
   const previousTotal = order.previousTotalAmount || order.totalAmount;
-  const removalExplanation = reason || targetItem.removalReason || 'غير متوفر لدى المورد';
+  const wasReportedShortage = targetItem.missingQuantity > 0 || order.fulfillmentOrders.some((fulfillment) =>
+    fulfillment.items.some((item) => item.orderItemId === orderItemId && item.isOutOfStock)
+  );
+  const removalExplanation = reason || targetItem.removalReason ||
+    (wasReportedShortage ? 'غير متوفر لدى المورد' : 'تم حذف الصنف من قبل الإدارة');
 
   await prisma.$transaction(async (tx) => {
     // 1. وسم الصنف بأنه محذوف
@@ -709,7 +714,42 @@ export async function removeShortageOrderItemAction(
       },
     });
 
-    // 7. تحديث حالة أمر التجهيز المرتبط بالمحل
+    // 7. تسجيل حذف الصنف في سجل التدقيق الإلزامي مع لقطة قبل/بعد
+    await recordCriticalAudit(tx, {
+      action: 'ORDER_ITEM_REMOVED_FROM_INVOICE',
+      entityType: 'OrderItem',
+      entityId: orderItemId,
+      employeeId: session.employeeId,
+      actorType: 'ADMIN',
+      category: 'ORDERS',
+      severity: 'HIGH',
+      reason: removalExplanation,
+      correlationId: order.reference,
+      changes: {
+        before: {
+          orderId,
+          orderReference: order.reference,
+          name: targetItem.name,
+          quantity: targetItem.quantity,
+          unitPrice: targetItem.unitPrice,
+          total: targetItem.total,
+          orderTotal: previousTotal,
+        },
+        after: {
+          isRemoved: true,
+          removalReason: removalExplanation,
+          orderTotal: Math.max(0, rewardEval.newGrossTotal),
+          invoiceUpdated: Boolean(order.invoice),
+        },
+      },
+      details: {
+        message: 'تم حذف صنف من فاتورة الزبونة مع إعادة احتساب الطلب',
+        invoiceId: order.invoice?.id || null,
+        saleReference: `SALE-ORD-${order.reference}`,
+      },
+    });
+
+    // 8. تحديث حالة أمر التجهيز المرتبط بالمحل
     for (const f of order.fulfillmentOrders) {
       const fItem = f.items.find((fi) => fi.orderItemId === orderItemId);
       if (fItem) {
