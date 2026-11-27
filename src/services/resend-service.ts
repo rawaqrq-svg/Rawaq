@@ -19,11 +19,10 @@ export interface SendEmailResult {
 
 export class ResendService {
   private static instance: ResendService;
-  private resend: Resend;
-  private config = getBackupConfig();
+  private resend: Resend | null = null;
 
   private constructor() {
-    this.resend = new Resend(this.config.resendApiKey);
+    // Lazy instantiation on first email send to prevent build-time failures
   }
 
   public static getInstance(): ResendService {
@@ -33,28 +32,54 @@ export class ResendService {
     return ResendService.instance;
   }
 
+  private getClient(): { client: Resend; config: ReturnType<typeof getBackupConfig> } | null {
+    const config = getBackupConfig();
+    const apiKey = process.env.RESEND_API_KEY || config.resendApiKey;
+
+    if (!apiKey) {
+      return null;
+    }
+
+    if (!this.resend) {
+      this.resend = new Resend(apiKey);
+    }
+
+    return { client: this.resend, config };
+  }
+
   public async sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
-    let primaryFrom = this.config.resendFallbackFrom;
+    const resendContext = this.getClient();
+
+    if (!resendContext) {
+      console.warn('[ResendService] RESEND_API_KEY is missing. Email dispatch skipped.');
+      return {
+        success: false,
+        error: 'RESEND_API_KEY is not configured in environment',
+      };
+    }
+
+    const { client, config } = resendContext;
+    let primaryFrom = config.resendFallbackFrom;
 
     if (options.type === 'orders') {
-      primaryFrom = this.config.resendOrdersFrom;
+      primaryFrom = config.resendOrdersFrom;
     } else if (options.type === 'backup') {
-      primaryFrom = this.config.resendBackupFrom;
+      primaryFrom = config.resendBackupFrom;
     } else if (options.type === 'security') {
-      primaryFrom = this.config.resendSecurityFrom;
+      primaryFrom = config.resendSecurityFrom;
     }
 
     // Format sender display name
     const formattedFrom = `رَواق | RAWAQ <${primaryFrom}>`;
-    const fallbackFrom = `رَواق | RAWAQ <${this.config.resendFallbackFrom}>`;
+    const fallbackFrom = `رَواق | RAWAQ <${config.resendFallbackFrom}>`;
 
     const recipients = Array.isArray(options.to) ? options.to : [options.to];
 
     try {
       // First attempt with primary domain
-      const result = await this.resend.emails.send({
+      const result = await client.emails.send({
         from: formattedFrom,
-        replyTo: this.config.adminNotificationEmail,
+        replyTo: config.adminNotificationEmail,
         to: recipients,
         subject: options.subject,
         html: options.html,
@@ -77,9 +102,9 @@ export class ResendService {
             `[ResendService] Primary sender ${formattedFrom} unverified, retrying with fallback ${fallbackFrom}: ${result.error.message}`,
           );
 
-          const fallbackResult = await this.resend.emails.send({
+          const fallbackResult = await client.emails.send({
             from: fallbackFrom,
-            replyTo: this.config.adminNotificationEmail,
+            replyTo: config.adminNotificationEmail,
             to: recipients,
             subject: options.subject,
             html: options.html,
@@ -117,7 +142,7 @@ export class ResendService {
       console.error('[ResendService] Unexpected exception sending email:', err);
       // Attempt fallback on exception
       try {
-        const fallbackResult = await this.resend.emails.send({
+        const fallbackResult = await client.emails.send({
           from: fallbackFrom,
           to: recipients,
           subject: options.subject,
