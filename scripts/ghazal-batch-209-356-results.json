@@ -1,0 +1,3446 @@
+{
+  "supplier": {
+    "id": "300954f2-4ba8-4a07-a3fc-dcd3ccc766a9",
+    "name": "محل غزل للمكياجات"
+  },
+  "products": [
+    {
+      "id": "cdca7797-f7b4-42a6-b7c0-5c1236288da4",
+      "slug": "ghaz-agrado-body-milk-400-331",
+      "sku": "GHAZ-AGRADO-BODY-MILK-400-331",
+      "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل روزا موسكيتا",
+      "createdAt": "2026-11-24T19:52:43.785Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "4c77e206-87da-4ebc-a08c-c8f862b0bc0d",
+          "sku": "GHAZ-AGRADO-BODY-MILK-400-331-331",
+          "name": "روزا موسكيتا",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-rosa-mosqueta-400ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "bc2c103b-0a37-4e39-b145-4351fad23efd",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-rosa-mosqueta-400ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "9f3a8b28-7437-49fb-a1db-bc16769579ae",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "578445ff-9c51-4525-9ede-0434a7e01509",
+      "slug": "ghaz-agrado-body-milk-400-332",
+      "sku": "GHAZ-AGRADO-BODY-MILK-400-332",
+      "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل ألوفيرا",
+      "createdAt": "2026-11-24T19:52:44.346Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "f1431bb7-08aa-4f3d-8dac-95fa1a3979a3",
+          "sku": "GHAZ-AGRADO-BODY-MILK-400-332-332",
+          "name": "ألوفيرا",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-aloe-vera-400ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "432dedbe-2c90-440b-997d-09025ad83f0c",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-aloe-vera-400ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "6e34aff5-fe03-49af-8df9-11036bcfc696",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f0b72baf-c6e1-48b9-bf7b-fbcc849f9f4e",
+      "slug": "ghaz-agrado-body-milk-400-333",
+      "sku": "GHAZ-AGRADO-BODY-MILK-400-333",
+      "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل حليب جوز الهند",
+      "createdAt": "2026-11-24T19:52:44.904Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "d0a61d9c-6951-4474-bcb8-b7e8994f4d2b",
+          "sku": "GHAZ-AGRADO-BODY-MILK-400-333-333",
+          "name": "حليب جوز الهند",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-coconut-400ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "688094d9-b74d-47c4-b8d5-c424eefaa571",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-coconut-400ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "8a80453b-f6f1-492a-ba93-2a5be1af1b8d",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3d182ba2-f80a-45d7-bea1-8afd14e53d35",
+      "slug": "ghaz-agrado-body-milk-400-334",
+      "sku": "GHAZ-AGRADO-BODY-MILK-400-334",
+      "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل أرغان",
+      "createdAt": "2026-11-24T19:52:45.458Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "e7fd6ba1-859a-4b3a-b04d-3d847bd50c4a",
+          "sku": "GHAZ-AGRADO-BODY-MILK-400-334-334",
+          "name": "أرغان",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-argan-400ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "8c346998-ad37-4526-9fc7-b15fae44e5ad",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-argan-400ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "03f1139f-4da8-4d6d-adcb-e1e4ea9e4010",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0fd18ce7-f6d9-4db5-953a-320ee5679090",
+      "slug": "ghaz-agrado-body-milk-400-335",
+      "sku": "GHAZ-AGRADO-BODY-MILK-400-335",
+      "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل لوز حلو",
+      "createdAt": "2026-11-24T19:52:46.021Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "e685128f-c8fd-4719-b43b-5667cd92751d",
+          "sku": "GHAZ-AGRADO-BODY-MILK-400-335-335",
+          "name": "لوز حلو",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-sweet-almond-400ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "4546dce1-40e6-449c-9874-99091a3894e4",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/agrado-body-milk-sweet-almond-400ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "2b065d84-b839-493f-848b-6f5551aa0246",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "e73ac787-950e-4341-b7b5-4d217b4677e9",
+      "slug": "ghaz-alarousa-deadsea-scrub",
+      "sku": "GHAZ-ALAROUSA-DEADSEA-SCRUB",
+      "nameAr": "مقشر ملح البحر الميت العروسة",
+      "createdAt": "2026-11-24T19:52:26.897Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "3203aca3-54d2-4606-ae64-f34c4617f409",
+          "sku": "GHAZ-ALAROUSA-DEADSEA-SCRUB-318",
+          "name": "توتي فروتي",
+          "price": 3500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/alarousa-dead-sea-scrub-tutti-frutti-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "f58e6e09-d742-4a6a-b65c-24c27ae4c890",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/alarousa-dead-sea-scrub-tutti-frutti-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "845b39c5-e70c-41c3-b6fd-5ecf9c851c88",
+              "unitCost": 2500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "43d912ef-a1f1-471c-b9c7-a5a2b1ebd984",
+          "sku": "GHAZ-ALAROUSA-DEADSEA-SCRUB-319",
+          "name": "مارشميلو",
+          "price": 3500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/alarousa-dead-sea-scrub-marshmallow-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "20000917-5eeb-4734-9f1b-98fae08e6f3d",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/alarousa-dead-sea-scrub-marshmallow-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "33351427-5f82-4b68-a6bb-335a67802fe6",
+              "unitCost": 2500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bf76ef0f-168d-4d4b-a511-76ad5320d22f",
+      "slug": "ghaz-boutique-rollon-299",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-299",
+      "nameAr": "رول مزيل عرق بوتيك كوتون دراي",
+      "createdAt": "2026-11-24T19:52:36.891Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "96cab33b-6cf3-4fc9-ae13-f6c784f04a9c",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-299-299",
+          "name": "كوتون دراي",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-cotton-dry-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "c15c036b-4577-4487-a4f3-1358584764b7",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-cotton-dry-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "10b1dd04-8652-43a2-9f76-178238ebac62",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "846f4817-2ce3-4407-9699-3aea48ed5785",
+      "slug": "ghaz-boutique-rollon-300",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-300",
+      "nameAr": "رول مزيل عرق بوتيك كاندي",
+      "createdAt": "2026-11-24T19:52:37.549Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "3c02203d-efeb-4a4a-97fa-1114fedfcfb6",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-300-300",
+          "name": "كاندي",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-candy-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "e289c56e-c2d0-4c1e-9bea-4fc2449555e3",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-candy-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "0193cfd1-611c-45f0-bd62-8d8a61afc714",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "88275bde-2293-4864-b2fb-6e92fc6e65df",
+      "slug": "ghaz-boutique-rollon-301",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-301",
+      "nameAr": "رول مزيل عرق بوتيك أروغيت بينك",
+      "createdAt": "2026-11-24T19:52:38.113Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "45be4e38-10e5-4650-8fbb-2e0cc8f173b3",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-301-301",
+          "name": "أروغيت بينك",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-arrogate-pink-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "258905f8-b6ff-401e-ba04-a478b2a31854",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-arrogate-pink-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "5cbc2959-1a36-4008-bc77-30484471559a",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a32c82e6-9ce7-44ff-b5ef-7d3a4ad7d331",
+      "slug": "ghaz-boutique-rollon-302",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-302",
+      "nameAr": "رول مزيل عرق بوتيك مارشميلو",
+      "createdAt": "2026-11-24T19:52:38.674Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "8877d4d2-7dcf-44e8-b9a7-91163676dfef",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-302-302",
+          "name": "مارشميلو",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-marshmallow-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "eccc0b78-b91b-404a-a4db-ee9b40dd5256",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-marshmallow-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "b5941e66-985b-461c-a708-e89a0f78bcda",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "80046c7c-117d-448d-b3b9-9c06501e76cf",
+      "slug": "ghaz-boutique-rollon-303",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-303",
+      "nameAr": "رول مزيل عرق بوتيك ناتشورال تاتش",
+      "createdAt": "2026-11-24T19:52:39.236Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "61061c12-ba0d-43c8-9899-3d42791587aa",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-303-303",
+          "name": "ناتشورال تاتش",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-natural-touch-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "a337e3df-7941-4bcb-8fa5-497aa797a67e",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-natural-touch-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "a7315137-70ba-4f1b-a5b8-2781b7422a7a",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "86e50829-1d89-444c-a25f-a8a9c93c4404",
+      "slug": "ghaz-boutique-rollon-304",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-304",
+      "nameAr": "رول مزيل عرق بوتيك شاور فريش",
+      "createdAt": "2026-11-24T19:52:39.793Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "d9c34c5d-5375-4f16-8e7d-132e0ff35c11",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-304-304",
+          "name": "شاور فريش",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-shower-fresh-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "7d4bc928-c812-4a98-bac1-5a90934381b4",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-shower-fresh-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "25714f5f-b7b8-4bcf-b96f-04ec0a5b83a1",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5425003f-06f8-44f9-ac11-6349c3b61e8f",
+      "slug": "ghaz-boutique-rollon-305",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-305",
+      "nameAr": "رول مزيل عرق بوتيك هير",
+      "createdAt": "2026-11-24T19:52:40.428Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "22023086-b68d-4fbe-b252-45f1ac043e12",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-305-305",
+          "name": "هير",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-her-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "f57ba047-5f6f-477b-acdc-05ee58af97e5",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-her-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "6038f774-4ea2-45e6-b20b-a28ffdea5282",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6ca36585-8242-4305-b38e-7274f29bfff5",
+      "slug": "ghaz-boutique-rollon-306",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-306",
+      "nameAr": "رول مزيل عرق بوتيك سترس ريزيست",
+      "createdAt": "2026-11-24T19:52:40.981Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "70eae215-30c4-45db-8524-77367aa5359a",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-306-306",
+          "name": "سترس ريزيست",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-stress-resist-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "ad8b2a88-39e3-4258-aace-7c1f49b7a780",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-stress-resist-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "b7c2c8ee-78ac-46aa-9d34-76208d8af4e8",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "597355cf-14e2-4c54-be35-b50f5a4e0ad0",
+      "slug": "ghaz-boutique-rollon-307",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-307",
+      "nameAr": "رول مزيل عرق بوتيك فري سبيريت",
+      "createdAt": "2026-11-24T19:52:41.552Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "6dbdff1e-62a6-495d-a589-2e5af8020799",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-307-307",
+          "name": "فري سبيريت",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-free-spirit-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "8bad31ae-a605-4822-912f-8fb34500990f",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-free-spirit-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "4b94ab4e-f5e6-4f6b-bc7b-3a8459412b35",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "52444384-bb89-4cd7-9352-4160c4f840b1",
+      "slug": "ghaz-boutique-rollon-308",
+      "sku": "GHAZ-BOUTIQUE-ROLLON-308",
+      "nameAr": "رول مزيل عرق بوتيك بيبي باودر بينك",
+      "createdAt": "2026-11-24T19:52:42.106Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "08ae357d-f360-499e-88f2-2e62a5201f91",
+          "sku": "GHAZ-BOUTIQUE-ROLLON-308-308",
+          "name": "بيبي باودر بينك",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-baby-powder-pink-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "b12fc227-e765-411d-8366-a0b1bb291d6b",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-rollon-baby-powder-pink-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "580f86f8-6a26-4d40-93ab-75228eaf4b5a",
+              "unitCost": 1000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f3d10ef9-389f-4133-a5b2-8451e6ea58f4",
+      "slug": "ghaz-boutique-scrub-600-347",
+      "sku": "GHAZ-BOUTIQUE-SCRUB-600-347",
+      "nameAr": "مقشر الوجه والجسم بوتيك 600 مل فحم",
+      "createdAt": "2026-11-24T19:52:51.137Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "eba6b3f9-cb8e-41db-b60e-5f07a31cc455",
+          "sku": "GHAZ-BOUTIQUE-SCRUB-600-347-347",
+          "name": "فحم",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-charcoal-scrub-600ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "1bc84f63-97ee-48ec-87e5-d2411a62f82d",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-charcoal-scrub-600ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "33ee1541-413a-4c21-bc21-ec22739c510c",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "164b6ee6-a467-4083-ae29-3afc8bee3e94",
+      "slug": "ghaz-boutique-scrub-600-348",
+      "sku": "GHAZ-BOUTIQUE-SCRUB-600-348",
+      "nameAr": "مقشر الوجه والجسم بوتيك 600 مل أفوكادو",
+      "createdAt": "2026-11-24T19:52:51.695Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "b6cac99a-c591-4b9b-9202-abcc80889b78",
+          "sku": "GHAZ-BOUTIQUE-SCRUB-600-348-348",
+          "name": "أفوكادو",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-avocado-scrub-600ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "49ee350a-4e2e-4196-a550-5ca4d2327fe6",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-avocado-scrub-600ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "ad1f6e3b-0170-44c5-97d6-ff945e886860",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1539c802-ce19-442a-a344-2f75252fa76a",
+      "slug": "ghaz-boutique-scrub-600-349",
+      "sku": "GHAZ-BOUTIQUE-SCRUB-600-349",
+      "nameAr": "مقشر الوجه والجسم بوتيك 600 مل خوخ",
+      "createdAt": "2026-11-24T19:52:52.254Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "dfaa7e95-8feb-4f63-a994-614f851e84dc",
+          "sku": "GHAZ-BOUTIQUE-SCRUB-600-349-349",
+          "name": "خوخ",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-peach-scrub-600ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "52903c98-c9ab-4856-b25c-bea79e9366f3",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-peach-scrub-600ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "81d8dfa5-d9c3-4827-8e37-e18f8781ecfd",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "28c7a051-3cd6-42fc-9152-2c66101ff128",
+      "slug": "ghaz-boutique-scrub-600-350",
+      "sku": "GHAZ-BOUTIQUE-SCRUB-600-350",
+      "nameAr": "مقشر الوجه والجسم بوتيك 600 مل ألوفيرا",
+      "createdAt": "2026-11-24T19:52:52.812Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "9883625d-3f34-46a4-b459-e1fa03835ab0",
+          "sku": "GHAZ-BOUTIQUE-SCRUB-600-350-350",
+          "name": "ألوفيرا",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-aloe-vera-scrub-600ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "c7a1ba47-849e-419b-a307-1519b3e2c3bb",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-aloe-vera-scrub-600ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "7b63fe9c-7062-4c80-80d1-babcbc274682",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "098aeb7a-bc50-48a6-bc20-74747016cc2e",
+      "slug": "ghaz-boutique-scrub-600-351",
+      "sku": "GHAZ-BOUTIQUE-SCRUB-600-351",
+      "nameAr": "مقشر الوجه والجسم بوتيك 600 مل فراولة",
+      "createdAt": "2026-11-24T19:52:53.371Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "e437b406-d438-4cf0-9b40-1e5d47e4eeed",
+          "sku": "GHAZ-BOUTIQUE-SCRUB-600-351-351",
+          "name": "فراولة",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-strawberry-scrub-600ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "db8be921-1322-44ba-8492-5be1177eefe3",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-strawberry-scrub-600ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "606f2f8f-163a-4003-93b6-1d4c65932b4d",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ed7e54b2-7cf6-4d41-8929-485855f8fd2b",
+      "slug": "ghaz-confetti-spray-250",
+      "sku": "GHAZ-CONFETTI-SPRAY-250",
+      "nameAr": "بخاخ جسم كونفيتي لندن 250 مل",
+      "createdAt": "2026-11-24T19:52:16.638Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "d83e2445-1bee-4936-873a-59b4ce4ef1b2",
+          "sku": "GHAZ-CONFETTI-SPRAY-250-266",
+          "name": "مايا",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-maya-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "a6e0d0ea-2853-4bc2-96bf-56fada54e651",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-maya-250ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "b40c847f-3869-4100-891b-30a140ef7e42",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "bdcd2e43-7d55-4760-b43b-a324407f3506",
+          "sku": "GHAZ-CONFETTI-SPRAY-250-267",
+          "name": "جوي",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-joy-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "60f6caab-475c-4f3f-a25a-bb935b80e67e",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-joy-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "d3bd5abd-ddc8-40bd-a405-3374b5eeb3f1",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "df3d8e82-0e19-4ecb-b78b-27054b976e7d",
+          "sku": "GHAZ-CONFETTI-SPRAY-250-268",
+          "name": "شوكولاتة",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-chocolate-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "ce008ffd-5481-4284-9d37-9ccbd7ae4cf4",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-chocolate-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "5f4d9af7-4458-464a-9164-e3906a707712",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "344cfe9b-170f-4712-beb2-51b7f5f71bb3",
+          "sku": "GHAZ-CONFETTI-SPRAY-250-269",
+          "name": "دير",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-dear-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "5d8e46e6-cb81-450c-8b52-e388b13a73de",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-dear-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "01283c2b-aef9-4348-ae12-d0e93ecac1bd",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "de3a7a65-6585-44f8-8287-ebcea7d2a606",
+          "sku": "GHAZ-CONFETTI-SPRAY-250-270",
+          "name": "بريتي",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-pretty-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "35c932f9-9fdd-408b-be07-4338a88a622e",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-pretty-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "4a95a2ec-1cc3-4fad-83c4-279dc7915b77",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "f758063f-7d3a-4365-9468-91f30a45d6dc",
+          "sku": "GHAZ-CONFETTI-SPRAY-250-271",
+          "name": "سيكرت",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-secret-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "6d1d4630-3335-4436-add9-55e6b454a9f4",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/confetti-secret-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "96fcbbc0-82bc-45f9-a9e8-95089689e32e",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3c4c21b4-32d4-435d-9417-5c60739412aa",
+      "slug": "ghaz-dove-gofresh-spray",
+      "sku": "GHAZ-DOVE-GOFRESH-SPRAY",
+      "nameAr": "بخاخ مزيل عرق دوف غو فريش",
+      "createdAt": "2026-11-24T19:52:13.348Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "ddb6fff0-5a8d-4297-a971-62190f076232",
+          "sku": "GHAZ-DOVE-GOFRESH-SPRAY-258",
+          "name": "رمان",
+          "price": 3000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-go-fresh-pomegranate-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "81bf0d78-b6db-407a-8ee3-f7fc79e49662",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-go-fresh-pomegranate-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "c5855785-875f-406f-a28a-afd9c824738f",
+              "unitCost": 2250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "efcd0ac7-4bc0-4f16-94fd-936e01ed739b",
+          "sku": "GHAZ-DOVE-GOFRESH-SPRAY-259",
+          "name": "كمثرى",
+          "price": 3000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-go-fresh-pear-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "2fdf790c-e10c-40c7-8d9e-e3b2704070fa",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-go-fresh-pear-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "e9c01fab-ff2b-4a7b-b95b-92735666b403",
+              "unitCost": 2250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "e0dc8762-cbf2-4927-b7e2-d03d6f8f54b4",
+          "sku": "GHAZ-DOVE-GOFRESH-SPRAY-262",
+          "name": "تفاح",
+          "price": 3000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-go-fresh-apple-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "026d97b0-019b-4455-a6c1-047141fb02e8",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-go-fresh-apple-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "76fcd09d-b0e2-45d2-bae4-13a2e85f98bb",
+              "unitCost": 2250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "eaaca747-d3a0-4461-a85d-efa481269be7",
+      "slug": "ghaz-dove-invisible-spray",
+      "sku": "GHAZ-DOVE-INVISIBLE-SPRAY",
+      "nameAr": "بخاخ مزيل عرق دوف إنفيزيبل كير",
+      "createdAt": "2026-11-24T19:52:16.083Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "d6a057fa-8b92-4a8a-bd47-b09e60e50ca6",
+          "sku": "GHAZ-DOVE-INVISIBLE-SPRAY-264",
+          "name": "إنفيزيبل كير",
+          "price": 3000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-invisible-care-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "da6691cc-ed1a-471a-91a6-87d817a71c2a",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-invisible-care-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "412dab4b-4639-4b3f-915d-c27fae1f8d97",
+              "unitCost": 2250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b5173709-eb9d-4c28-b131-37c9b175bb2a",
+      "slug": "ghaz-dove-nourish-spray",
+      "sku": "GHAZ-DOVE-NOURISH-SPRAY",
+      "nameAr": "بخاخ مزيل عرق دوف نورشنغ سيكرتس",
+      "createdAt": "2026-11-24T19:52:14.861Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "afbf475b-41b7-45e3-bc50-f0d29644836d",
+          "sku": "GHAZ-DOVE-NOURISH-SPRAY-260",
+          "name": "جوز الهند",
+          "price": 3000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-nourishing-secrets-coconut-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "936847c0-3369-48a3-b685-fa6191aa87f3",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-nourishing-secrets-coconut-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "b23c4fef-a1a0-43ce-86ce-0c01418885d8",
+              "unitCost": 2250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d05f71b9-6d93-4b2c-9d95-9bae0be81383",
+      "slug": "ghaz-dove-original-spray",
+      "sku": "GHAZ-DOVE-ORIGINAL-SPRAY",
+      "nameAr": "بخاخ مزيل عرق دوف أوريجينال",
+      "createdAt": "2026-11-24T19:52:15.479Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "0fe93868-3dae-4b0b-b95b-5f93a215f6e1",
+          "sku": "GHAZ-DOVE-ORIGINAL-SPRAY-261",
+          "name": "أوريجينال",
+          "price": 3000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-original-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "b61c6677-75e7-4693-8c98-a3499bb88bcd",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/dove-original-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "0a7a3444-834e-4354-9fde-5ebaddbe6170",
+              "unitCost": 2250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "80fa1b35-158e-48f8-b7a4-7152eb4fc199",
+      "slug": "ghaz-elegance-hair-serum-300-311",
+      "sku": "GHAZ-ELEGANCE-HAIR-SERUM-300-311",
+      "nameAr": "سيروم شعر إليغانس بلس 300 مل ألوفيرا",
+      "createdAt": "2026-11-24T19:52:42.657Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "2bfdf47b-09e1-43eb-86fc-586da915a63f",
+          "sku": "GHAZ-ELEGANCE-HAIR-SERUM-300-311-311",
+          "name": "ألوفيرا",
+          "price": 6000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/elegance-plus-hair-serum-aloe-vera-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "0b470c64-d8ee-4870-b97f-1e04a4ecc5e0",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/elegance-plus-hair-serum-aloe-vera-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "232c81e0-2589-47e3-ad05-fb0f923b1f34",
+              "unitCost": 4000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "12c51aea-ed03-43b0-a6b0-66900b3c2d78",
+      "slug": "ghaz-elegance-hair-serum-300-312",
+      "sku": "GHAZ-ELEGANCE-HAIR-SERUM-300-312",
+      "nameAr": "سيروم شعر إليغانس بلس 300 مل زيت جوز الهند",
+      "createdAt": "2026-11-24T19:52:43.225Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "b6d9eb8e-71ef-4c8f-959d-b1ad88d97020",
+          "sku": "GHAZ-ELEGANCE-HAIR-SERUM-300-312-312",
+          "name": "زيت جوز الهند",
+          "price": 6000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/elegance-plus-hair-serum-coconut-oil-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "1e1c664e-82a9-46b6-8d15-7d776441b9b8",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/elegance-plus-hair-serum-coconut-oil-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "754c4c22-6cc5-45ea-95e4-e6e12c48435c",
+              "unitCost": 4000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "8bcaa19e-857a-45bb-8835-04531863125b",
+      "slug": "ghaz-emotion-spray",
+      "sku": "GHAZ-EMOTION-SPRAY",
+      "nameAr": "بخاخ مزيل عرق إيموشن",
+      "createdAt": "2026-11-24T19:52:22.166Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "4214f6b2-5723-4b67-a614-cff0930575b9",
+          "sku": "GHAZ-EMOTION-SPRAY-280",
+          "name": "ديتوكس فريش",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emotion-detox-fresh-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "9d1e16c5-432e-4ca4-b2ec-d33bf147670b",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emotion-detox-fresh-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "7eefe5a9-d2ba-4d6d-98f1-7bc0c402677e",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "319a79ae-4467-4f77-aece-4baac7efa62b",
+          "sku": "GHAZ-EMOTION-SPRAY-281",
+          "name": "ناتشورال بلوم",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emotion-natural-bloom-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "8a245eae-d02f-4798-9539-86dfca402ebf",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emotion-natural-bloom-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "5d1eb22c-ba2a-46fc-a152-4458cbf4d842",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "102726c5-bf99-47e7-bc08-a06e312dd05f",
+          "sku": "GHAZ-EMOTION-SPRAY-282",
+          "name": "أكوا كيس",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emotion-aqua-kiss-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "4cf9e322-5d96-4797-9fb2-857239d0535a",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emotion-aqua-kiss-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "6b04df10-af7a-449d-a1d4-efc099627218",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "bb1e10e2-8d05-480b-a901-6875e1221ccf",
+          "sku": "GHAZ-EMOTION-SPRAY-283",
+          "name": "إنفيزيبل فريش",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emotion-invisible-fresh-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "ef7852ba-ad3d-406d-b566-720cf410deca",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emotion-invisible-fresh-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "41fe5aa2-7c9b-4813-b172-10cac1eed269",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "43885258-dc1f-4d1a-bd5d-371ef6ba5fa4",
+      "slug": "ghaz-emper-chifon-spray",
+      "sku": "GHAZ-EMPER-CHIFON-SPRAY",
+      "nameAr": "بخاخ جسم إمبير شيفون",
+      "createdAt": "2026-11-24T19:52:18.963Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "cf2ad478-db79-4490-8c32-aa27141b819e",
+          "sku": "GHAZ-EMPER-CHIFON-SPRAY-273",
+          "name": "شيفون روج",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-chifon-rouge-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "1f27e206-00a3-4820-b87d-2198f610a85b",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-chifon-rouge-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "d491dd8b-26b7-4090-b3f3-f33c66896226",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "97daaff3-83ae-478c-888b-df7b68851eba",
+          "sku": "GHAZ-EMPER-CHIFON-SPRAY-277",
+          "name": "شيفون",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-chifon-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "52e0fb83-0b27-4474-aaf9-559ec1fa08bf",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-chifon-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "e0fda3e5-b125-4d67-9b80-f82ef50836d3",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2892184d-4995-4bd5-951b-788bd9e89ea9",
+      "slug": "ghaz-emper-fasio-spray",
+      "sku": "GHAZ-EMPER-FASIO-SPRAY",
+      "nameAr": "بخاخ جسم إمبير فاسيو إنتنس",
+      "createdAt": "2026-11-24T19:52:19.941Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "e010482b-2c87-42dd-a579-c3338e43a84b",
+          "sku": "GHAZ-EMPER-FASIO-SPRAY-274",
+          "name": "فاسيو إنتنس",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-fasio-intense-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "0340793e-4f07-411c-89bd-a8614b70df4e",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-fasio-intense-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "03215766-7361-49af-9159-d2b60a880ac0",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "04628f9b-5115-4b45-bd9c-632f305c6014",
+      "slug": "ghaz-emper-legend-spray",
+      "sku": "GHAZ-EMPER-LEGEND-SPRAY",
+      "nameAr": "بخاخ جسم إمبير ليجند فام",
+      "createdAt": "2026-11-24T19:52:21.060Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "ad3ef54a-976d-4512-ae6a-2edc81bb498a",
+          "sku": "GHAZ-EMPER-LEGEND-SPRAY-276",
+          "name": "ليجند فام",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-legend-femme-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "67862ea3-dc6b-4115-bc68-d580279dbc8a",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-legend-femme-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "5228df1b-0a94-42ca-ab2c-345128e19ece",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "df660232-e826-4875-a321-78416ef92043",
+      "slug": "ghaz-emper-salga-spray",
+      "sku": "GHAZ-EMPER-SALGA-SPRAY",
+      "nameAr": "بخاخ جسم إمبير سالغا",
+      "createdAt": "2026-11-24T19:52:21.611Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "013de695-f830-4a69-bf9e-7abbeec6d500",
+          "sku": "GHAZ-EMPER-SALGA-SPRAY-278",
+          "name": "سالغا",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-salga-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "dbd8655d-5815-47a8-8ead-bb042d2afba8",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-salga-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "130856fb-afd3-4569-ad24-02f85f03201a",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "66c1ebb3-befc-4c18-b8ef-2228dc07f014",
+      "slug": "ghaz-emper-twist-spray",
+      "sku": "GHAZ-EMPER-TWIST-SPRAY",
+      "nameAr": "بخاخ جسم إمبير تويست",
+      "createdAt": "2026-11-24T19:52:20.494Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "b20bc6ea-6371-43cd-99ca-4d3ac20a9ab7",
+          "sku": "GHAZ-EMPER-TWIST-SPRAY-275",
+          "name": "تويست",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-twist-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "511e14de-9c19-4f57-a61a-1feff2db95ed",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-twist-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "c1e7ca49-787f-4d6f-8cbb-a996bbf4fe65",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2c492d3c-8b7d-46c7-9162-e124ec12aa63",
+      "slug": "ghaz-enchanteur-deo-spray",
+      "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY",
+      "nameAr": "بخاخ مزيل عرق إنشانتر",
+      "createdAt": "2026-11-24T19:52:05.860Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "c9f456a3-f4fb-4a79-9498-ad388d0d5a49",
+          "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-226",
+          "name": "جورجس",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-gorgeous-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "3ff753bc-fadf-439a-b5b9-e3c7ca47b2a4",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-gorgeous-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "ee558810-0219-4b20-88ff-02d4c1464a1b",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "6ca5ebcc-3903-41b2-b008-0871dfe376e1",
+          "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-227",
+          "name": "إنتايسينغ",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-enticing-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "446079d0-0abe-4fbc-80ec-323c828ce78b",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-enticing-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "484b7500-2d35-448d-b12b-44c3e210985d",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "ee5bc240-af8a-43b7-9595-4cf937855950",
+          "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-228",
+          "name": "رومانتيك",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-romantic-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "8abb9416-4e93-458f-84e3-5d9eea3d6378",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-romantic-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "177530ae-d180-4ca4-8701-5f8affbe6a09",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "a5dfb35b-5f5f-4fc4-ac2f-25fed6774964",
+          "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-229",
+          "name": "ألورينغ",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-alluring-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "fa4b595c-5a09-46e3-977e-f9120d2f3410",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-alluring-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "074aa3cd-11dc-42ff-bacd-6bb64b6d721c",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "9e4202a0-eec4-4f7d-83e4-77b92c631dd6",
+          "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-230",
+          "name": "تشارمينغ",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-charming-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "82eb8f50-9b6b-490d-89a1-843731be939e",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-deodorant-charming-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "c9ee4e9c-4a6c-48c5-ba7b-e337852e92ba",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "456fd02f-a08b-46af-89db-0cf6de99b05d",
+      "slug": "ghaz-enchanteur-rollon",
+      "sku": "GHAZ-ENCHANTEUR-ROLLON",
+      "nameAr": "رول مزيل عرق إنشانتر",
+      "createdAt": "2026-11-24T19:52:24.927Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "875a1857-ee58-4911-a18d-08c365ae44b0",
+          "sku": "GHAZ-ENCHANTEUR-ROLLON-293",
+          "name": "ستاننغ",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-stunning-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "6791ef76-ef89-4a62-a596-c5a5a16ba264",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-stunning-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "1196aff4-b116-465d-8cc0-662cf67e4647",
+              "unitCost": 1250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "8a3ed6bb-bef7-4d90-bbad-ee09950c5705",
+          "sku": "GHAZ-ENCHANTEUR-ROLLON-294",
+          "name": "إنتايسينغ",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-enticing-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "96cf3a06-7f61-485b-8b83-0f742d777043",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-enticing-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "6a6e3edf-f873-4408-ad32-154014933384",
+              "unitCost": 1250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "31167c80-c711-43ee-b35d-8f8c5794287a",
+          "sku": "GHAZ-ENCHANTEUR-ROLLON-295",
+          "name": "تشارمينغ",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-charming-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "635ac5df-a160-485d-a47a-abab7abc8115",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-charming-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "5778d330-99f4-4c03-a351-0d271882f554",
+              "unitCost": 1250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "a8b9535a-031a-44f8-be32-e4df8604439a",
+          "sku": "GHAZ-ENCHANTEUR-ROLLON-296",
+          "name": "ألورينغ",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-alluring-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "f3ae88f5-3345-45d9-af01-d220ecbd350d",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-alluring-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "4a0d0a93-21ff-4f88-9529-20030d3dc143",
+              "unitCost": 1250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "5b0fc4c8-a059-4215-8dca-2c4e54a967ba",
+          "sku": "GHAZ-ENCHANTEUR-ROLLON-297",
+          "name": "رومانتيك",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-romantic-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "0e71f586-32c7-4596-9ab3-bacbcdb2c7d4",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-rollon-romantic-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "8f3f4ce0-a7ab-40fe-87b5-360c4d9ec255",
+              "unitCost": 1250,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0545e997-98a3-4264-a04b-85109cf3c9bb",
+      "slug": "ghaz-enchanteur-satin-lotion",
+      "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION",
+      "nameAr": "لوشن جسم إنشانتر ساتن سموث",
+      "createdAt": "2026-11-24T19:52:28.967Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "b84bf402-34bd-4aed-b947-433c3821e8a0",
+          "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-324",
+          "name": "تشارمينغ",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-charming-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "6e18485e-8fbf-4a5a-9ca5-c29498c173da",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-charming-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "8083cb72-8420-42aa-8b09-ee53943b7b74",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "f3095668-2b71-4429-8912-000bf8208fbc",
+          "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-325",
+          "name": "ألورينغ",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-alluring-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "530f415b-4dee-4bb6-9905-483785cac424",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-alluring-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "bf252607-321b-4ccc-99b6-8c712070f02a",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "3593eb18-a614-414c-b188-84a1e2718211",
+          "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-326",
+          "name": "إليغانت مسك",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-elegant-musk-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "06202e4f-ae90-4b37-aed5-044464e927e4",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-elegant-musk-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "b0e70e31-0700-4650-9868-6b156f07ac41",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "e64919ad-0754-409f-acc0-1ee1dcd0496c",
+          "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-327",
+          "name": "رومانتيك",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-romantic-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "e48d890b-1902-415b-b2a5-3fd1529e2383",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-romantic-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "0001f798-0351-4c80-af8d-20e7a4e0192d",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "5a37c545-90fe-44b2-8b98-d6a6da513757",
+          "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-328",
+          "name": "إنتايسينغ",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-enticing-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "c3d118f2-b5da-47fd-8c4c-7d02ab803a82",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-enticing-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "e76f2a54-e9a3-4d62-95e7-fabf96ffede2",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "c489b271-483f-4bdd-8ed6-8c791c40d882",
+          "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-329",
+          "name": "جورجس",
+          "price": 1750,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-gorgeous-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "41cfe7ef-4823-462b-acd4-406022b4ade6",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/enchanteur-satin-lotion-gorgeous-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "67be07eb-1746-44f1-a323-22887981382c",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "05fd0ce3-93f8-4a74-87fd-4091b47bdbac",
+      "slug": "ghaz-fasio-spray",
+      "sku": "GHAZ-FASIO-SPRAY",
+      "nameAr": "بخاخ جسم إمبير فاسيو النسائي",
+      "createdAt": "2026-11-24T19:52:03.696Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "7173f758-f3ce-4e78-98ce-5c475f75d7c5",
+          "sku": "GHAZ-FASIO-SPRAY-219",
+          "name": "بور فام",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-fasio-pour-femme-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "4a7841e0-62e1-49a5-afc3-b50a3fa0e24c",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/emper-fasio-pour-femme-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "4eb07bfa-43e4-4b95-8d28-8f1642d0795a",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f4f41a5b-74b6-40d7-bc6a-e0ee9dc7a5f3",
+      "slug": "ghaz-fogg-master-120",
+      "sku": "GHAZ-FOGG-MASTER-120",
+      "nameAr": "بخاخ جسم فوغ ماستر 120 مل",
+      "createdAt": "2026-11-24T19:52:02.781Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "ccf88ed4-9167-45c1-b003-9772ad12955f",
+          "sku": "GHAZ-FOGG-MASTER-120-216",
+          "name": "أوك",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-master-oak-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "33f7c5d8-c542-4db3-a1b3-0195f788ac8b",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-master-oak-120ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "99bb11a6-010e-4b49-aebe-d533895033f1",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "940bf55b-b89a-4139-9b61-cd702c92750a",
+          "sku": "GHAZ-FOGG-MASTER-120-217",
+          "name": "سيدر",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-master-cedar-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "1b4072f3-fdda-4a82-aae6-ebfb051e66f2",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-master-cedar-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "afce8848-acf7-43f0-aec8-577cc13588c0",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "eede602b-e89e-4dbd-b7c8-261a7d53c7a6",
+      "slug": "ghaz-fogg-spray-men-120",
+      "sku": "GHAZ-FOGG-SPRAY-MEN-120",
+      "nameAr": "بخاخ جسم فوغ للرجال 120 مل",
+      "createdAt": "2026-11-24T19:52:00.119Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "28d8a215-f4f1-4393-9a57-1e6909bff630",
+          "sku": "GHAZ-FOGG-SPRAY-MEN-120-210",
+          "name": "ماغنيتيك",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-magnetic-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "0f2b6728-642a-444c-98f1-cd76cb9b1096",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-magnetic-120ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "4a0a7f31-ab33-4f67-9918-890ad7788174",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "776858f1-16c8-4840-979b-1d391a56357b",
+          "sku": "GHAZ-FOGG-SPRAY-MEN-120-211",
+          "name": "مونارك",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-monarch-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "5ed4d823-b39c-4bd9-a553-3e93f7d8560d",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-monarch-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "442a288c-3d4f-4166-b7ec-71ba6c2b6c19",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "dba0b2ac-7b66-4852-8aab-4f8164aa8c3a",
+          "sku": "GHAZ-FOGG-SPRAY-MEN-120-212",
+          "name": "بلو سكايز",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-bleu-skies-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "5a9a1b9f-b76f-40a1-b452-5af2a3ce842f",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-bleu-skies-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "2d88005d-9a1b-452e-8fca-4bab1016b1d0",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "c76d6bfd-6c0a-4fd1-ba53-665d2b486220",
+          "sku": "GHAZ-FOGG-SPRAY-MEN-120-213",
+          "name": "أبسولوت",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-absolute-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "d71fa443-087e-4695-82b8-c9ea78454a08",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-absolute-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "13cb9927-6524-437a-bc0a-d1ef1d98df39",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "8a318b99-fd2c-4316-9067-38f4a58b3562",
+          "sku": "GHAZ-FOGG-SPRAY-MEN-120-214",
+          "name": "إكستريم",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-extreme-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "e10f1536-5379-4c19-8f29-79a4591bce04",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-extreme-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "9c73c359-42a7-4f00-a145-f7d17c6c4273",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "5e6725ba-fb67-461b-bb45-d24ac3057ab1",
+          "sku": "GHAZ-FOGG-SPRAY-MEN-120-215",
+          "name": "فريش فوجير",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-fresh-fougere-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "c5b06890-ca6b-4c9c-8364-91a11c03eb24",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-fresh-fougere-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "89c9ba9d-dd91-404b-9242-8c7d5a2c3b15",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "2f32c786-1b46-4022-bb3f-411d49daf5c9",
+          "sku": "GHAZ-FOGG-SPRAY-MEN-120-218",
+          "name": "دايناميك",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-dynamic-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "81bb0649-78a2-4322-bcd6-0dce771f6d5f",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-dynamic-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "325170ec-1fd0-4cec-96e6-3373e76e357f",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5f65fdf0-d534-4127-8f29-18233d810378",
+      "slug": "ghaz-fogg-spray-women-120",
+      "sku": "GHAZ-FOGG-SPRAY-WOMEN-120",
+      "nameAr": "بخاخ جسم فوغ للنساء 120 مل",
+      "createdAt": "2026-11-24T19:52:04.252Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "cedf3d01-d103-42f3-8842-5a0ff9320d89",
+          "sku": "GHAZ-FOGG-SPRAY-WOMEN-120-221",
+          "name": "إيسنس",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-essence-women-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "28777043-e2a2-408a-a3f1-51e2fe0105e3",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-essence-women-120ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "e169bd53-1c3f-4599-9baa-2ef75988a254",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "c55a0240-3d8b-4d6d-a45f-bd5e82378c5d",
+          "sku": "GHAZ-FOGG-SPRAY-WOMEN-120-222",
+          "name": "نابليون",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-napoleon-women-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "21d86e95-78fb-47fc-8fd1-32bc3c8db922",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-napoleon-women-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "a444100f-5929-4e84-a14a-8e2d6b9a3c4b",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "83e02d49-a083-491f-9815-1a43d427e356",
+          "sku": "GHAZ-FOGG-SPRAY-WOMEN-120-223",
+          "name": "ريفيل وومن",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-reveal-women-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "0ef3d614-9f6f-40b0-bef7-e0fd26621d80",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-reveal-women-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "4f37f2ad-6e37-49ce-abe9-6c18259e5955",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "9435a4b2-d5fb-4cb9-ab66-ec463e55c838",
+          "sku": "GHAZ-FOGG-SPRAY-WOMEN-120-224",
+          "name": "ديليشس",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-delicious-women-120ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "a253d99c-834a-42e7-90b6-5ddfda55ca61",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/fogg-delicious-women-120ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "a205d3ab-07fa-4437-893d-1afc3bbff54c",
+              "unitCost": 2050,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b6e3d95e-8daf-48d1-b376-3ad50c639b82",
+      "slug": "ghaz-glysolid-lotion",
+      "sku": "GHAZ-GLYSOLID-LOTION",
+      "nameAr": "لوشن جسم غليسوليد",
+      "createdAt": "2026-11-24T19:52:31.308Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "05bd3f23-0189-404f-b47f-11f3665b980a",
+          "sku": "GHAZ-GLYSOLID-LOTION-353",
+          "name": "كلاسيك",
+          "price": 5000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/glysolid-classic-body-lotion-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "77191428-8cb7-46ab-a88b-899e393ef4bf",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/glysolid-classic-body-lotion-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "6fd0d6ca-f5dc-4152-8227-59dd26175379",
+              "unitCost": 3750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "8df09f8f-9474-4b5c-b541-26539839132a",
+          "sku": "GHAZ-GLYSOLID-LOTION-354",
+          "name": "مسك",
+          "price": 5000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/glysolid-musk-body-lotion-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "78296a0d-e584-48d5-b0bf-e1af5066e2f0",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/glysolid-musk-body-lotion-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "4a3f0b7a-2826-4792-ad70-1a8bb8a05a7b",
+              "unitCost": 3750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "9d2a7059-742c-48f0-9fb5-bdb2201109d5",
+      "slug": "ghaz-higeen-rollon-black",
+      "sku": "GHAZ-HIGEEN-ROLLON-BLACK",
+      "nameAr": "رول مزيل عرق هايجين الأسود",
+      "createdAt": "2026-11-24T19:52:23.774Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "3ae70acd-3b54-4d1c-9065-82c9ea73db5d",
+          "sku": "GHAZ-HIGEEN-ROLLON-BLACK-284",
+          "name": "أسود",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/higeen-double-fresh-black-rollon-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "40cb2966-e7c8-4a91-a5f7-522e5bbd9543",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/higeen-double-fresh-black-rollon-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "759f4367-b08a-4cfe-a4b6-13d2421be30a",
+              "unitCost": 1370,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a3c9359c-ceaf-46f0-8d0b-1e4df9dd975b",
+      "slug": "ghaz-mbc-body-lotion-500-342",
+      "sku": "GHAZ-MBC-BODY-LOTION-500-342",
+      "nameAr": "لوشن يدين وجسم إم بي سي 500 مل زيت اللوز",
+      "createdAt": "2026-11-24T19:52:48.897Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "9ffcf3b9-3eb2-4795-a338-f4e4813908f2",
+          "sku": "GHAZ-MBC-BODY-LOTION-500-342-342",
+          "name": "زيت اللوز",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/mbc-ultra-almond-oil-lotion-500ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "bfd6c221-cd11-45df-85f3-7780043dd6de",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/mbc-ultra-almond-oil-lotion-500ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "6861671e-b9db-45cd-bc5a-b855978dc8cc",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "995625dd-ebcf-472e-8972-12b3c737c63f",
+      "slug": "ghaz-mbc-body-lotion-500-343",
+      "sku": "GHAZ-MBC-BODY-LOTION-500-343",
+      "nameAr": "لوشن يدين وجسم إم بي سي 500 مل زيت الأرغان",
+      "createdAt": "2026-11-24T19:52:49.461Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "6d5a3208-75fd-4d75-a3de-4d4b86b15ebe",
+          "sku": "GHAZ-MBC-BODY-LOTION-500-343-343",
+          "name": "زيت الأرغان",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/mbc-ultra-argan-oil-lotion-500ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "5c4da169-acaa-4246-874f-482e179e751c",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/mbc-ultra-argan-oil-lotion-500ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "ce1f8655-8569-4f8c-aa21-908295c1aca3",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f59d9314-8cfb-404f-a7fc-39ef0d61e8e5",
+      "slug": "ghaz-mbc-body-lotion-500-344",
+      "sku": "GHAZ-MBC-BODY-LOTION-500-344",
+      "nameAr": "لوشن يدين وجسم إم بي سي 500 مل زيت الجوجوبا",
+      "createdAt": "2026-11-24T19:52:50.014Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "090ee237-c2b4-4ce3-97b5-5a075065ec62",
+          "sku": "GHAZ-MBC-BODY-LOTION-500-344-344",
+          "name": "زيت الجوجوبا",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/mbc-ultra-jojoba-oil-lotion-500ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "644b4999-1624-408e-823f-da35095c5428",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/mbc-ultra-jojoba-oil-lotion-500ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "0ad8aa0e-a1cc-4639-b262-c35fb10f8014",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "e1ad459a-3b90-4d37-8952-29d012879c3b",
+      "slug": "ghaz-mbc-body-lotion-500-345",
+      "sku": "GHAZ-MBC-BODY-LOTION-500-345",
+      "nameAr": "لوشن يدين وجسم إم بي سي 500 مل زيت جوز الهند",
+      "createdAt": "2026-11-24T19:52:50.572Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "18a4ecd4-4d8c-4e31-a9b5-6623352e726a",
+          "sku": "GHAZ-MBC-BODY-LOTION-500-345-345",
+          "name": "زيت جوز الهند",
+          "price": 2000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/mbc-ultra-coconut-oil-lotion-500ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "48aa6896-9cef-4f8e-827e-9a803aac781f",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/mbc-ultra-coconut-oil-lotion-500ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "e84417fa-67a8-48ab-8bd1-9f66262d6064",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "8ad3de7d-1f12-4688-95b6-be39808c32ba",
+      "slug": "ghaz-oldspice-spray",
+      "sku": "GHAZ-OLDSPICE-SPRAY",
+      "nameAr": "بخاخ مزيل عرق أولد سبايس",
+      "createdAt": "2026-11-24T19:52:07.832Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "af535848-720c-4c73-b2ff-a9c01b15747a",
+          "sku": "GHAZ-OLDSPICE-SPRAY-240",
+          "name": "إيبك ليجند",
+          "price": 3500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/old-spice-epic-legend-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "8a68911e-4174-4c49-b7e7-7e610f3371ed",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/old-spice-epic-legend-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "c3f61b82-f870-42e4-a5b4-106f88c10fdd",
+              "unitCost": 3000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "c29b3a93-0edd-45e6-8d9c-b215b6d3547c",
+          "sku": "GHAZ-OLDSPICE-SPRAY-241",
+          "name": "كابتن",
+          "price": 3500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/old-spice-captain-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "c26c84b0-4804-40ae-a3be-b6dd522c7772",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/old-spice-captain-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "6d1c641f-f111-468a-9039-fd946a4298b9",
+              "unitCost": 3000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "d92b8053-fe75-435a-8fb5-df95ec8155d1",
+          "sku": "GHAZ-OLDSPICE-SPRAY-242",
+          "name": "بيرغلوف",
+          "price": 3500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/old-spice-bearglove-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "c59e6c6e-413e-4757-9deb-5d32783971dd",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/old-spice-bearglove-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "49d59932-e397-47df-9ba4-7e835695f115",
+              "unitCost": 3000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "14fbdf13-3da2-4f10-8e53-d496f3263ad6",
+      "slug": "ghaz-rexona-motionsense-spray-232",
+      "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-232",
+      "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس بايوريذم",
+      "createdAt": "2026-11-24T19:52:32.944Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "a46fb776-135f-4729-90f4-a36f8e723369",
+          "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-232-232",
+          "name": "بايوريذم",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-biorhythm-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "1d2b9b96-3261-476c-94ca-97eac86366dc",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-biorhythm-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "a93b3d77-3cc6-4dd3-ac8d-62249f1ca24f",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "21aa4adc-e29b-4bc8-b50d-7c1de83d8dc9",
+      "slug": "ghaz-rexona-motionsense-spray-233",
+      "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-233",
+      "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس إنفيزيبل بيور",
+      "createdAt": "2026-11-24T19:52:33.514Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "b803bf1e-3751-48f8-ac1d-86e8027f8634",
+          "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-233-233",
+          "name": "إنفيزيبل بيور",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-invisible-pure-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "9dc67b03-a8a4-4dd5-90d6-3c843e364f91",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-invisible-pure-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "df20096c-17c9-4334-a8bc-78e9b80c6c87",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "32bf1170-1bbd-4611-94b7-da40287345e8",
+      "slug": "ghaz-rexona-motionsense-spray-234",
+      "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-234",
+      "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس تروبيكال",
+      "createdAt": "2026-11-24T19:52:34.073Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "5150a39a-8d18-4970-96e7-129458676361",
+          "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-234-234",
+          "name": "تروبيكال",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-tropical-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "7782347d-db2b-4ff2-bac9-16e964c1d94e",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-tropical-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "d0bfa826-93a1-43a1-a6c4-977363b8734f",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6d7ab6ea-2cd9-4d51-96c7-1d0f451cb170",
+      "slug": "ghaz-rexona-motionsense-spray-235",
+      "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-235",
+      "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس شاور فريش",
+      "createdAt": "2026-11-24T19:52:34.632Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "e0414534-dff5-49fc-9812-c46ada4f16dc",
+          "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-235-235",
+          "name": "شاور فريش",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-shower-fresh-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "dc83f797-113f-4f78-bdbc-3f745077ad50",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-shower-fresh-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "1ecfe243-eb81-416a-938e-a52a6b283900",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "97da78e9-99c7-4e42-91bf-ed3ac02ea9bd",
+      "slug": "ghaz-rexona-motionsense-spray-236",
+      "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-236",
+      "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس أنتي بكتيريال بروتكشن",
+      "createdAt": "2026-11-24T19:52:35.195Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "e689d05b-5056-429e-9f5e-f7e18b3e944b",
+          "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-236-236",
+          "name": "أنتي بكتيريال بروتكشن",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-antibacterial-protection-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "2d5c470f-bda1-4217-be70-6256d3f3eaf7",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-antibacterial-protection-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "0ea1c1b0-c075-4ea3-9971-71fcdfb7a58a",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4549fa0f-82e8-4ad8-8f7b-dc3243c934fa",
+      "slug": "ghaz-rexona-motionsense-spray-237",
+      "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-237",
+      "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس إنفيزيبل أكوا",
+      "createdAt": "2026-11-24T19:52:35.755Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "da8ccb18-2e29-48dd-b0b0-a38d65528560",
+          "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-237-237",
+          "name": "إنفيزيبل أكوا",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-invisible-aqua-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "18a8c815-33f7-4be6-b12f-9ada114e0c6a",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-invisible-aqua-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "881aac70-c367-46cb-98fe-5b3bcb10af1c",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1aa9a1ef-905a-447a-9659-f50ddf279080",
+      "slug": "ghaz-rexona-motionsense-spray-238",
+      "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-238",
+      "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس كوتون دراي",
+      "createdAt": "2026-11-24T19:52:36.333Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "26134f70-cef0-4658-afa8-d7e4d5776109",
+          "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-238-238",
+          "name": "كوتون دراي",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-cotton-dry-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "6517844a-a4cd-454f-967d-9db4224015f3",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/rexona-cotton-dry-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "9d6c4ed5-e1df-4003-8b8b-96762f1ab181",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1ad819f6-efaf-45b8-ac55-48a84f35bb54",
+      "slug": "ghaz-riggs-london-250",
+      "sku": "GHAZ-RIGGS-LONDON-250",
+      "nameAr": "بخاخ جسم ريغز لندن 250 مل",
+      "createdAt": "2026-11-24T19:52:09.085Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "360d7e5c-73d7-4fde-a63d-9eb086dbc517",
+          "sku": "GHAZ-RIGGS-LONDON-250-243",
+          "name": "فينوم",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-venom-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "69606983-ae8c-465f-86b7-f9d2355c7c6c",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-venom-250ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "9ed56c8c-59d9-45ba-b4be-6c5338348771",
+              "unitCost": 1750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "2e142b91-770a-4c6c-bcba-1f67ef0696b1",
+          "sku": "GHAZ-RIGGS-LONDON-250-245",
+          "name": "داينامو",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-dynamo-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "23c17fed-348b-4412-b6c8-8256c19d4603",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-dynamo-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "3b9f85e3-258e-4534-8a66-dd1ba31b951b",
+              "unitCost": 1750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "ee12db26-200a-4856-ad03-7e1d0ff94709",
+          "sku": "GHAZ-RIGGS-LONDON-250-246",
+          "name": "باور",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-power-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "c4f21251-6b4b-4a1d-9e63-bf3f678ba80a",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-power-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "605ad28f-040a-445f-8fed-a1dfea819680",
+              "unitCost": 1750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "57444c8e-5a91-445b-bc9d-d1c284c576c3",
+          "sku": "GHAZ-RIGGS-LONDON-250-247",
+          "name": "ذا ون",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-the-one-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "07452acb-db6e-490e-afc1-e501b3459f73",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-the-one-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "6f4e84ce-9565-4bf0-afc8-e22806d7b5f8",
+              "unitCost": 1750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "0c3443ea-7cb4-4932-8c69-3dca83b36153",
+          "sku": "GHAZ-RIGGS-LONDON-250-248",
+          "name": "عود",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-oud-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "b3300fa6-558f-4f0f-af2f-a58ef1d706bf",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-oud-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "d6c8ab07-5d29-4428-9450-2e96ead5f959",
+              "unitCost": 1750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "308c29d4-106a-4af5-ad70-974a2e4a7103",
+          "sku": "GHAZ-RIGGS-LONDON-250-249",
+          "name": "آيكون",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-icon-250ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "ce27b68c-ca89-4b28-8909-23fe08674ca0",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/riggs-icon-250ml-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "8eaca244-88a4-4b17-a238-2e7eefb2f770",
+              "unitCost": 1750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f3873e6c-f657-45b7-a901-ed38bd67406d",
+      "slug": "ghaz-secret-weightless-spray",
+      "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY",
+      "nameAr": "بخاخ مزيل عرق سيكرت ويتلس",
+      "createdAt": "2026-11-24T19:52:11.396Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "898d141a-aee2-45fa-889d-5d655cb91d8d",
+          "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-252",
+          "name": "ألوفيرا وخيار",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-aloe-cucumber-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "53ed06a0-3866-4442-866d-d5066718ca0c",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-aloe-cucumber-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "9aac36a0-bc2f-40bb-9d96-d55bf59cafa9",
+              "unitCost": 1200,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "b1fde324-0394-4650-bcac-3933b2af519e",
+          "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-253",
+          "name": "خوخ أبيض",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-white-peach-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "1ac3f77b-b6ca-4765-8618-dca30d8894bb",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-white-peach-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "f06347fb-20b0-48f4-b1f4-fa527cf3f7fa",
+              "unitCost": 1200,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "f3ee874a-1c90-46f6-bafb-14ea71f263d9",
+          "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-254",
+          "name": "رمان",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-pomegranate-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "f99e20b8-8a37-4de9-b850-cc02429fc2d3",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-pomegranate-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "363b036a-1779-4c6f-b409-3691eec7a3f4",
+              "unitCost": 1200,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "da48627a-71c6-422d-ae7d-8bb7715beea1",
+          "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-255",
+          "name": "لافندر",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-lavender-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "add6b470-c0c8-4c55-86d7-4d8da94aab62",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-lavender-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "587dd3de-0765-4e3a-a91f-f6cf1120ef61",
+              "unitCost": 1200,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "id": "d9cc5a2b-380e-44a5-99ba-ae884d7b9793",
+          "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-256",
+          "name": "زنبق الماء",
+          "price": 1500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-waterlily-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "7ad2f519-1b1c-428e-aab3-6107d138e502",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/secret-waterlily-studio.webp",
+              "isMain": false
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "61d76c87-4783-4f5e-a665-c4d34ac1b97f",
+              "unitCost": 1200,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "9491cfad-d8d4-410a-a981-c28906ab6a15",
+      "slug": "ghaz-sence-hydroshock-lotion",
+      "sku": "GHAZ-SENCE-HYDROSHOCK-LOTION",
+      "nameAr": "لوشن جسم سينس هيدرو شوك",
+      "createdAt": "2026-11-24T19:52:32.251Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "3b661556-536c-4452-aab3-2355b38017aa",
+          "sku": "GHAZ-SENCE-HYDROSHOCK-LOTION-355",
+          "name": "هيدرو شوك",
+          "price": 3500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/sence-hydro-shock-body-lotion-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "1fbd95f7-85d2-422c-8055-641852e03dee",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/sence-hydro-shock-body-lotion-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "4b79e548-bfd9-44c3-aab2-faf95b35800c",
+              "unitCost": 2500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d7ccb739-c139-4004-af93-0d0c5dd85422",
+      "slug": "ghaz-vaseline-glutaglow-rollon",
+      "sku": "GHAZ-VASELINE-GLUTAGLOW-ROLLON",
+      "nameAr": "رول مزيل عرق فازلين غلوتا غلو",
+      "createdAt": "2026-11-24T19:52:24.333Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "f1cbe382-7b91-4d45-a648-11f33357a236",
+          "sku": "GHAZ-VASELINE-GLUTAGLOW-ROLLON-291",
+          "name": "غلوتا غلو",
+          "price": 3500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-glutaglow-bright-renew-rollon-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "90639ba2-b03f-4d2a-8ae2-7ac6fc766c3f",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-glutaglow-bright-renew-rollon-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "99d0ec40-6ac6-480f-a424-cc8d8d32be2c",
+              "unitCost": 2500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "be211b4f-9b33-4f1a-a139-788c1f552074",
+      "slug": "ghaz-vaseline-glutavit-firm-180",
+      "sku": "GHAZ-VASELINE-GLUTAVIT-FIRM-180",
+      "nameAr": "سيروم جسم فازلين غلوتا فيتامين فيرم آند غلو 180 مل",
+      "createdAt": "2026-11-24T19:52:27.846Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "2b586415-dbe7-4a5c-bd66-62d0fa6397ac",
+          "sku": "GHAZ-VASELINE-GLUTAVIT-FIRM-180-321",
+          "name": "فيرم آند غلو",
+          "price": 5000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-gluta-vitamin-firm-glow-180ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "66bcaaa2-aeea-46f2-b61e-914c9e820371",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-gluta-vitamin-firm-glow-180ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "a91c8373-da40-4a74-863b-855c59c5e893",
+              "unitCost": 3750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "560e04ef-eea3-49d8-beef-40e43a290690",
+      "slug": "ghaz-vaseline-glutavit-hijab-180",
+      "sku": "GHAZ-VASELINE-GLUTAVIT-HIJAB-180",
+      "nameAr": "سيروم جسم فازلين غلوتا فيتامين حجاب راديانت 180 مل",
+      "createdAt": "2026-11-24T19:52:28.408Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "07e9b997-61fc-4090-a5da-232db4eb6f9a",
+          "sku": "GHAZ-VASELINE-GLUTAVIT-HIJAB-180-322",
+          "name": "حجاب راديانت",
+          "price": 5000,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-gluta-vitamin-hijab-radiant-180ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "f98aa6ed-5b54-407f-9c08-5c1b5f361f41",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-gluta-vitamin-hijab-radiant-180ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "d6ad9534-24a6-45a6-ba9a-a586c26b9d4d",
+              "unitCost": 3750,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7df9d65f-1916-4ff8-8da9-f42a5ecc27a5",
+      "slug": "ghaz-vaseline-intensive-400-337",
+      "sku": "GHAZ-VASELINE-INTENSIVE-400-337",
+      "nameAr": "لوشن جسم فازلين إنتنسيف كير 400 مل كاكاو غلو",
+      "createdAt": "2026-11-24T19:52:46.584Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "94a37560-8d90-46aa-aac4-0ccaffe07eee",
+          "sku": "GHAZ-VASELINE-INTENSIVE-400-337-337",
+          "name": "كاكاو غلو",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-intensive-care-cocoa-glow-400ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "c32d2854-6ae3-4227-990c-2783b6fed971",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-intensive-care-cocoa-glow-400ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "bef0415a-ca27-408d-8a4c-8173c1e84b14",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1b7698d0-19bb-499e-b2c4-2b1ff5b45a1a",
+      "slug": "ghaz-vaseline-intensive-400-338",
+      "sku": "GHAZ-VASELINE-INTENSIVE-400-338",
+      "nameAr": "لوشن جسم فازلين إنتنسيف كير 400 مل أدفانسد ريبير",
+      "createdAt": "2026-11-24T19:52:47.143Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "4ff5bf59-5162-4ba3-9c9b-a780ad67ffaa",
+          "sku": "GHAZ-VASELINE-INTENSIVE-400-338-338",
+          "name": "أدفانسد ريبير",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-intensive-care-advanced-repair-400ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "cad79d87-a29e-4fd9-a414-d59b048470c2",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-intensive-care-advanced-repair-400ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "eb594127-3e10-41cd-af18-4ac02f86f15e",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ee816248-e4b3-4e0b-89cf-ef45080e8fbf",
+      "slug": "ghaz-vaseline-intensive-400-339",
+      "sku": "GHAZ-VASELINE-INTENSIVE-400-339",
+      "nameAr": "لوشن جسم فازلين إنتنسيف كير 400 مل ألو سوذ",
+      "createdAt": "2026-11-24T19:52:47.700Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "a491806b-6633-4057-85c6-ab3cdd2784b3",
+          "sku": "GHAZ-VASELINE-INTENSIVE-400-339-339",
+          "name": "ألو سوذ",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-intensive-care-aloe-soothe-400ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "7b766144-900a-41e2-aac5-0a338fae2fab",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-intensive-care-aloe-soothe-400ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "9589d96c-8d91-4132-a12c-6209f4645dcd",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f6962ec0-1108-417a-9a6d-76c5a5c12335",
+      "slug": "ghaz-vaseline-intensive-400-340",
+      "sku": "GHAZ-VASELINE-INTENSIVE-400-340",
+      "nameAr": "لوشن جسم فازلين إنتنسيف كير 400 مل دراي سكين ريبير",
+      "createdAt": "2026-11-24T19:52:48.340Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "a68dd5e3-26b7-4e1f-8a47-fc3e33566b71",
+          "sku": "GHAZ-VASELINE-INTENSIVE-400-340-340",
+          "name": "دراي سكين ريبير",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-intensive-care-dry-skin-repair-400ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "b822358c-5d68-4c7c-821c-dcb36b15a06d",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/vaseline-intensive-care-dry-skin-repair-400ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "a55badca-0331-4b4f-9b6a-65542416ea35",
+              "unitCost": 2000,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6d884da7-81fd-49ca-bc27-97599e0ecf69",
+      "slug": "ghazal-screen-356",
+      "sku": "GHAZAL-SCREEN-356",
+      "nameAr": "لوشن جسم بوتيك بيبي باودر بينك 480 مل",
+      "createdAt": "2026-11-24T19:51:59.487Z",
+      "isVisible": true,
+      "needsReview": false,
+      "variants": [
+        {
+          "id": "e3339af5-0754-4947-bd16-da755a98a76b",
+          "sku": "GHAZAL-SCREEN-356-356",
+          "name": "بيبي باودر بينك",
+          "price": 2500,
+          "mainImage": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-baby-powder-pink-lotion-480ml-studio.webp",
+          "isActive": true,
+          "inventorySource": "SUPPLIER",
+          "images": [
+            {
+              "id": "040a9a6f-95b6-459b-bfc4-1fa7b1121462",
+              "url": "https://mvvsofjitybxjhxorruw.supabase.co/storage/v1/object/public/product-images/products/ghazal-209-356/boutique-baby-powder-pink-lotion-480ml-studio.webp",
+              "isMain": true
+            }
+          ],
+          "supplierOffers": [
+            {
+              "id": "1db3d4da-7c2e-4c9e-b08b-612be8dc7a4c",
+              "unitCost": 1500,
+              "stock": 50,
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

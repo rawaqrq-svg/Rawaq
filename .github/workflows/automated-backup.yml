@@ -1,0 +1,98 @@
+name: RAWAQ Automated 48h Data Protection & Backup
+
+on:
+  schedule:
+    # Runs every 48 hours at 00:17 UTC (03:17 AM Amman Time UTC+3)
+    - cron: '17 0 */2 * *'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'سبب التشغيل اليدوي للنسخ الاحتياطي'
+        required: false
+        default: 'تشغيل يدوي من لوحة الإدارة أو GitHub'
+
+# Prevent concurrent backup runs to protect database and retention state
+concurrency:
+  group: rawaq-backup-job
+  cancel-in-progress: false
+
+jobs:
+  run-backup:
+    name: Execute Full Backup & Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.15.0
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Execute Backup Pipeline (Attempt 1)
+        id: backup_attempt_1
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          NEON_BACKUP_DATABASE_URL: ${{ secrets.NEON_BACKUP_DATABASE_URL }}
+          BACKUP_S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+          BACKUP_S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          BACKUP_S3_REGION: ${{ secrets.BACKUP_S3_REGION }}
+          BACKUP_S3_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY_ID }}
+          BACKUP_S3_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_ACCESS_KEY }}
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+          BACKUP_RETENTION_COUNT: 2
+          BACKUP_INTERVAL_HOURS: 48
+          BACKUP_TIMEZONE: Asia/Amman
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_ORDERS_FROM: ${{ secrets.RESEND_ORDERS_FROM }}
+          RESEND_BACKUP_FROM: ${{ secrets.RESEND_BACKUP_FROM }}
+          RESEND_SECURITY_FROM: ${{ secrets.RESEND_SECURITY_FROM }}
+          RESEND_FALLBACK_FROM: ${{ secrets.RESEND_FALLBACK_FROM }}
+          ADMIN_NOTIFICATION_EMAIL: ${{ secrets.ADMIN_NOTIFICATION_EMAIL }}
+        run: |
+          pnpm tsx scripts/backup/run-backup.ts
+
+      # First Retry after 15 minutes if attempt 1 fails
+      - name: Wait for Retry (15 Minutes)
+        if: steps.backup_attempt_1.outcome == 'failure'
+        run: sleep 900
+
+      - name: Execute Backup Pipeline (Attempt 2 - Retry)
+        if: steps.backup_attempt_1.outcome == 'failure'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          NEON_BACKUP_DATABASE_URL: ${{ secrets.NEON_BACKUP_DATABASE_URL }}
+          BACKUP_S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+          BACKUP_S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          BACKUP_S3_REGION: ${{ secrets.BACKUP_S3_REGION }}
+          BACKUP_S3_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY_ID }}
+          BACKUP_S3_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_ACCESS_KEY }}
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+          BACKUP_RETENTION_COUNT: 2
+          BACKUP_INTERVAL_HOURS: 48
+          BACKUP_TIMEZONE: Asia/Amman
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_ORDERS_FROM: ${{ secrets.RESEND_ORDERS_FROM }}
+          RESEND_BACKUP_FROM: ${{ secrets.RESEND_BACKUP_FROM }}
+          RESEND_SECURITY_FROM: ${{ secrets.RESEND_SECURITY_FROM }}
+          RESEND_FALLBACK_FROM: ${{ secrets.RESEND_FALLBACK_FROM }}
+          ADMIN_NOTIFICATION_EMAIL: ${{ secrets.ADMIN_NOTIFICATION_EMAIL }}
+        run: |
+          pnpm tsx scripts/backup/run-backup.ts

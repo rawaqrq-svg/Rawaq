@@ -1,0 +1,56 @@
+name: RAWAQ Monthly Disaster Recovery & Restore Test
+
+on:
+  schedule:
+    # Runs on the 1st of every month at 04:00 AM Amman Time (01:00 UTC)
+    - cron: '0 1 1 * *'
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: 'ملاحظات حول اختبار الاستعادة اليدوي'
+        required: false
+        default: 'اختبار دوري لسلامة وجاهزية الاستعادة'
+
+jobs:
+  test-restore:
+    name: Verify Latest Backup Restore Capability
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.15.0
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Restore Validation
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          NEON_BACKUP_DATABASE_URL: ${{ secrets.NEON_BACKUP_DATABASE_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ADMIN_NOTIFICATION_EMAIL: ${{ secrets.ADMIN_NOTIFICATION_EMAIL }}
+        run: |
+          pnpm tsx -e "
+            import { testRestoreAction } from './src/actions/backups';
+            testRestoreAction().then(res => {
+              console.log('Monthly Restore Test Result:', res);
+              if (!res.success) process.exit(1);
+            }).catch(err => {
+              console.error(err);
+              process.exit(1);
+            });
+          "

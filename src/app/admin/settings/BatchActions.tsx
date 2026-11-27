@@ -7,7 +7,7 @@ export function BatchActions({ batchId, reference, secureToken, deleteAction, st
   const [message, setMessage] = useState('');
   const manifestPath = `/delivery/${reference}${secureToken ? `?token=${encodeURIComponent(secureToken)}` : ''}`;
   const copyLink = async () => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_APP_URL || 'https://rawaq.jo');
+    const origin = typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_APP_URL || 'https://www.rawaq-jo.online');
     const url = `${origin}${manifestPath}`;
     try { await navigator.clipboard.writeText(url); setMessage('تم نسخ رابط الطلبية.'); } catch { setMessage(url); }
   };

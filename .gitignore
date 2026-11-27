@@ -49,3 +49,10 @@ env.txt
 
 # Local Netlify folder
 .netlify
+
+# Backups and temporary archive files
+/backups/
+*.zip
+*.zip.enc
+__pycache__/
+*.pyc

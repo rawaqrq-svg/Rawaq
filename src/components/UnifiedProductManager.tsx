@@ -1858,7 +1858,7 @@ export function UnifiedProductManager({
             {/* Google SERP Live Preview */}
             <div className="mt-4 p-4 rounded-2xl bg-[#f8f9fa] border border-zinc-200" dir="ltr">
               <span className="text-[10px] font-bold text-zinc-400 block mb-2" dir="rtl">معاينة نتيجة بحث جوجل (SERP Preview):</span>
-              <div className="text-xs text-[#202124]">https://rawaq.jo/products/{nameAr ? encodeURIComponent(nameAr.slice(0, 15)) : 'example-product'}</div>
+              <div className="text-xs text-[#202124]">https://www.rawaq-jo.online/ar/products/{nameAr ? encodeURIComponent(nameAr.slice(0, 15)) : 'example-product'}</div>
               <div className="text-base text-[#1a0dab] font-medium hover:underline cursor-pointer">
                 {nameAr || 'اسم المنتج'} | رَواق للأزياء والعطور الفاخرة
               </div>

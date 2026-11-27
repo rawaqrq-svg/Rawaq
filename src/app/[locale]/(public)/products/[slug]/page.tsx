@@ -11,7 +11,7 @@ import { BackButton } from '@/components/BackButton';
 import type { Metadata } from 'next';
 import { normalizeMediaUrl } from '@/lib/media';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '');
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://www.rawaq-jo.online';
 
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;

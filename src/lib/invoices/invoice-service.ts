@@ -24,7 +24,7 @@ export function resolveCustomerFacingBaseUrl(candidateUrl?: string): string {
     return envUrl.replace(/\/+$/, '');
   }
 
-  return 'https://rawaq.jo';
+  return 'https://www.rawaq-jo.online';
 }
 
 /**

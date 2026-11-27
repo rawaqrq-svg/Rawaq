@@ -17,7 +17,7 @@ export const SYSTEM_MESSAGE_TEMPLATES: Record<string, MessageTemplateDef> = {
       { name: 'customerName', label: 'اسم الزبونة', example: 'سارة أحمد' },
       { name: 'orderReference', label: 'رقم الطلب', example: 'ORD-20261113-101' },
       { name: 'totalAmount', label: 'إجمالي الطلب بالدينار', example: '25.000' },
-      { name: 'invoiceUrl', label: 'رابط الفاتورة الإلكترونية', example: 'https://rawaq.jo/invoice/view/inv_tok_123' },
+      { name: 'invoiceUrl', label: 'رابط الفاتورة الإلكترونية', example: 'https://www.rawaq-jo.online/invoice/view/inv_tok_123' },
     ],
     defaultContent: `أهلاً فيكِ بعالم رَواق 🤍
 
@@ -45,7 +45,7 @@ export const SYSTEM_MESSAGE_TEMPLATES: Record<string, MessageTemplateDef> = {
     variables: [
       { name: 'shopName', label: 'اسم المحل / المورد', example: 'بوتيك ياسمين الشام' },
       { name: 'ordersCount', label: 'عدد الطلبات للتجهيز', example: '3' },
-      { name: 'prepLink', label: 'رابط بوابة التجهيز', example: 'https://rawaq.jo/supplier-portal/sec_token_xyz' },
+      { name: 'prepLink', label: 'رابط بوابة التجهيز', example: 'https://www.rawaq-jo.online/supplier-portal/sec_token_xyz' },
       { name: 'expiresInHours', label: 'مدة صلاحية الرابط بالساعات', example: '72' },
     ],
     defaultContent: `مرحباً {{shopName}}،
@@ -64,7 +64,7 @@ export const SYSTEM_MESSAGE_TEMPLATES: Record<string, MessageTemplateDef> = {
     category: 'SHOP',
     variables: [
       { name: 'shopName', label: 'اسم المحل / المسؤول', example: 'أبو أحمد - أزياء الشرق' },
-      { name: 'profileUrl', label: 'رابط كشف بيانات المحل', example: 'https://rawaq.jo/supplier-profile/sup_123' },
+      { name: 'profileUrl', label: 'رابط كشف بيانات المحل', example: 'https://www.rawaq-jo.online/supplier-profile/sup_123' },
     ],
     defaultContent: `مرحباً {{shopName}}،
 إليك رابط كشف بيانات محلك والأصناف وأسعار التكلفة وسعر البيع في المتجر على منصة رَواق:

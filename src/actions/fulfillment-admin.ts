@@ -192,7 +192,7 @@ export async function createSupplierSessionAction(supplierId: string, customBase
 
     if (!resolvedBaseUrl) {
       resolvedBaseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://rawaq.jo';
+        process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://www.rawaq-jo.online';
     }
 
     resolvedBaseUrl = resolvedBaseUrl.replace(/\/+$/, '');

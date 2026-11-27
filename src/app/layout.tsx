@@ -9,7 +9,7 @@ export const viewport: Viewport = {
   themeColor: '#ffffff',
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '');
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://www.rawaq-jo.online';
 
 export const metadata: Metadata = {
   ...(BASE_URL ? { metadataBase: new URL(BASE_URL) } : {}),

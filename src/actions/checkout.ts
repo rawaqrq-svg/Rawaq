@@ -6,6 +6,8 @@ import crypto from 'crypto';
 import { calculateSupplierSplit, capPromotionDiscounts } from '@/lib/business-finance';
 import { STORE_WHATSAPP_NUMBER } from '@/lib/contact';
 import { sendTelegramNewOrderNotification } from '@/lib/telegram';
+import { notificationService } from '@/services/notification-service';
+import { getBackupConfig } from '../../scripts/backup/config';
 
 import { checkoutSchema, cartItemsSchema } from '@/lib/schemas';
 import { getOrCreateOrderInvoice } from '@/lib/invoices/invoice-service';
@@ -601,6 +603,33 @@ export async function processCheckout(prevState: any, formData: FormData) {
         telegramError: err.message || 'خطأ غير متوقع في تيليجرام',
       },
     }).catch(() => {});
+  }
+
+  // 4. إرسال إشعار فوري موثوق للإدارة عبر Resend بالهوية الرسمية لرَواق
+  try {
+    const backupCfg = getBackupConfig();
+    const adminOrderUrl = `${backupCfg.appUrl}/admin/orders?search=${encodeURIComponent(order.reference)}`;
+    await notificationService.notifyNewOrder({
+      reference: order.reference,
+      customerName: order.customerName,
+      customerPhone: order.customerPhone,
+      city: zoneName,
+      addressDetails: detailedAddress,
+      paymentMethod: 'الدفع عند الاستلام',
+      status: 'بانتظار المراجعة',
+      items: orderItemsData.map((it) => ({
+        name: it.size ? `${it.name} (${it.size})` : it.name,
+        quantity: it.quantity,
+        priceFils: it.unitPrice,
+      })),
+      subtotalFils: order.totalAmount - order.shippingCost + (order.discountAmount || 0),
+      deliveryFils: order.shippingCost,
+      discountFils: order.discountAmount || 0,
+      totalFils: order.totalAmount,
+      adminOrderUrl,
+    });
+  } catch (resendErr: any) {
+    console.error('[Checkout Resend Notification] Non-blocking error:', resendErr);
   }
 
   return buildOrderWhatsAppResponse(order, orderItemsData);

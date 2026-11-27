@@ -133,7 +133,7 @@ export default function InvoiceViewClient({ invoice }: Props) {
   const invoiceUrl =
     typeof window !== 'undefined'
       ? `${window.location.origin}/invoice/view/${invoice.secureToken}`
-      : `https://rawaq.jo/invoice/view/${invoice.secureToken}`;
+      : `https://www.rawaq-jo.online/invoice/view/${invoice.secureToken}`;
 
   return (
     <div className="min-h-screen bg-stone-50 py-8 px-4 sm:px-6 font-sans text-stone-900" dir="rtl">

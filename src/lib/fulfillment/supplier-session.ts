@@ -30,7 +30,7 @@ export async function createSupplierAccessSession(
   const baseUrl = (
     options?.baseUrl && (options.baseUrl.startsWith('http://') || options.baseUrl.startsWith('https://'))
       ? options.baseUrl
-      : (process.env.PUBLIC_APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://rawaq.jo')
+      : (process.env.PUBLIC_APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://www.rawaq-jo.online')
   ).replace(/\/+$/, '');
 
   const supplier = await prisma.supplier.findUnique({

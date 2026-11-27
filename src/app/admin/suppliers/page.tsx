@@ -301,7 +301,7 @@ export default async function SuppliersPage() {
                       </Link>
 
                       {supplier.phone && (() => {
-                        const profileUrl = `https://rawaq.jo/supplier-profile/${supplier.id}`;
+                        const profileUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.rawaq-jo.online'}/supplier-profile/${supplier.id}`;
                         const greetingName = supplier.ownerName || supplier.name;
                         const msgText = compileTemplate(shopProfileTemplate.content, {
                           shopName: greetingName,

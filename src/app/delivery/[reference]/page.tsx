@@ -221,7 +221,7 @@ export default async function DeliveryBatchPage({
   });
 
   // 3. بناء نص رسالة واتساب الشاملة لسائقي شركة التوصيل
-  let baseUrl = (process.env.PUBLIC_APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://rawaq.jo').replace(/\/+$/, '');
+  let baseUrl = (process.env.PUBLIC_APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://www.rawaq-jo.online').replace(/\/+$/, '');
   try {
     const headerList = await headers();
     const host = headerList.get('x-forwarded-host') || headerList.get('host');

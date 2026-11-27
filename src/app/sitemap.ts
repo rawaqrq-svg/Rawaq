@@ -2,7 +2,7 @@ import { prisma } from '@/lib/db';
 import type { MetadataRoute } from 'next';
 
 // أنواع الصفحات المُدرجة في الـ sitemap
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '');
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://www.rawaq-jo.online';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!BASE_URL) return [];

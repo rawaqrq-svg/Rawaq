@@ -1,0 +1,2414 @@
+[
+  {
+    "reference": "GHAZAL-SCREEN-356",
+    "slug": "ghazal-screen-356",
+    "sku": "GHAZAL-SCREEN-356",
+    "nameAr": "لوشن جسم بوتيك بيبي باودر بينك 480 مل",
+    "nameEn": "Boutique Baby Powder Pink Body Lotion 480 ml",
+    "brand": "Boutique Cosmetics",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن للجسم برائحة بودرة الأطفال الوردية، بعبوة 480 مل.",
+    "longDescription": "لوشن جسم من بوتيك كوزمتكس برائحة بيبي باودر بينك. يساعد على ترطيب البشرة ويتركها بنعومة ورائحة لطيفة. العبوة بمضخة للاستخدام اليومي.",
+    "size": "480 مل",
+    "optionType": null,
+    "variants": [
+      {
+        "nameAr": "بيبي باودر بينك",
+        "nameEn": "Baby Powder Pink",
+        "optionType": "لا يوجد",
+        "size": "480 مل",
+        "priceFils": 2500,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-baby-powder-pink-lotion-480ml-studio.webp",
+        "imageName": "boutique-baby-powder-pink-lotion-480ml-studio.webp",
+        "sku": "GHAZAL-SCREEN-356-356",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-FOGG-SPRAY-MEN-120",
+    "slug": "ghaz-fogg-spray-men-120",
+    "sku": "GHAZ-FOGG-SPRAY-MEN-120",
+    "nameAr": "بخاخ جسم فوغ للرجال 120 مل",
+    "nameEn": "FOGG Men Body Spray 120 ml",
+    "brand": "FOGG",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم فوغ للرجال 120 مل؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم فوغ للرجال 120 مل. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "120 مل",
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "ماغنيتيك",
+        "nameEn": "Magnetic",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-magnetic-120ml-studio.webp",
+        "imageName": "fogg-magnetic-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-MEN-120-210",
+        "order": 1
+      },
+      {
+        "nameAr": "مونارك",
+        "nameEn": "Monarch",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-monarch-120ml-studio.webp",
+        "imageName": "fogg-monarch-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-MEN-120-211",
+        "order": 2
+      },
+      {
+        "nameAr": "بلو سكايز",
+        "nameEn": "Bleu Skies",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-bleu-skies-120ml-studio.webp",
+        "imageName": "fogg-bleu-skies-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-MEN-120-212",
+        "order": 3
+      },
+      {
+        "nameAr": "أبسولوت",
+        "nameEn": "Absolute",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-absolute-120ml-studio.webp",
+        "imageName": "fogg-absolute-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-MEN-120-213",
+        "order": 4
+      },
+      {
+        "nameAr": "إكستريم",
+        "nameEn": "Extreme",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-extreme-120ml-studio.webp",
+        "imageName": "fogg-extreme-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-MEN-120-214",
+        "order": 5
+      },
+      {
+        "nameAr": "فريش فوجير",
+        "nameEn": "Fresh Fougere",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-fresh-fougere-120ml-studio.webp",
+        "imageName": "fogg-fresh-fougere-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-MEN-120-215",
+        "order": 6
+      },
+      {
+        "nameAr": "دايناميك",
+        "nameEn": "Dynamic",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-dynamic-120ml-studio.webp",
+        "imageName": "fogg-dynamic-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-MEN-120-218",
+        "order": 7
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-FOGG-MASTER-120",
+    "slug": "ghaz-fogg-master-120",
+    "sku": "GHAZ-FOGG-MASTER-120",
+    "nameAr": "بخاخ جسم فوغ ماستر 120 مل",
+    "nameEn": "FOGG Master Body Spray 120 ml",
+    "brand": "FOGG",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم فوغ ماستر 120 مل؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم فوغ ماستر 120 مل. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "120 مل",
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "أوك",
+        "nameEn": "Oak",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-master-oak-120ml-studio.webp",
+        "imageName": "fogg-master-oak-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-MASTER-120-216",
+        "order": 1
+      },
+      {
+        "nameAr": "سيدر",
+        "nameEn": "Cedar",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-master-cedar-120ml-studio.webp",
+        "imageName": "fogg-master-cedar-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-MASTER-120-217",
+        "order": 2
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-FASIO-SPRAY",
+    "slug": "ghaz-fasio-spray",
+    "sku": "GHAZ-FASIO-SPRAY",
+    "nameAr": "بخاخ جسم إمبير فاسيو النسائي",
+    "nameEn": "Emper Fasio Pour Femme Body Spray",
+    "brand": "Emper",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ فاسيو النسائي؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ فاسيو النسائي. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "بور فام",
+        "nameEn": "Pour Femme",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emper-fasio-pour-femme-studio.webp",
+        "imageName": "emper-fasio-pour-femme-studio.webp",
+        "sku": "GHAZ-FASIO-SPRAY-219",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-FOGG-SPRAY-WOMEN-120",
+    "slug": "ghaz-fogg-spray-women-120",
+    "sku": "GHAZ-FOGG-SPRAY-WOMEN-120",
+    "nameAr": "بخاخ جسم فوغ للنساء 120 مل",
+    "nameEn": "FOGG Women Body Spray 120 ml",
+    "brand": "FOGG",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم فوغ للنساء 120 مل؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم فوغ للنساء 120 مل. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "120 مل",
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "إيسنس",
+        "nameEn": "Essence",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-essence-women-120ml-studio.webp",
+        "imageName": "fogg-essence-women-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-WOMEN-120-221",
+        "order": 1
+      },
+      {
+        "nameAr": "نابليون",
+        "nameEn": "Napoleon",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-napoleon-women-120ml-studio.webp",
+        "imageName": "fogg-napoleon-women-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-WOMEN-120-222",
+        "order": 2
+      },
+      {
+        "nameAr": "ريفيل وومن",
+        "nameEn": "Reveal Women",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-reveal-women-120ml-studio.webp",
+        "imageName": "fogg-reveal-women-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-WOMEN-120-223",
+        "order": 3
+      },
+      {
+        "nameAr": "ديليشس",
+        "nameEn": "Delicious",
+        "optionType": "رائحة",
+        "size": "120 مل",
+        "priceFils": 2500,
+        "costFils": 2050,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\fogg-delicious-women-120ml-studio.webp",
+        "imageName": "fogg-delicious-women-120ml-studio.webp",
+        "sku": "GHAZ-FOGG-SPRAY-WOMEN-120-224",
+        "order": 4
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-ENCHANTEUR-DEO-SPRAY",
+    "slug": "ghaz-enchanteur-deo-spray",
+    "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY",
+    "nameAr": "بخاخ مزيل عرق إنشانتر",
+    "nameEn": "Enchanteur Perfumed Deodorant Spray",
+    "brand": "Enchanteur",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق إنشانتر؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق إنشانتر. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "جورجس",
+        "nameEn": "Gorgeous",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-deodorant-gorgeous-studio.webp",
+        "imageName": "enchanteur-deodorant-gorgeous-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-226",
+        "order": 1
+      },
+      {
+        "nameAr": "إنتايسينغ",
+        "nameEn": "Enticing",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-deodorant-enticing-studio.webp",
+        "imageName": "enchanteur-deodorant-enticing-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-227",
+        "order": 2
+      },
+      {
+        "nameAr": "رومانتيك",
+        "nameEn": "Romantic",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-deodorant-romantic-studio.webp",
+        "imageName": "enchanteur-deodorant-romantic-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-228",
+        "order": 3
+      },
+      {
+        "nameAr": "ألورينغ",
+        "nameEn": "Alluring",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-deodorant-alluring-studio.webp",
+        "imageName": "enchanteur-deodorant-alluring-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-229",
+        "order": 4
+      },
+      {
+        "nameAr": "تشارمينغ",
+        "nameEn": "Charming",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-deodorant-charming-studio.webp",
+        "imageName": "enchanteur-deodorant-charming-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-DEO-SPRAY-230",
+        "order": 5
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-OLDSPICE-SPRAY",
+    "slug": "ghaz-oldspice-spray",
+    "sku": "GHAZ-OLDSPICE-SPRAY",
+    "nameAr": "بخاخ مزيل عرق أولد سبايس",
+    "nameEn": "Old Spice Deodorant Spray",
+    "brand": "Old Spice",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق أولد سبايس؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق أولد سبايس. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "إيبك ليجند",
+        "nameEn": "Epic Legend",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3500,
+        "costFils": 3000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\old-spice-epic-legend-studio.webp",
+        "imageName": "old-spice-epic-legend-studio.webp",
+        "sku": "GHAZ-OLDSPICE-SPRAY-240",
+        "order": 1
+      },
+      {
+        "nameAr": "كابتن",
+        "nameEn": "Captain",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3500,
+        "costFils": 3000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\old-spice-captain-studio.webp",
+        "imageName": "old-spice-captain-studio.webp",
+        "sku": "GHAZ-OLDSPICE-SPRAY-241",
+        "order": 2
+      },
+      {
+        "nameAr": "بيرغلوف",
+        "nameEn": "Bearglove",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3500,
+        "costFils": 3000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\old-spice-bearglove-studio.webp",
+        "imageName": "old-spice-bearglove-studio.webp",
+        "sku": "GHAZ-OLDSPICE-SPRAY-242",
+        "order": 3
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-RIGGS-LONDON-250",
+    "slug": "ghaz-riggs-london-250",
+    "sku": "GHAZ-RIGGS-LONDON-250",
+    "nameAr": "بخاخ جسم ريغز لندن 250 مل",
+    "nameEn": "Riggs London Body Spray 250 ml",
+    "brand": "Riggs London",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم ريغز لندن 250 مل؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم ريغز لندن 250 مل. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "250 مل",
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "فينوم",
+        "nameEn": "Venom",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2500,
+        "costFils": 1750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\riggs-venom-250ml-studio.webp",
+        "imageName": "riggs-venom-250ml-studio.webp",
+        "sku": "GHAZ-RIGGS-LONDON-250-243",
+        "order": 1
+      },
+      {
+        "nameAr": "داينامو",
+        "nameEn": "Dynamo",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2500,
+        "costFils": 1750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\riggs-dynamo-250ml-studio.webp",
+        "imageName": "riggs-dynamo-250ml-studio.webp",
+        "sku": "GHAZ-RIGGS-LONDON-250-245",
+        "order": 2
+      },
+      {
+        "nameAr": "باور",
+        "nameEn": "Power",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2500,
+        "costFils": 1750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\riggs-power-250ml-studio.webp",
+        "imageName": "riggs-power-250ml-studio.webp",
+        "sku": "GHAZ-RIGGS-LONDON-250-246",
+        "order": 3
+      },
+      {
+        "nameAr": "ذا ون",
+        "nameEn": "The One",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2500,
+        "costFils": 1750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\riggs-the-one-250ml-studio.webp",
+        "imageName": "riggs-the-one-250ml-studio.webp",
+        "sku": "GHAZ-RIGGS-LONDON-250-247",
+        "order": 4
+      },
+      {
+        "nameAr": "عود",
+        "nameEn": "Oud",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2500,
+        "costFils": 1750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\riggs-oud-250ml-studio.webp",
+        "imageName": "riggs-oud-250ml-studio.webp",
+        "sku": "GHAZ-RIGGS-LONDON-250-248",
+        "order": 5
+      },
+      {
+        "nameAr": "آيكون",
+        "nameEn": "Icon",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2500,
+        "costFils": 1750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\riggs-icon-250ml-studio.webp",
+        "imageName": "riggs-icon-250ml-studio.webp",
+        "sku": "GHAZ-RIGGS-LONDON-250-249",
+        "order": 6
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-SECRET-WEIGHTLESS-SPRAY",
+    "slug": "ghaz-secret-weightless-spray",
+    "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY",
+    "nameAr": "بخاخ مزيل عرق سيكرت ويتلس",
+    "nameEn": "Secret Weightless Dry Spray",
+    "brand": "Secret",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق سيكرت ويتلس؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق سيكرت ويتلس. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "ألوفيرا وخيار",
+        "nameEn": "Aloe Vera & Cucumber",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1200,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\secret-aloe-cucumber-studio.webp",
+        "imageName": "secret-aloe-cucumber-studio.webp",
+        "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-252",
+        "order": 1
+      },
+      {
+        "nameAr": "خوخ أبيض",
+        "nameEn": "White Peach",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1200,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\secret-white-peach-studio.webp",
+        "imageName": "secret-white-peach-studio.webp",
+        "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-253",
+        "order": 2
+      },
+      {
+        "nameAr": "رمان",
+        "nameEn": "Pomegranate",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1200,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\secret-pomegranate-studio.webp",
+        "imageName": "secret-pomegranate-studio.webp",
+        "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-254",
+        "order": 3
+      },
+      {
+        "nameAr": "لافندر",
+        "nameEn": "Lavender",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1200,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\secret-lavender-studio.webp",
+        "imageName": "secret-lavender-studio.webp",
+        "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-255",
+        "order": 4
+      },
+      {
+        "nameAr": "زنبق الماء",
+        "nameEn": "Waterlily",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1200,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\secret-waterlily-studio.webp",
+        "imageName": "secret-waterlily-studio.webp",
+        "sku": "GHAZ-SECRET-WEIGHTLESS-SPRAY-256",
+        "order": 5
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-DOVE-GOFRESH-SPRAY",
+    "slug": "ghaz-dove-gofresh-spray",
+    "sku": "GHAZ-DOVE-GOFRESH-SPRAY",
+    "nameAr": "بخاخ مزيل عرق دوف غو فريش",
+    "nameEn": "Dove Go Fresh Deodorant Spray",
+    "brand": "Dove",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق دوف غو فريش؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق دوف غو فريش. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "رمان",
+        "nameEn": "Pomegranate",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3000,
+        "costFils": 2250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\dove-go-fresh-pomegranate-studio.webp",
+        "imageName": "dove-go-fresh-pomegranate-studio.webp",
+        "sku": "GHAZ-DOVE-GOFRESH-SPRAY-258",
+        "order": 1
+      },
+      {
+        "nameAr": "كمثرى",
+        "nameEn": "Pear",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3000,
+        "costFils": 2250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\dove-go-fresh-pear-studio.webp",
+        "imageName": "dove-go-fresh-pear-studio.webp",
+        "sku": "GHAZ-DOVE-GOFRESH-SPRAY-259",
+        "order": 2
+      },
+      {
+        "nameAr": "تفاح",
+        "nameEn": "Apple",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3000,
+        "costFils": 2250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\dove-go-fresh-apple-studio.webp",
+        "imageName": "dove-go-fresh-apple-studio.webp",
+        "sku": "GHAZ-DOVE-GOFRESH-SPRAY-262",
+        "order": 3
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-DOVE-NOURISH-SPRAY",
+    "slug": "ghaz-dove-nourish-spray",
+    "sku": "GHAZ-DOVE-NOURISH-SPRAY",
+    "nameAr": "بخاخ مزيل عرق دوف نورشنغ سيكرتس",
+    "nameEn": "Dove Nourishing Secrets Deodorant Spray",
+    "brand": "Dove",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق دوف نورشنغ سيكرتس؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق دوف نورشنغ سيكرتس. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "جوز الهند",
+        "nameEn": "Coconut",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3000,
+        "costFils": 2250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\dove-nourishing-secrets-coconut-studio.webp",
+        "imageName": "dove-nourishing-secrets-coconut-studio.webp",
+        "sku": "GHAZ-DOVE-NOURISH-SPRAY-260",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-DOVE-ORIGINAL-SPRAY",
+    "slug": "ghaz-dove-original-spray",
+    "sku": "GHAZ-DOVE-ORIGINAL-SPRAY",
+    "nameAr": "بخاخ مزيل عرق دوف أوريجينال",
+    "nameEn": "Dove Original Deodorant Spray",
+    "brand": "Dove",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق دوف أوريجينال؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق دوف أوريجينال. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "أوريجينال",
+        "nameEn": "Original",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3000,
+        "costFils": 2250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\dove-original-studio.webp",
+        "imageName": "dove-original-studio.webp",
+        "sku": "GHAZ-DOVE-ORIGINAL-SPRAY-261",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-DOVE-INVISIBLE-SPRAY",
+    "slug": "ghaz-dove-invisible-spray",
+    "sku": "GHAZ-DOVE-INVISIBLE-SPRAY",
+    "nameAr": "بخاخ مزيل عرق دوف إنفيزيبل كير",
+    "nameEn": "Dove Invisible Care Deodorant Spray",
+    "brand": "Dove",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق دوف إنفيزيبل كير؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق دوف إنفيزيبل كير. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "إنفيزيبل كير",
+        "nameEn": "Invisible Care",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3000,
+        "costFils": 2250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\dove-invisible-care-studio.webp",
+        "imageName": "dove-invisible-care-studio.webp",
+        "sku": "GHAZ-DOVE-INVISIBLE-SPRAY-264",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-CONFETTI-SPRAY-250",
+    "slug": "ghaz-confetti-spray-250",
+    "sku": "GHAZ-CONFETTI-SPRAY-250",
+    "nameAr": "بخاخ جسم كونفيتي لندن 250 مل",
+    "nameEn": "Confetti London Body Spray 250 ml",
+    "brand": "Confetti London",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم كونفيتي لندن 250 مل؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم كونفيتي لندن 250 مل. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "250 مل",
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "مايا",
+        "nameEn": "Maya",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\confetti-maya-250ml-studio.webp",
+        "imageName": "confetti-maya-250ml-studio.webp",
+        "sku": "GHAZ-CONFETTI-SPRAY-250-266",
+        "order": 1
+      },
+      {
+        "nameAr": "جوي",
+        "nameEn": "Joy",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\confetti-joy-250ml-studio.webp",
+        "imageName": "confetti-joy-250ml-studio.webp",
+        "sku": "GHAZ-CONFETTI-SPRAY-250-267",
+        "order": 2
+      },
+      {
+        "nameAr": "شوكولاتة",
+        "nameEn": "Chocolate",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\confetti-chocolate-250ml-studio.webp",
+        "imageName": "confetti-chocolate-250ml-studio.webp",
+        "sku": "GHAZ-CONFETTI-SPRAY-250-268",
+        "order": 3
+      },
+      {
+        "nameAr": "دير",
+        "nameEn": "Dear",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\confetti-dear-250ml-studio.webp",
+        "imageName": "confetti-dear-250ml-studio.webp",
+        "sku": "GHAZ-CONFETTI-SPRAY-250-269",
+        "order": 4
+      },
+      {
+        "nameAr": "بريتي",
+        "nameEn": "Pretty",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\confetti-pretty-250ml-studio.webp",
+        "imageName": "confetti-pretty-250ml-studio.webp",
+        "sku": "GHAZ-CONFETTI-SPRAY-250-270",
+        "order": 5
+      },
+      {
+        "nameAr": "سيكرت",
+        "nameEn": "Secret",
+        "optionType": "رائحة",
+        "size": "250 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\confetti-secret-250ml-studio.webp",
+        "imageName": "confetti-secret-250ml-studio.webp",
+        "sku": "GHAZ-CONFETTI-SPRAY-250-271",
+        "order": 6
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-EMPER-CHIFON-SPRAY",
+    "slug": "ghaz-emper-chifon-spray",
+    "sku": "GHAZ-EMPER-CHIFON-SPRAY",
+    "nameAr": "بخاخ جسم إمبير شيفون",
+    "nameEn": "Emper Chifon Body Spray",
+    "brand": "Emper",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم إمبير شيفون؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم إمبير شيفون. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "شيفون روج",
+        "nameEn": "Chifon Rouge",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emper-chifon-rouge-studio.webp",
+        "imageName": "emper-chifon-rouge-studio.webp",
+        "sku": "GHAZ-EMPER-CHIFON-SPRAY-273",
+        "order": 1
+      },
+      {
+        "nameAr": "شيفون",
+        "nameEn": "Chifon",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emper-chifon-studio.webp",
+        "imageName": "emper-chifon-studio.webp",
+        "sku": "GHAZ-EMPER-CHIFON-SPRAY-277",
+        "order": 2
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-EMPER-FASIO-SPRAY",
+    "slug": "ghaz-emper-fasio-spray",
+    "sku": "GHAZ-EMPER-FASIO-SPRAY",
+    "nameAr": "بخاخ جسم إمبير فاسيو إنتنس",
+    "nameEn": "Emper Fasio Intense Body Spray",
+    "brand": "Emper",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم إمبير فاسيو إنتنس؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم إمبير فاسيو إنتنس. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "فاسيو إنتنس",
+        "nameEn": "Fasio Intense",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emper-fasio-intense-studio.webp",
+        "imageName": "emper-fasio-intense-studio.webp",
+        "sku": "GHAZ-EMPER-FASIO-SPRAY-274",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-EMPER-TWIST-SPRAY",
+    "slug": "ghaz-emper-twist-spray",
+    "sku": "GHAZ-EMPER-TWIST-SPRAY",
+    "nameAr": "بخاخ جسم إمبير تويست",
+    "nameEn": "Emper Twist Body Spray",
+    "brand": "Emper",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم إمبير تويست؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم إمبير تويست. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "تويست",
+        "nameEn": "Twist",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emper-twist-studio.webp",
+        "imageName": "emper-twist-studio.webp",
+        "sku": "GHAZ-EMPER-TWIST-SPRAY-275",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-EMPER-LEGEND-SPRAY",
+    "slug": "ghaz-emper-legend-spray",
+    "sku": "GHAZ-EMPER-LEGEND-SPRAY",
+    "nameAr": "بخاخ جسم إمبير ليجند فام",
+    "nameEn": "Emper Legend Femme Body Spray",
+    "brand": "Emper",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم إمبير ليجند فام؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم إمبير ليجند فام. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "ليجند فام",
+        "nameEn": "Legend Femme",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emper-legend-femme-studio.webp",
+        "imageName": "emper-legend-femme-studio.webp",
+        "sku": "GHAZ-EMPER-LEGEND-SPRAY-276",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-EMPER-SALGA-SPRAY",
+    "slug": "ghaz-emper-salga-spray",
+    "sku": "GHAZ-EMPER-SALGA-SPRAY",
+    "nameAr": "بخاخ جسم إمبير سالغا",
+    "nameEn": "Emper Salga Body Spray",
+    "brand": "Emper",
+    "category": "معطرات جسم وبودي سبلاش",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ جسم إمبير سالغا؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ جسم إمبير سالغا. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "سالغا",
+        "nameEn": "Salga",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emper-salga-studio.webp",
+        "imageName": "emper-salga-studio.webp",
+        "sku": "GHAZ-EMPER-SALGA-SPRAY-278",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-EMOTION-SPRAY",
+    "slug": "ghaz-emotion-spray",
+    "sku": "GHAZ-EMOTION-SPRAY",
+    "nameAr": "بخاخ مزيل عرق إيموشن",
+    "nameEn": "Emotion Deodorant Spray",
+    "brand": "Emotion",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق إيموشن؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق إيموشن. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "ديتوكس فريش",
+        "nameEn": "Detox Fresh",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emotion-detox-fresh-studio.webp",
+        "imageName": "emotion-detox-fresh-studio.webp",
+        "sku": "GHAZ-EMOTION-SPRAY-280",
+        "order": 1
+      },
+      {
+        "nameAr": "ناتشورال بلوم",
+        "nameEn": "Natural Bloom",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emotion-natural-bloom-studio.webp",
+        "imageName": "emotion-natural-bloom-studio.webp",
+        "sku": "GHAZ-EMOTION-SPRAY-281",
+        "order": 2
+      },
+      {
+        "nameAr": "أكوا كيس",
+        "nameEn": "Aqua Kiss",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emotion-aqua-kiss-studio.webp",
+        "imageName": "emotion-aqua-kiss-studio.webp",
+        "sku": "GHAZ-EMOTION-SPRAY-282",
+        "order": 3
+      },
+      {
+        "nameAr": "إنفيزيبل فريش",
+        "nameEn": "Invisible Fresh",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\emotion-invisible-fresh-studio.webp",
+        "imageName": "emotion-invisible-fresh-studio.webp",
+        "sku": "GHAZ-EMOTION-SPRAY-283",
+        "order": 4
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-HIGEEN-ROLLON-BLACK",
+    "slug": "ghaz-higeen-rollon-black",
+    "sku": "GHAZ-HIGEEN-ROLLON-BLACK",
+    "nameAr": "رول مزيل عرق هايجين الأسود",
+    "nameEn": "HiGeen Black Roll On Deodorant",
+    "brand": "HiGeen",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق هايجين الأسود؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق هايجين الأسود. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "أسود",
+        "nameEn": "Black",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 2000,
+        "costFils": 1370,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\higeen-double-fresh-black-rollon-studio.webp",
+        "imageName": "higeen-double-fresh-black-rollon-studio.webp",
+        "sku": "GHAZ-HIGEEN-ROLLON-BLACK-284",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-VASELINE-GLUTAGLOW-ROLLON",
+    "slug": "ghaz-vaseline-glutaglow-rollon",
+    "sku": "GHAZ-VASELINE-GLUTAGLOW-ROLLON",
+    "nameAr": "رول مزيل عرق فازلين غلوتا غلو",
+    "nameEn": "Vaseline GlutaGlow Roll On",
+    "brand": "Vaseline",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق فازلين غلوتا غلو؛ اختر تركيبة المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق فازلين غلوتا غلو. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "تركيبة",
+    "variants": [
+      {
+        "nameAr": "غلوتا غلو",
+        "nameEn": "GlutaGlow",
+        "optionType": "تركيبة",
+        "size": "عبوة واحدة",
+        "priceFils": 3500,
+        "costFils": 2500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\vaseline-glutaglow-bright-renew-rollon-studio.webp",
+        "imageName": "vaseline-glutaglow-bright-renew-rollon-studio.webp",
+        "sku": "GHAZ-VASELINE-GLUTAGLOW-ROLLON-291",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-ENCHANTEUR-ROLLON",
+    "slug": "ghaz-enchanteur-rollon",
+    "sku": "GHAZ-ENCHANTEUR-ROLLON",
+    "nameAr": "رول مزيل عرق إنشانتر",
+    "nameEn": "Enchanteur Perfumed Roll On Deodorant",
+    "brand": "Enchanteur",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق إنشانتر؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق إنشانتر. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "ستاننغ",
+        "nameEn": "Stunning",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-rollon-stunning-studio.webp",
+        "imageName": "enchanteur-rollon-stunning-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-ROLLON-293",
+        "order": 1
+      },
+      {
+        "nameAr": "إنتايسينغ",
+        "nameEn": "Enticing",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-rollon-enticing-studio.webp",
+        "imageName": "enchanteur-rollon-enticing-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-ROLLON-294",
+        "order": 2
+      },
+      {
+        "nameAr": "تشارمينغ",
+        "nameEn": "Charming",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-rollon-charming-studio.webp",
+        "imageName": "enchanteur-rollon-charming-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-ROLLON-295",
+        "order": 3
+      },
+      {
+        "nameAr": "ألورينغ",
+        "nameEn": "Alluring",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-rollon-alluring-studio.webp",
+        "imageName": "enchanteur-rollon-alluring-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-ROLLON-296",
+        "order": 4
+      },
+      {
+        "nameAr": "رومانتيك",
+        "nameEn": "Romantic",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1250,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-rollon-romantic-studio.webp",
+        "imageName": "enchanteur-rollon-romantic-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-ROLLON-297",
+        "order": 5
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-ALAROUSA-DEADSEA-SCRUB",
+    "slug": "ghaz-alarousa-deadsea-scrub",
+    "sku": "GHAZ-ALAROUSA-DEADSEA-SCRUB",
+    "nameAr": "مقشر ملح البحر الميت العروسة",
+    "nameEn": "Al Arousa Dead Sea Salt Body Scrub",
+    "brand": "العروسة",
+    "category": "مقشرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "مقشر ملح البحر الميت العروسة؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "مقشر ملح البحر الميت العروسة. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "توتي فروتي",
+        "nameEn": "Tutti Frutti",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3500,
+        "costFils": 2500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\alarousa-dead-sea-scrub-tutti-frutti-studio.webp",
+        "imageName": "alarousa-dead-sea-scrub-tutti-frutti-studio.webp",
+        "sku": "GHAZ-ALAROUSA-DEADSEA-SCRUB-318",
+        "order": 1
+      },
+      {
+        "nameAr": "مارشميلو",
+        "nameEn": "Marshmallow",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 3500,
+        "costFils": 2500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\alarousa-dead-sea-scrub-marshmallow-studio.webp",
+        "imageName": "alarousa-dead-sea-scrub-marshmallow-studio.webp",
+        "sku": "GHAZ-ALAROUSA-DEADSEA-SCRUB-319",
+        "order": 2
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-VASELINE-GLUTAVIT-FIRM-180",
+    "slug": "ghaz-vaseline-glutavit-firm-180",
+    "sku": "GHAZ-VASELINE-GLUTAVIT-FIRM-180",
+    "nameAr": "سيروم جسم فازلين غلوتا فيتامين فيرم آند غلو 180 مل",
+    "nameEn": "Vaseline Gluta Vitamin Firm+Glow 180 ml",
+    "brand": "Vaseline",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "سيروم جسم فازلين غلوتا فيتامين فيرم آند غلو 180 مل؛ اختر تركيبة المناسب من الخيارات المتاحة.",
+    "longDescription": "سيروم جسم فازلين غلوتا فيتامين فيرم آند غلو 180 مل. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "180 مل",
+    "optionType": "تركيبة",
+    "variants": [
+      {
+        "nameAr": "فيرم آند غلو",
+        "nameEn": "Firm+Glow",
+        "optionType": "تركيبة",
+        "size": "180 مل",
+        "priceFils": 5000,
+        "costFils": 3750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\vaseline-gluta-vitamin-firm-glow-180ml-studio.webp",
+        "imageName": "vaseline-gluta-vitamin-firm-glow-180ml-studio.webp",
+        "sku": "GHAZ-VASELINE-GLUTAVIT-FIRM-180-321",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-VASELINE-GLUTAVIT-HIJAB-180",
+    "slug": "ghaz-vaseline-glutavit-hijab-180",
+    "sku": "GHAZ-VASELINE-GLUTAVIT-HIJAB-180",
+    "nameAr": "سيروم جسم فازلين غلوتا فيتامين حجاب راديانت 180 مل",
+    "nameEn": "Vaseline Gluta Vitamin Hijab Radiant 180 ml",
+    "brand": "Vaseline",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "سيروم جسم فازلين غلوتا فيتامين حجاب راديانت 180 مل؛ اختر تركيبة المناسب من الخيارات المتاحة.",
+    "longDescription": "سيروم جسم فازلين غلوتا فيتامين حجاب راديانت 180 مل. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "180 مل",
+    "optionType": "تركيبة",
+    "variants": [
+      {
+        "nameAr": "حجاب راديانت",
+        "nameEn": "Hijab Radiant",
+        "optionType": "تركيبة",
+        "size": "180 مل",
+        "priceFils": 5000,
+        "costFils": 3750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\vaseline-gluta-vitamin-hijab-radiant-180ml-studio.webp",
+        "imageName": "vaseline-gluta-vitamin-hijab-radiant-180ml-studio.webp",
+        "sku": "GHAZ-VASELINE-GLUTAVIT-HIJAB-180-322",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-ENCHANTEUR-SATIN-LOTION",
+    "slug": "ghaz-enchanteur-satin-lotion",
+    "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION",
+    "nameAr": "لوشن جسم إنشانتر ساتن سموث",
+    "nameEn": "Enchanteur Satin Smooth Perfumed Lotion",
+    "brand": "Enchanteur",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم إنشانتر ساتن سموث؛ اختر رائحة المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم إنشانتر ساتن سموث. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "رائحة",
+    "variants": [
+      {
+        "nameAr": "تشارمينغ",
+        "nameEn": "Charming",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-satin-lotion-charming-studio.webp",
+        "imageName": "enchanteur-satin-lotion-charming-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-324",
+        "order": 1
+      },
+      {
+        "nameAr": "ألورينغ",
+        "nameEn": "Alluring",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-satin-lotion-alluring-studio.webp",
+        "imageName": "enchanteur-satin-lotion-alluring-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-325",
+        "order": 2
+      },
+      {
+        "nameAr": "إليغانت مسك",
+        "nameEn": "Elegant Musk",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-satin-lotion-elegant-musk-studio.webp",
+        "imageName": "enchanteur-satin-lotion-elegant-musk-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-326",
+        "order": 3
+      },
+      {
+        "nameAr": "رومانتيك",
+        "nameEn": "Romantic",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-satin-lotion-romantic-studio.webp",
+        "imageName": "enchanteur-satin-lotion-romantic-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-327",
+        "order": 4
+      },
+      {
+        "nameAr": "إنتايسينغ",
+        "nameEn": "Enticing",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-satin-lotion-enticing-studio.webp",
+        "imageName": "enchanteur-satin-lotion-enticing-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-328",
+        "order": 5
+      },
+      {
+        "nameAr": "جورجس",
+        "nameEn": "Gorgeous",
+        "optionType": "رائحة",
+        "size": "عبوة واحدة",
+        "priceFils": 1750,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\enchanteur-satin-lotion-gorgeous-studio.webp",
+        "imageName": "enchanteur-satin-lotion-gorgeous-studio.webp",
+        "sku": "GHAZ-ENCHANTEUR-SATIN-LOTION-329",
+        "order": 6
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-GLYSOLID-LOTION",
+    "slug": "ghaz-glysolid-lotion",
+    "sku": "GHAZ-GLYSOLID-LOTION",
+    "nameAr": "لوشن جسم غليسوليد",
+    "nameEn": "Glysolid Body Lotion",
+    "brand": "Glysolid",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم غليسوليد؛ اختر تركيبة المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم غليسوليد. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "تركيبة",
+    "variants": [
+      {
+        "nameAr": "كلاسيك",
+        "nameEn": "Classic",
+        "optionType": "تركيبة",
+        "size": "عبوة واحدة",
+        "priceFils": 5000,
+        "costFils": 3750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\glysolid-classic-body-lotion-studio.webp",
+        "imageName": "glysolid-classic-body-lotion-studio.webp",
+        "sku": "GHAZ-GLYSOLID-LOTION-353",
+        "order": 1
+      },
+      {
+        "nameAr": "مسك",
+        "nameEn": "Musk",
+        "optionType": "تركيبة",
+        "size": "عبوة واحدة",
+        "priceFils": 5000,
+        "costFils": 3750,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\glysolid-musk-body-lotion-studio.webp",
+        "imageName": "glysolid-musk-body-lotion-studio.webp",
+        "sku": "GHAZ-GLYSOLID-LOTION-354",
+        "order": 2
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-SENCE-HYDROSHOCK-LOTION",
+    "slug": "ghaz-sence-hydroshock-lotion",
+    "sku": "GHAZ-SENCE-HYDROSHOCK-LOTION",
+    "nameAr": "لوشن جسم سينس هيدرو شوك",
+    "nameEn": "Sence Hydro Shock Body Lotion",
+    "brand": "Sence",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم سينس هيدرو شوك؛ اختر تركيبة المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم سينس هيدرو شوك. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "تركيبة",
+    "variants": [
+      {
+        "nameAr": "هيدرو شوك",
+        "nameEn": "Hydro Shock",
+        "optionType": "تركيبة",
+        "size": "عبوة واحدة",
+        "priceFils": 3500,
+        "costFils": 2500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\sence-hydro-shock-body-lotion-studio.webp",
+        "imageName": "sence-hydro-shock-body-lotion-studio.webp",
+        "sku": "GHAZ-SENCE-HYDROSHOCK-LOTION-355",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-REXONA-MOTIONSENSE-SPRAY-232",
+    "slug": "ghaz-rexona-motionsense-spray-232",
+    "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-232",
+    "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس بايوريذم",
+    "nameEn": "Rexona MotionSense Antiperspirant Spray Biorhythm",
+    "brand": "Rexona",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق ريكسونا موشن سينس بايوريذم؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق ريكسونا موشن سينس بايوريذم. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "بايوريذم",
+        "nameEn": "Biorhythm",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\rexona-biorhythm-studio.webp",
+        "imageName": "rexona-biorhythm-studio.webp",
+        "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-232-232",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-REXONA-MOTIONSENSE-SPRAY-233",
+    "slug": "ghaz-rexona-motionsense-spray-233",
+    "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-233",
+    "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس إنفيزيبل بيور",
+    "nameEn": "Rexona MotionSense Antiperspirant Spray Invisible Pure",
+    "brand": "Rexona",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق ريكسونا موشن سينس إنفيزيبل بيور؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق ريكسونا موشن سينس إنفيزيبل بيور. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "إنفيزيبل بيور",
+        "nameEn": "Invisible Pure",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\rexona-invisible-pure-studio.webp",
+        "imageName": "rexona-invisible-pure-studio.webp",
+        "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-233-233",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-REXONA-MOTIONSENSE-SPRAY-234",
+    "slug": "ghaz-rexona-motionsense-spray-234",
+    "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-234",
+    "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس تروبيكال",
+    "nameEn": "Rexona MotionSense Antiperspirant Spray Tropical",
+    "brand": "Rexona",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق ريكسونا موشن سينس تروبيكال؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق ريكسونا موشن سينس تروبيكال. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "تروبيكال",
+        "nameEn": "Tropical",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\rexona-tropical-studio.webp",
+        "imageName": "rexona-tropical-studio.webp",
+        "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-234-234",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-REXONA-MOTIONSENSE-SPRAY-235",
+    "slug": "ghaz-rexona-motionsense-spray-235",
+    "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-235",
+    "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس شاور فريش",
+    "nameEn": "Rexona MotionSense Antiperspirant Spray Shower Fresh",
+    "brand": "Rexona",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق ريكسونا موشن سينس شاور فريش؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق ريكسونا موشن سينس شاور فريش. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "شاور فريش",
+        "nameEn": "Shower Fresh",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\rexona-shower-fresh-studio.webp",
+        "imageName": "rexona-shower-fresh-studio.webp",
+        "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-235-235",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-REXONA-MOTIONSENSE-SPRAY-236",
+    "slug": "ghaz-rexona-motionsense-spray-236",
+    "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-236",
+    "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس أنتي بكتيريال بروتكشن",
+    "nameEn": "Rexona MotionSense Antiperspirant Spray Antibacterial Protection",
+    "brand": "Rexona",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق ريكسونا موشن سينس أنتي بكتيريال بروتكشن؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق ريكسونا موشن سينس أنتي بكتيريال بروتكشن. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "أنتي بكتيريال بروتكشن",
+        "nameEn": "Antibacterial Protection",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\rexona-antibacterial-protection-studio.webp",
+        "imageName": "rexona-antibacterial-protection-studio.webp",
+        "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-236-236",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-REXONA-MOTIONSENSE-SPRAY-237",
+    "slug": "ghaz-rexona-motionsense-spray-237",
+    "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-237",
+    "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس إنفيزيبل أكوا",
+    "nameEn": "Rexona MotionSense Antiperspirant Spray Invisible Aqua",
+    "brand": "Rexona",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق ريكسونا موشن سينس إنفيزيبل أكوا؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق ريكسونا موشن سينس إنفيزيبل أكوا. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "إنفيزيبل أكوا",
+        "nameEn": "Invisible Aqua",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\rexona-invisible-aqua-studio.webp",
+        "imageName": "rexona-invisible-aqua-studio.webp",
+        "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-237-237",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-REXONA-MOTIONSENSE-SPRAY-238",
+    "slug": "ghaz-rexona-motionsense-spray-238",
+    "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-238",
+    "nameAr": "بخاخ مزيل عرق ريكسونا موشن سينس كوتون دراي",
+    "nameEn": "Rexona MotionSense Antiperspirant Spray Cotton Dry",
+    "brand": "Rexona",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "بخاخ مزيل عرق ريكسونا موشن سينس كوتون دراي؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "بخاخ مزيل عرق ريكسونا موشن سينس كوتون دراي. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "كوتون دراي",
+        "nameEn": "Cotton Dry",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\rexona-cotton-dry-studio.webp",
+        "imageName": "rexona-cotton-dry-studio.webp",
+        "sku": "GHAZ-REXONA-MOTIONSENSE-SPRAY-238-238",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-299",
+    "slug": "ghaz-boutique-rollon-299",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-299",
+    "nameAr": "رول مزيل عرق بوتيك كوتون دراي",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Cotton Dry",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك كوتون دراي؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك كوتون دراي. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "كوتون دراي",
+        "nameEn": "Cotton Dry",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-cotton-dry-studio.webp",
+        "imageName": "boutique-rollon-cotton-dry-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-299-299",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-300",
+    "slug": "ghaz-boutique-rollon-300",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-300",
+    "nameAr": "رول مزيل عرق بوتيك كاندي",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Candy",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك كاندي؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك كاندي. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "كاندي",
+        "nameEn": "Candy",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-candy-studio.webp",
+        "imageName": "boutique-rollon-candy-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-300-300",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-301",
+    "slug": "ghaz-boutique-rollon-301",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-301",
+    "nameAr": "رول مزيل عرق بوتيك أروغيت بينك",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Arrogate Pink",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك أروغيت بينك؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك أروغيت بينك. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "أروغيت بينك",
+        "nameEn": "Arrogate Pink",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-arrogate-pink-studio.webp",
+        "imageName": "boutique-rollon-arrogate-pink-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-301-301",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-302",
+    "slug": "ghaz-boutique-rollon-302",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-302",
+    "nameAr": "رول مزيل عرق بوتيك مارشميلو",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Marshmallow",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك مارشميلو؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك مارشميلو. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "مارشميلو",
+        "nameEn": "Marshmallow",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-marshmallow-studio.webp",
+        "imageName": "boutique-rollon-marshmallow-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-302-302",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-303",
+    "slug": "ghaz-boutique-rollon-303",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-303",
+    "nameAr": "رول مزيل عرق بوتيك ناتشورال تاتش",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Natural Touch",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك ناتشورال تاتش؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك ناتشورال تاتش. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "ناتشورال تاتش",
+        "nameEn": "Natural Touch",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-natural-touch-studio.webp",
+        "imageName": "boutique-rollon-natural-touch-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-303-303",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-304",
+    "slug": "ghaz-boutique-rollon-304",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-304",
+    "nameAr": "رول مزيل عرق بوتيك شاور فريش",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Shower Fresh",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك شاور فريش؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك شاور فريش. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "شاور فريش",
+        "nameEn": "Shower Fresh",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-shower-fresh-studio.webp",
+        "imageName": "boutique-rollon-shower-fresh-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-304-304",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-305",
+    "slug": "ghaz-boutique-rollon-305",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-305",
+    "nameAr": "رول مزيل عرق بوتيك هير",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Her",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك هير؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك هير. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "هير",
+        "nameEn": "Her",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-her-studio.webp",
+        "imageName": "boutique-rollon-her-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-305-305",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-306",
+    "slug": "ghaz-boutique-rollon-306",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-306",
+    "nameAr": "رول مزيل عرق بوتيك سترس ريزيست",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Stress Resist",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك سترس ريزيست؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك سترس ريزيست. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "سترس ريزيست",
+        "nameEn": "Stress Resist",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-stress-resist-studio.webp",
+        "imageName": "boutique-rollon-stress-resist-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-306-306",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-307",
+    "slug": "ghaz-boutique-rollon-307",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-307",
+    "nameAr": "رول مزيل عرق بوتيك فري سبيريت",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Free Spirit",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك فري سبيريت؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك فري سبيريت. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "فري سبيريت",
+        "nameEn": "Free Spirit",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-free-spirit-studio.webp",
+        "imageName": "boutique-rollon-free-spirit-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-307-307",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-ROLLON-308",
+    "slug": "ghaz-boutique-rollon-308",
+    "sku": "GHAZ-BOUTIQUE-ROLLON-308",
+    "nameAr": "رول مزيل عرق بوتيك بيبي باودر بينك",
+    "nameEn": "Boutique Cosmetics Roll On Deodorant Baby Powder Pink",
+    "brand": "Boutique Cosmetics",
+    "category": "معطرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "رول مزيل عرق بوتيك بيبي باودر بينك؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "رول مزيل عرق بوتيك بيبي باودر بينك. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": null,
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "بيبي باودر بينك",
+        "nameEn": "Baby Powder Pink",
+        "optionType": "لا يوجد",
+        "size": "عبوة واحدة",
+        "priceFils": 1500,
+        "costFils": 1000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-rollon-baby-powder-pink-studio.webp",
+        "imageName": "boutique-rollon-baby-powder-pink-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-ROLLON-308-308",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-ELEGANCE-HAIR-SERUM-300-311",
+    "slug": "ghaz-elegance-hair-serum-300-311",
+    "sku": "GHAZ-ELEGANCE-HAIR-SERUM-300-311",
+    "nameAr": "سيروم شعر إليغانس بلس 300 مل ألوفيرا",
+    "nameEn": "Elegance Plus Hair Serum 300 ml Aloe Vera",
+    "brand": "Elegance Plus",
+    "category": "زيوت وسيرومات الشعر",
+    "categoryMain": "العناية بالشعر",
+    "shortDescription": "سيروم شعر إليغانس بلس 300 مل ألوفيرا؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "سيروم شعر إليغانس بلس 300 مل ألوفيرا. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "300 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "ألوفيرا",
+        "nameEn": "Aloe Vera",
+        "optionType": "لا يوجد",
+        "size": "300 مل",
+        "priceFils": 6000,
+        "costFils": 4000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\elegance-plus-hair-serum-aloe-vera-studio.webp",
+        "imageName": "elegance-plus-hair-serum-aloe-vera-studio.webp",
+        "sku": "GHAZ-ELEGANCE-HAIR-SERUM-300-311-311",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-ELEGANCE-HAIR-SERUM-300-312",
+    "slug": "ghaz-elegance-hair-serum-300-312",
+    "sku": "GHAZ-ELEGANCE-HAIR-SERUM-300-312",
+    "nameAr": "سيروم شعر إليغانس بلس 300 مل زيت جوز الهند",
+    "nameEn": "Elegance Plus Hair Serum 300 ml Coconut Oil",
+    "brand": "Elegance Plus",
+    "category": "زيوت وسيرومات الشعر",
+    "categoryMain": "العناية بالشعر",
+    "shortDescription": "سيروم شعر إليغانس بلس 300 مل زيت جوز الهند؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "سيروم شعر إليغانس بلس 300 مل زيت جوز الهند. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "300 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "زيت جوز الهند",
+        "nameEn": "Coconut Oil",
+        "optionType": "لا يوجد",
+        "size": "300 مل",
+        "priceFils": 6000,
+        "costFils": 4000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\elegance-plus-hair-serum-coconut-oil-studio.webp",
+        "imageName": "elegance-plus-hair-serum-coconut-oil-studio.webp",
+        "sku": "GHAZ-ELEGANCE-HAIR-SERUM-300-312-312",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-AGRADO-BODY-MILK-400-331",
+    "slug": "ghaz-agrado-body-milk-400-331",
+    "sku": "GHAZ-AGRADO-BODY-MILK-400-331",
+    "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل روزا موسكيتا",
+    "nameEn": "Agrado Body Milk 400 ml Rosa Mosqueta",
+    "brand": "Agrado",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم أغرادو بودي ميلك 400 مل روزا موسكيتا؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم أغرادو بودي ميلك 400 مل روزا موسكيتا. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "400 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "روزا موسكيتا",
+        "nameEn": "Rosa Mosqueta",
+        "optionType": "لا يوجد",
+        "size": "400 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\agrado-body-milk-rosa-mosqueta-400ml-studio.webp",
+        "imageName": "agrado-body-milk-rosa-mosqueta-400ml-studio.webp",
+        "sku": "GHAZ-AGRADO-BODY-MILK-400-331-331",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-AGRADO-BODY-MILK-400-332",
+    "slug": "ghaz-agrado-body-milk-400-332",
+    "sku": "GHAZ-AGRADO-BODY-MILK-400-332",
+    "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل ألوفيرا",
+    "nameEn": "Agrado Body Milk 400 ml Aloe Vera",
+    "brand": "Agrado",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم أغرادو بودي ميلك 400 مل ألوفيرا؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم أغرادو بودي ميلك 400 مل ألوفيرا. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "400 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "ألوفيرا",
+        "nameEn": "Aloe Vera",
+        "optionType": "لا يوجد",
+        "size": "400 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\agrado-body-milk-aloe-vera-400ml-studio.webp",
+        "imageName": "agrado-body-milk-aloe-vera-400ml-studio.webp",
+        "sku": "GHAZ-AGRADO-BODY-MILK-400-332-332",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-AGRADO-BODY-MILK-400-333",
+    "slug": "ghaz-agrado-body-milk-400-333",
+    "sku": "GHAZ-AGRADO-BODY-MILK-400-333",
+    "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل حليب جوز الهند",
+    "nameEn": "Agrado Body Milk 400 ml Leche de Coco",
+    "brand": "Agrado",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم أغرادو بودي ميلك 400 مل حليب جوز الهند؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم أغرادو بودي ميلك 400 مل حليب جوز الهند. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "400 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "حليب جوز الهند",
+        "nameEn": "Leche de Coco",
+        "optionType": "لا يوجد",
+        "size": "400 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\agrado-body-milk-coconut-400ml-studio.webp",
+        "imageName": "agrado-body-milk-coconut-400ml-studio.webp",
+        "sku": "GHAZ-AGRADO-BODY-MILK-400-333-333",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-AGRADO-BODY-MILK-400-334",
+    "slug": "ghaz-agrado-body-milk-400-334",
+    "sku": "GHAZ-AGRADO-BODY-MILK-400-334",
+    "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل أرغان",
+    "nameEn": "Agrado Body Milk 400 ml Argan",
+    "brand": "Agrado",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم أغرادو بودي ميلك 400 مل أرغان؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم أغرادو بودي ميلك 400 مل أرغان. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "400 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "أرغان",
+        "nameEn": "Argan",
+        "optionType": "لا يوجد",
+        "size": "400 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\agrado-body-milk-argan-400ml-studio.webp",
+        "imageName": "agrado-body-milk-argan-400ml-studio.webp",
+        "sku": "GHAZ-AGRADO-BODY-MILK-400-334-334",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-AGRADO-BODY-MILK-400-335",
+    "slug": "ghaz-agrado-body-milk-400-335",
+    "sku": "GHAZ-AGRADO-BODY-MILK-400-335",
+    "nameAr": "لوشن جسم أغرادو بودي ميلك 400 مل لوز حلو",
+    "nameEn": "Agrado Body Milk 400 ml Almendras Dulces",
+    "brand": "Agrado",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم أغرادو بودي ميلك 400 مل لوز حلو؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم أغرادو بودي ميلك 400 مل لوز حلو. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "400 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "لوز حلو",
+        "nameEn": "Almendras Dulces",
+        "optionType": "لا يوجد",
+        "size": "400 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\agrado-body-milk-sweet-almond-400ml-studio.webp",
+        "imageName": "agrado-body-milk-sweet-almond-400ml-studio.webp",
+        "sku": "GHAZ-AGRADO-BODY-MILK-400-335-335",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-VASELINE-INTENSIVE-400-337",
+    "slug": "ghaz-vaseline-intensive-400-337",
+    "sku": "GHAZ-VASELINE-INTENSIVE-400-337",
+    "nameAr": "لوشن جسم فازلين إنتنسيف كير 400 مل كاكاو غلو",
+    "nameEn": "Vaseline Intensive Care Body Lotion 400 ml Cocoa Glow",
+    "brand": "Vaseline",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم فازلين إنتنسيف كير 400 مل كاكاو غلو؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم فازلين إنتنسيف كير 400 مل كاكاو غلو. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "400 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "كاكاو غلو",
+        "nameEn": "Cocoa Glow",
+        "optionType": "لا يوجد",
+        "size": "400 مل",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\vaseline-intensive-care-cocoa-glow-400ml-studio.webp",
+        "imageName": "vaseline-intensive-care-cocoa-glow-400ml-studio.webp",
+        "sku": "GHAZ-VASELINE-INTENSIVE-400-337-337",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-VASELINE-INTENSIVE-400-338",
+    "slug": "ghaz-vaseline-intensive-400-338",
+    "sku": "GHAZ-VASELINE-INTENSIVE-400-338",
+    "nameAr": "لوشن جسم فازلين إنتنسيف كير 400 مل أدفانسد ريبير",
+    "nameEn": "Vaseline Intensive Care Body Lotion 400 ml Advanced Repair",
+    "brand": "Vaseline",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم فازلين إنتنسيف كير 400 مل أدفانسد ريبير؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم فازلين إنتنسيف كير 400 مل أدفانسد ريبير. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "400 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "أدفانسد ريبير",
+        "nameEn": "Advanced Repair",
+        "optionType": "لا يوجد",
+        "size": "400 مل",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\vaseline-intensive-care-advanced-repair-400ml-studio.webp",
+        "imageName": "vaseline-intensive-care-advanced-repair-400ml-studio.webp",
+        "sku": "GHAZ-VASELINE-INTENSIVE-400-338-338",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-VASELINE-INTENSIVE-400-339",
+    "slug": "ghaz-vaseline-intensive-400-339",
+    "sku": "GHAZ-VASELINE-INTENSIVE-400-339",
+    "nameAr": "لوشن جسم فازلين إنتنسيف كير 400 مل ألو سوذ",
+    "nameEn": "Vaseline Intensive Care Body Lotion 400 ml Aloe Soothe",
+    "brand": "Vaseline",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم فازلين إنتنسيف كير 400 مل ألو سوذ؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم فازلين إنتنسيف كير 400 مل ألو سوذ. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "400 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "ألو سوذ",
+        "nameEn": "Aloe Soothe",
+        "optionType": "لا يوجد",
+        "size": "400 مل",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\vaseline-intensive-care-aloe-soothe-400ml-studio.webp",
+        "imageName": "vaseline-intensive-care-aloe-soothe-400ml-studio.webp",
+        "sku": "GHAZ-VASELINE-INTENSIVE-400-339-339",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-VASELINE-INTENSIVE-400-340",
+    "slug": "ghaz-vaseline-intensive-400-340",
+    "sku": "GHAZ-VASELINE-INTENSIVE-400-340",
+    "nameAr": "لوشن جسم فازلين إنتنسيف كير 400 مل دراي سكين ريبير",
+    "nameEn": "Vaseline Intensive Care Body Lotion 400 ml Dry Skin Repair",
+    "brand": "Vaseline",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن جسم فازلين إنتنسيف كير 400 مل دراي سكين ريبير؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن جسم فازلين إنتنسيف كير 400 مل دراي سكين ريبير. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "400 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "دراي سكين ريبير",
+        "nameEn": "Dry Skin Repair",
+        "optionType": "لا يوجد",
+        "size": "400 مل",
+        "priceFils": 2500,
+        "costFils": 2000,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\vaseline-intensive-care-dry-skin-repair-400ml-studio.webp",
+        "imageName": "vaseline-intensive-care-dry-skin-repair-400ml-studio.webp",
+        "sku": "GHAZ-VASELINE-INTENSIVE-400-340-340",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-MBC-BODY-LOTION-500-342",
+    "slug": "ghaz-mbc-body-lotion-500-342",
+    "sku": "GHAZ-MBC-BODY-LOTION-500-342",
+    "nameAr": "لوشن يدين وجسم إم بي سي 500 مل زيت اللوز",
+    "nameEn": "MBC Hand and Body Lotion 500 ml Ultra Almond Oil",
+    "brand": "MBC",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن يدين وجسم إم بي سي 500 مل زيت اللوز؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن يدين وجسم إم بي سي 500 مل زيت اللوز. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "500 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "زيت اللوز",
+        "nameEn": "Ultra Almond Oil",
+        "optionType": "لا يوجد",
+        "size": "500 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\mbc-ultra-almond-oil-lotion-500ml-studio.webp",
+        "imageName": "mbc-ultra-almond-oil-lotion-500ml-studio.webp",
+        "sku": "GHAZ-MBC-BODY-LOTION-500-342-342",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-MBC-BODY-LOTION-500-343",
+    "slug": "ghaz-mbc-body-lotion-500-343",
+    "sku": "GHAZ-MBC-BODY-LOTION-500-343",
+    "nameAr": "لوشن يدين وجسم إم بي سي 500 مل زيت الأرغان",
+    "nameEn": "MBC Hand and Body Lotion 500 ml Ultra Argan Oil",
+    "brand": "MBC",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن يدين وجسم إم بي سي 500 مل زيت الأرغان؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن يدين وجسم إم بي سي 500 مل زيت الأرغان. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "500 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "زيت الأرغان",
+        "nameEn": "Ultra Argan Oil",
+        "optionType": "لا يوجد",
+        "size": "500 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\mbc-ultra-argan-oil-lotion-500ml-studio.webp",
+        "imageName": "mbc-ultra-argan-oil-lotion-500ml-studio.webp",
+        "sku": "GHAZ-MBC-BODY-LOTION-500-343-343",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-MBC-BODY-LOTION-500-344",
+    "slug": "ghaz-mbc-body-lotion-500-344",
+    "sku": "GHAZ-MBC-BODY-LOTION-500-344",
+    "nameAr": "لوشن يدين وجسم إم بي سي 500 مل زيت الجوجوبا",
+    "nameEn": "MBC Hand and Body Lotion 500 ml Ultra Jojoba Oil",
+    "brand": "MBC",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن يدين وجسم إم بي سي 500 مل زيت الجوجوبا؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن يدين وجسم إم بي سي 500 مل زيت الجوجوبا. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "500 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "زيت الجوجوبا",
+        "nameEn": "Ultra Jojoba Oil",
+        "optionType": "لا يوجد",
+        "size": "500 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\mbc-ultra-jojoba-oil-lotion-500ml-studio.webp",
+        "imageName": "mbc-ultra-jojoba-oil-lotion-500ml-studio.webp",
+        "sku": "GHAZ-MBC-BODY-LOTION-500-344-344",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-MBC-BODY-LOTION-500-345",
+    "slug": "ghaz-mbc-body-lotion-500-345",
+    "sku": "GHAZ-MBC-BODY-LOTION-500-345",
+    "nameAr": "لوشن يدين وجسم إم بي سي 500 مل زيت جوز الهند",
+    "nameEn": "MBC Hand and Body Lotion 500 ml Ultra Coconut Oil",
+    "brand": "MBC",
+    "category": "لوشن الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "لوشن يدين وجسم إم بي سي 500 مل زيت جوز الهند؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "لوشن يدين وجسم إم بي سي 500 مل زيت جوز الهند. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "500 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "زيت جوز الهند",
+        "nameEn": "Ultra Coconut Oil",
+        "optionType": "لا يوجد",
+        "size": "500 مل",
+        "priceFils": 2000,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\mbc-ultra-coconut-oil-lotion-500ml-studio.webp",
+        "imageName": "mbc-ultra-coconut-oil-lotion-500ml-studio.webp",
+        "sku": "GHAZ-MBC-BODY-LOTION-500-345-345",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-SCRUB-600-347",
+    "slug": "ghaz-boutique-scrub-600-347",
+    "sku": "GHAZ-BOUTIQUE-SCRUB-600-347",
+    "nameAr": "مقشر الوجه والجسم بوتيك 600 مل فحم",
+    "nameEn": "Boutique Face and Body Scrub 600 ml Charcoal",
+    "brand": "Boutique Cosmetics",
+    "category": "مقشرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "مقشر الوجه والجسم بوتيك 600 مل فحم؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "مقشر الوجه والجسم بوتيك 600 مل فحم. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "600 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "فحم",
+        "nameEn": "Charcoal",
+        "optionType": "لا يوجد",
+        "size": "600 مل",
+        "priceFils": 2500,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-charcoal-scrub-600ml-studio.webp",
+        "imageName": "boutique-charcoal-scrub-600ml-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-SCRUB-600-347-347",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-SCRUB-600-348",
+    "slug": "ghaz-boutique-scrub-600-348",
+    "sku": "GHAZ-BOUTIQUE-SCRUB-600-348",
+    "nameAr": "مقشر الوجه والجسم بوتيك 600 مل أفوكادو",
+    "nameEn": "Boutique Face and Body Scrub 600 ml Avocado",
+    "brand": "Boutique Cosmetics",
+    "category": "مقشرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "مقشر الوجه والجسم بوتيك 600 مل أفوكادو؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "مقشر الوجه والجسم بوتيك 600 مل أفوكادو. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "600 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "أفوكادو",
+        "nameEn": "Avocado",
+        "optionType": "لا يوجد",
+        "size": "600 مل",
+        "priceFils": 2500,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-avocado-scrub-600ml-studio.webp",
+        "imageName": "boutique-avocado-scrub-600ml-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-SCRUB-600-348-348",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-SCRUB-600-349",
+    "slug": "ghaz-boutique-scrub-600-349",
+    "sku": "GHAZ-BOUTIQUE-SCRUB-600-349",
+    "nameAr": "مقشر الوجه والجسم بوتيك 600 مل خوخ",
+    "nameEn": "Boutique Face and Body Scrub 600 ml Peach",
+    "brand": "Boutique Cosmetics",
+    "category": "مقشرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "مقشر الوجه والجسم بوتيك 600 مل خوخ؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "مقشر الوجه والجسم بوتيك 600 مل خوخ. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "600 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "خوخ",
+        "nameEn": "Peach",
+        "optionType": "لا يوجد",
+        "size": "600 مل",
+        "priceFils": 2500,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-peach-scrub-600ml-studio.webp",
+        "imageName": "boutique-peach-scrub-600ml-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-SCRUB-600-349-349",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-SCRUB-600-350",
+    "slug": "ghaz-boutique-scrub-600-350",
+    "sku": "GHAZ-BOUTIQUE-SCRUB-600-350",
+    "nameAr": "مقشر الوجه والجسم بوتيك 600 مل ألوفيرا",
+    "nameEn": "Boutique Face and Body Scrub 600 ml Aloe Vera",
+    "brand": "Boutique Cosmetics",
+    "category": "مقشرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "مقشر الوجه والجسم بوتيك 600 مل ألوفيرا؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "مقشر الوجه والجسم بوتيك 600 مل ألوفيرا. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "600 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "ألوفيرا",
+        "nameEn": "Aloe Vera",
+        "optionType": "لا يوجد",
+        "size": "600 مل",
+        "priceFils": 2500,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-aloe-vera-scrub-600ml-studio.webp",
+        "imageName": "boutique-aloe-vera-scrub-600ml-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-SCRUB-600-350-350",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "reference": "GHAZ-BOUTIQUE-SCRUB-600-351",
+    "slug": "ghaz-boutique-scrub-600-351",
+    "sku": "GHAZ-BOUTIQUE-SCRUB-600-351",
+    "nameAr": "مقشر الوجه والجسم بوتيك 600 مل فراولة",
+    "nameEn": "Boutique Face and Body Scrub 600 ml Strawberry",
+    "brand": "Boutique Cosmetics",
+    "category": "مقشرات الجسم",
+    "categoryMain": "العناية بالجسم",
+    "shortDescription": "مقشر الوجه والجسم بوتيك 600 مل فراولة؛ اختر لا يوجد المناسب من الخيارات المتاحة.",
+    "longDescription": "مقشر الوجه والجسم بوتيك 600 مل فراولة. المواصفات التفصيلية بحسب الملصق المرفق لكل خيار.",
+    "size": "600 مل",
+    "optionType": "لا يوجد",
+    "variants": [
+      {
+        "nameAr": "فراولة",
+        "nameEn": "Strawberry",
+        "optionType": "لا يوجد",
+        "size": "600 مل",
+        "priceFils": 2500,
+        "costFils": 1500,
+        "imagePath": "C:\\Users\\و\\Desktop\\RAWAQ Progject\\design\\جاهز_للمتجر_studio_webp\\boutique-strawberry-scrub-600ml-studio.webp",
+        "imageName": "boutique-strawberry-scrub-600ml-studio.webp",
+        "sku": "GHAZ-BOUTIQUE-SCRUB-600-351-351",
+        "order": 1
+      }
+    ]
+  }
+]

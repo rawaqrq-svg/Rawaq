@@ -61,6 +61,7 @@ export function AdminSidebar({ employeeName, roleName = 'ADMIN' }: AdminSidebarP
       { href: '/admin/shipping-zones', label: 'مناطق الشحن', permission: 'section:settings' },
       { href: '/admin/rewards', label: 'مكافآت العملاء', permission: 'section:settings' },
       { href: '/admin/overview-db', label: 'إعدادات النظام', permission: 'section:settings' },
+      { href: '/admin/backups', label: 'النسخ الاحتياطي', permission: 'superadmin' },
       { href: '/admin/content', label: 'المحتوى والمدونة', permission: 'section:content' },
       { href: '/admin/media', label: 'الوسائط', permission: 'section:content' },
       { href: '/admin/message-templates', label: 'قوالب الرسائل', permission: 'section:content' },

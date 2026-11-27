@@ -103,7 +103,7 @@ export async function sendTelegramNewOrderNotification(payload: OrderNotificatio
   text += `🚚 <b>التوصيل:</b> ${payload.shippingCost === 0 ? 'مجاني' : escapeHtml(filsToDisplay(payload.shippingCost, 'ar'))}\n`;
   text += `💰 <b>المجموع النهائي:</b> <b>${escapeHtml(filsToDisplay(payload.totalAmount, 'ar'))}</b>\n\n`;
 
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://mackup-test-weld.vercel.app').trim().replace(/\/+$/, '');
+  const siteUrl = (process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'https://www.rawaq-jo.online').trim().replace(/\/+$/, '');
   text += `🔗 <a href="${siteUrl}/admin/orders?orderId=${encodeURIComponent(payload.reference)}">فتح الطلب في لوحة التحكم</a>`;
 
   try {

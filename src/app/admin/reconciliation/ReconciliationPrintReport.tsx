@@ -77,7 +77,7 @@ export function ReconciliationPrintReport({
   isArchived = false,
 }: ReconciliationPrintReportProps) {
   const [verificationOrigin, setVerificationOrigin] = useState(
-    () => process.env.NEXT_PUBLIC_APP_URL?.replace(/\/+$/, '') || 'https://rawaq.jo',
+    () => process.env.NEXT_PUBLIC_APP_URL?.replace(/\/+$/, '') || 'https://www.rawaq-jo.online',
   );
 
   useEffect(() => {
