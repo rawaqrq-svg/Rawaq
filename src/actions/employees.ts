@@ -473,73 +473,87 @@ export async function deleteEmployee(employeeId: string, adminId: string) {
     const headersList = await (await import('next/headers')).headers();
     const ipAddress = headersList.get('x-forwarded-for') || 'unknown';
 
-    // فحص ما إذا كان الموظف لديه حركات مالية، مبيعات، ورديات، أو جلسات جرد سابقة
-    const [salesCount, shiftsCount, movesCount, returnsCount, heldCount, countSessionCount] = await Promise.all([
-      prisma.sale.count({ where: { OR: [{ employeeId }, { soldByEmployeeId: employeeId }] } }),
-      prisma.shift.count({ where: { employeeId } }),
-      prisma.inventoryMovement.count({ where: { employeeId } }),
-      prisma.return.count({ where: { employeeId } }),
-      prisma.heldSale.count({ where: { employeeId } }),
-      prisma.inventoryCountSession.count({
-        where: {
-          OR: [
-            { assignedEmployeeId: employeeId },
-            { assignedByEmployeeId: employeeId },
-            { reviewedByEmployeeId: employeeId },
-            { approvedByEmployeeId: employeeId }
-          ]
-        }
-      })
-    ]);
-
-    const hasFinancialOrInventoryHistory = (salesCount + shiftsCount + movesCount + returnsCount + heldCount + countSessionCount) > 0;
-
-    if (hasFinancialOrInventoryHistory) {
-      // إيقاف الحساب وتعطيل الجلسات بدلاً من الحذف الفيزيائي للحفاظ على النزاهة المحاسبية والتاريخ المالي
-      await prisma.employee.update({
-        where: { id: employeeId },
-        data: { isActive: false }
+    // تنفيذ عملية الحذف النهائي الكامل من قاعدة البيانات مع فك وحل كافة الارتباطات
+    await prisma.$transaction(async (tx) => {
+      // 1. إعادة توجيه القيود المحاسبية وسجلات المبيعات إلى المدير النشط لمنع فقدان البيانات المالية
+      await tx.sale.updateMany({
+        where: { employeeId },
+        data: { employeeId: session.employeeId }
       });
-      await prisma.session.deleteMany({ where: { employeeId } });
-
-      await prisma.auditLog.create({
-        data: {
-          employeeId: session.employeeId,
-          action: 'EMPLOYEE_DEACTIVATED_INSTEAD_OF_DELETE',
-          entityType: 'Employee',
-          entityId: employeeId,
-          ipAddress,
-          details: JSON.stringify({
-            reason: 'Preserve financial, sales and inventory audit history',
-            salesCount,
-            shiftsCount,
-            movesCount
-          })
-        }
+      await tx.sale.updateMany({
+        where: { soldByEmployeeId: employeeId },
+        data: { soldByEmployeeId: session.employeeId }
+      });
+      await tx.return.updateMany({
+        where: { employeeId },
+        data: { employeeId: session.employeeId }
+      });
+      await tx.inventoryMovement.updateMany({
+        where: { employeeId },
+        data: { employeeId: session.employeeId }
       });
 
-      revalidatePath('/admin/employees');
-      return {
-        success: true,
-        deactivated: true,
-        message: 'تم إيقاف وتعطيل حساب الموظف وإنهاء كافة جلساته بنجاح (تم الاحتفاظ ببياناته كحساب معطل لضمان سلامة السجلات المالية ومبيعات وحركات الجرد التاريخية المرتبطة به).'
-      };
-    }
+      // 2. تحديث جلسات الجرد والمخزون
+      await tx.inventoryCountSession.updateMany({
+        where: { assignedEmployeeId: employeeId },
+        data: { assignedEmployeeId: session.employeeId }
+      });
+      await tx.inventoryCountSession.updateMany({
+        where: { assignedByEmployeeId: employeeId },
+        data: { assignedByEmployeeId: session.employeeId }
+      });
+      await tx.inventoryCountSession.updateMany({
+        where: { reviewedByEmployeeId: employeeId },
+        data: { reviewedByEmployeeId: session.employeeId }
+      });
+      await tx.inventoryCountSession.updateMany({
+        where: { approvedByEmployeeId: employeeId },
+        data: { approvedByEmployeeId: session.employeeId }
+      });
 
-    // إذا لم يكن لديه سجلات تاريخية، يتم حذف السجلات المؤقتة ثم حذف الحساب نهائياً من قاعدة البيانات
-    await prisma.$transaction([
-      prisma.session.deleteMany({ where: { employeeId } }),
-      prisma.loginAttempt.deleteMany({ where: { employeeId } }),
-      prisma.employeePermission.deleteMany({ where: { employeeId } }),
-      prisma.pendingMfaChallenge.deleteMany({ where: { employeeId } }),
-      prisma.auditLog.updateMany({ where: { employeeId }, data: { employeeId: null } }),
-      prisma.employee.delete({ where: { id: employeeId } })
-    ]);
+      await tx.productLiquidStock.updateMany({
+        where: { lastVerifiedByEmployeeId: employeeId },
+        data: { lastVerifiedByEmployeeId: null }
+      });
+      await tx.productLiquidMovement.updateMany({
+        where: { employeeId },
+        data: { employeeId: session.employeeId }
+      });
 
+      await tx.importJob.updateMany({
+        where: { employeeId },
+        data: { employeeId: session.employeeId }
+      });
+
+      // 3. حذف اتفاقيات وفترات الرواتب المرتبطة بالموظف
+      await tx.payrollPeriod.deleteMany({ where: { employeeId } });
+      await tx.employeePayAgreement.deleteMany({ where: { employeeId } });
+
+      // 4. حذف الجلسات والمحاولات والصلاحيات والورديات المؤقتة
+      await tx.session.deleteMany({ where: { employeeId } });
+      await tx.loginAttempt.deleteMany({ where: { employeeId } });
+      await tx.pendingMfaChallenge.deleteMany({ where: { employeeId } });
+      await tx.shift.deleteMany({ where: { employeeId } });
+      await tx.heldSale.deleteMany({ where: { employeeId } });
+      await tx.employeePermission.deleteMany({ where: { employeeId } });
+
+      // 5. فك ارتباط سجلات التدقيق التاريخية بحيث لا تمنع الحذف
+      await tx.auditLog.updateMany({
+        where: { employeeId },
+        data: { employeeId: null }
+      });
+
+      // 6. الحذف النهائي الفيزيائي للحساب من جدول الموظفين
+      await tx.employee.delete({
+        where: { id: employeeId }
+      });
+    });
+
+    // تسجيل العملية في سجل التدقيق
     await prisma.auditLog.create({
       data: {
-      employeeId: session.employeeId,
-        action: 'EMPLOYEE_DELETED',
+        employeeId: session.employeeId,
+        action: 'EMPLOYEE_PERMANENTLY_DELETED',
         entityType: 'Employee',
         entityId: employeeId,
         ipAddress,
@@ -548,27 +562,13 @@ export async function deleteEmployee(employeeId: string, adminId: string) {
     });
 
     revalidatePath('/admin/employees');
-    return { success: true, message: 'تم حذف حساب الموظف نهائياً بنجاح.' };
+    return {
+      success: true,
+      message: `تم حذف حساب "${employee.name}" (${employee.email}) نهائياً من قاعدة البيانات بنجاح.`
+    };
   } catch (error: any) {
     console.error('Error in deleteEmployee:', error);
-    if (error.code === 'P2003') {
-      try {
-        await prisma.employee.update({
-          where: { id: employeeId },
-          data: { isActive: false }
-        });
-        await prisma.session.deleteMany({ where: { employeeId } });
-        revalidatePath('/admin/employees');
-        return {
-          success: true,
-          deactivated: true,
-          message: 'تم تعطيل حساب الموظف وإنهاء جلساته بنجاح للحفاظ على سلامة القيود والبيانات المرتبطة به.'
-        };
-      } catch (innerError) {
-        return { success: false, error: 'لا يمكن حذف هذا الموظف لوجود بيانات مرتبطة به في النظام. يرجى استخدام زر التعطيل.' };
-      }
-    }
-    return { success: false, error: error?.message || 'فشل حذف الموظف' };
+    return { success: false, error: error?.message || 'فشل حذف الموظف من قاعدة البيانات' };
   }
 }
 
