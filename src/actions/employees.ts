@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db';
 import { requireSuperAdmin } from '@/lib/dal';
+import { hashPassword } from '@/lib/auth';
 import * as argon2 from 'argon2';
 import crypto from 'crypto';
 import { revalidatePath } from 'next/cache';
@@ -36,7 +37,7 @@ export async function createEmployee(data: {
   try {
     const session = await requireSuperAdmin();
     const role = await prisma.role.findUnique({ where: { id: data.roleId } });
-    if (!role || !['أدمن رئيسي', 'أدمن تشغيلي'].includes(role.name)) {
+    if (!role || (!isMainAdminRole(role.name) && role.name !== 'أدمن تشغيلي')) {
       return { success: false, error: 'الدور الوظيفي المحدد غير صالح' };
     }
     const sectionPermissions = await resolveSectionPermissions(data.selectedPermissionActions);
@@ -47,25 +48,26 @@ export async function createEmployee(data: {
     }));
 
     const existing = await prisma.employee.findUnique({
-      where: { email: data.email }
+      where: { email: data.email.trim().toLowerCase() }
     });
     if (existing) {
-      return { success: false, error: 'البريد الإلكتروني مسجل بالفعل' };
+      return { success: false, error: 'البريد الإلكتروني مسجل بالفعل لموظف آخر' };
     }
 
     // Default password if not provided
-    const password = data.password || 'Dhb-Staff!' + crypto.randomBytes(3).toString('hex');
-    const passwordHash = await argon2.hash(password);
+    const hasCustomPassword = Boolean(data.password && data.password.trim().length >= 6);
+    const password = hasCustomPassword ? data.password!.trim() : 'Rawaq@Staff!' + crypto.randomBytes(3).toString('hex');
+    const passwordHash = await hashPassword(password);
 
     const employee = await prisma.employee.create({
       data: {
-        name: data.name,
-        email: data.email,
+        name: data.name.trim(),
+        email: data.email.trim().toLowerCase(),
         passwordHash,
         roleId: data.roleId,
         isActive: data.isActive,
-        mustChangePassword: true,
-        bootstrapCredential: true
+        mustChangePassword: !hasCustomPassword,
+        bootstrapCredential: !hasCustomPassword
       }
     });
 
@@ -118,7 +120,7 @@ export async function updateEmployee(data: {
     const session = await requireSuperAdmin();
 
     const role = await prisma.role.findUnique({ where: { id: data.roleId } });
-    if (!role || !['أدمن رئيسي', 'أدمن تشغيلي'].includes(role.name)) {
+    if (!role || (!isMainAdminRole(role.name) && role.name !== 'أدمن تشغيلي')) {
       return { success: false, error: 'الدور الوظيفي المحدد غير صالح' };
     }
     const sectionPermissions = await resolveSectionPermissions(data.selectedPermissionActions);
@@ -135,7 +137,7 @@ export async function updateEmployee(data: {
 
     // Protect against disabling/removing last active Admin
     if (targetEmployee && isMainAdminRole(targetEmployee.role.name) && targetEmployee.isActive) {
-      const activeAdmins = await prisma.employee.findMany({ where: { isActive: true, id: { not: data.id }, role: { name: { in: ['Admin', 'Super Admin', 'أدمن رئيسي', 'ادمن رئيسي'] } } }, include: { role: true } });
+      const activeAdmins = await prisma.employee.findMany({ where: { isActive: true, id: { not: data.id }, role: { name: { in: ['ADMIN', 'Admin', 'Super Admin', 'أدمن رئيسي', 'ادمن رئيسي'] } } }, include: { role: true } });
       const activeAdminsCount = activeAdmins.filter((employee) => isMainAdminRole(employee.role.name)).length;
       if (activeAdminsCount === 0 && (!data.isActive || !isMainAdminRole(role.name))) {
         return { success: false, error: 'لا يمكن تعطيل آخر مدير نشط في النظام لحماية الإدارة' };
@@ -143,14 +145,16 @@ export async function updateEmployee(data: {
     }
 
     const dataToUpdate: any = {
-      name: data.name,
-      email: data.email,
+      name: data.name.trim(),
+      email: data.email.trim().toLowerCase(),
       roleId: data.roleId,
       isActive: data.isActive
     };
 
-    if (data.password) {
-      dataToUpdate.passwordHash = await argon2.hash(data.password);
+    if (data.password && data.password.trim().length >= 6) {
+      dataToUpdate.passwordHash = await hashPassword(data.password.trim());
+      dataToUpdate.mustChangePassword = false;
+      dataToUpdate.bootstrapCredential = false;
     }
 
     // Update Employee
@@ -287,7 +291,7 @@ export async function toggleEmployeeStatus(employeeId: string, adminId: string) 
 
     // Protect against disabling last active Admin
     if (isMainAdminRole(employee.role.name) && employee.isActive && !newActiveState) {
-      const activeAdmins = await prisma.employee.findMany({ where: { isActive: true, id: { not: employeeId }, role: { name: { in: ['Admin', 'Super Admin', 'أدمن رئيسي', 'ادمن رئيسي'] } } }, include: { role: true } });
+      const activeAdmins = await prisma.employee.findMany({ where: { isActive: true, id: { not: employeeId }, role: { name: { in: ['ADMIN', 'Admin', 'Super Admin', 'أدمن رئيسي', 'ادمن رئيسي'] } } }, include: { role: true } });
       const activeAdminsCount = activeAdmins.filter((item) => isMainAdminRole(item.role.name)).length;
       if (activeAdminsCount === 0) {
         return { success: false, error: 'لا يمكن تعطيل آخر مدير نشط في النظام لحماية الإدارة' };
@@ -456,7 +460,7 @@ export async function deleteEmployee(employeeId: string, adminId: string) {
     if (isAdmin) {
       const activeAdminsCount = await prisma.employee.count({
         where: {
-          role: { name: { in: ['Admin', 'Super Admin', 'أدمن رئيسي', 'ادمن رئيسي'] } },
+          role: { name: { in: ['ADMIN', 'Admin', 'Super Admin', 'أدمن رئيسي', 'ادمن رئيسي'] } },
           isActive: true,
           id: { not: employeeId }
         }
@@ -522,13 +526,13 @@ export async function deleteEmployee(employeeId: string, adminId: string) {
       };
     }
 
-    // إذا لم يكن لديه سجلات تاريخية، يتم حذف السجلات المؤقتة ثم حذف الحساب
+    // إذا لم يكن لديه سجلات تاريخية، يتم حذف السجلات المؤقتة ثم حذف الحساب نهائياً من قاعدة البيانات
     await prisma.$transaction([
       prisma.session.deleteMany({ where: { employeeId } }),
       prisma.loginAttempt.deleteMany({ where: { employeeId } }),
       prisma.employeePermission.deleteMany({ where: { employeeId } }),
       prisma.pendingMfaChallenge.deleteMany({ where: { employeeId } }),
-      prisma.auditLog.deleteMany({ where: { employeeId } }),
+      prisma.auditLog.updateMany({ where: { employeeId }, data: { employeeId: null } }),
       prisma.employee.delete({ where: { id: employeeId } })
     ]);
 

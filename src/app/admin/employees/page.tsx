@@ -7,6 +7,7 @@ import { createEmployee, updateEmployee, toggleEmployeeStatus, deleteEmployee } 
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { EmployeePermissionsFields } from './EmployeePermissionsFields';
+import { DeleteEmployeeButton } from './DeleteEmployeeButton';
 
 export default async function AdminEmployeesPage({
   searchParams
@@ -117,6 +118,7 @@ export default async function AdminEmployeesPage({
       if (!res.success) {
         redirect(`/admin/employees?action=edit&id=${empId}&error=${encodeURIComponent(res.error || 'فشل تحديث بيانات الموظف')}`);
       }
+      redirect('/admin/employees?message=' + encodeURIComponent('تم تحديث بيانات الموظف بنجاح في قاعدة البيانات'));
     } else {
       // Create
       const res = await createEmployee({
@@ -131,9 +133,12 @@ export default async function AdminEmployeesPage({
       if (!res.success) {
         redirect(`/admin/employees?action=new&error=${encodeURIComponent(res.error || 'فشل إنشاء الموظف')}`);
       }
+      let successMsg = 'تم حفظ وإنشاء حساب الموظف بنجاح داخل قاعدة البيانات';
+      if (res.generatedPassword) {
+        successMsg += ` (كلمة المرور المولدة: ${res.generatedPassword})`;
+      }
+      redirect('/admin/employees?message=' + encodeURIComponent(successMsg));
     }
-
-    redirect('/admin/employees?message=' + encodeURIComponent('تم حفظ بيانات الموظف بنجاح'));
   }
 
   async function handleRevoke(formData: FormData) {
@@ -260,14 +265,17 @@ export default async function AdminEmployeesPage({
 
               <div>
                 <label className="block text-sm font-bold text-zinc-700 mb-1">
-                  {action === 'new' ? 'كلمة المرور (تلقائي إن تُرِك فارغاً)' : 'إعادة تعيين كلمة المرور (اختياري)'}
+                  {action === 'new' ? 'كلمة المرور' : 'إعادة تعيين كلمة المرور (اختياري)'}
                 </label>
                 <input
-                  type="password"
+                  type="text"
                   name="password"
-                  placeholder={action === 'new' ? 'أدخل كلمة مرور قوية' : 'اتركه فارغاً لعدم التغيير'}
+                  placeholder={action === 'new' ? 'أدخل كلمة مرور قوية (أو اتركها فارغة لتوليدها تلقائياً)' : 'اتركه فارغاً لعدم التغيير'}
                   className="w-full border border-zinc-200 rounded px-3 py-2 text-sm outline-none focus:border-[#2d3623]"
                 />
+                <p className="mt-1 text-xs text-zinc-500">
+                  {action === 'new' ? 'يمكنك تحديد كلمة مرور مخصصة أو تركها لتوليد كلمة مرور عشوائية آمنة.' : 'أدخل 6 خانات على الأقل لتغيير كلمة المرور.'}
+                </p>
               </div>
 
                 <EmployeePermissionsFields
@@ -336,41 +344,45 @@ export default async function AdminEmployeesPage({
                   ))}
                 </div>
 
-                <div className="flex gap-2 pt-3 border-t border-zinc-100 justify-end">
-                  <form action={handleToggleStatus} className="inline-block">
-                    <input type="hidden" name="targetId" value={emp.id} />
-                    <button
-                      type="submit"
-                      className={`text-xs px-3 py-1.5 rounded font-bold transition-colors ${
-                        emp.isActive 
-                          ? 'text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100' 
-                          : 'text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100'
-                      }`}
-                    >
-                      {emp.isActive ? 'تعطيل' : 'تفعيل'}
-                    </button>
-                  </form>
-                  <form action={handleDelete} className="inline-block">
-                    <input type="hidden" name="targetId" value={emp.id} />
-                    <button
-                      type="submit"
-                      className="text-xs px-3 py-1.5 rounded font-bold transition-colors text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100"
-                    >
-                      حذف نهائي
-                    </button>
-                  </form>
-                  <form action={handleRevoke} className="inline-block">
-                    <input type="hidden" name="targetId" value={emp.id} />
-                    <button
-                      type="submit"
-                      className="text-xs text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded font-bold transition-colors"
-                    >
-                      إلغاء الجلسات
-                    </button>
-                  </form>
+                <div className="flex flex-wrap gap-2 pt-3 border-t border-zinc-100 justify-end items-center">
+                  {emp.id === session.employeeId ? (
+                    <span className="text-xs px-3 py-1.5 rounded font-bold text-zinc-500 bg-zinc-100 border border-zinc-200">
+                      حسابك المسجل حالياً
+                    </span>
+                  ) : (
+                    <>
+                      <form action={handleToggleStatus} className="inline-block">
+                        <input type="hidden" name="targetId" value={emp.id} />
+                        <button
+                          type="submit"
+                          className={`text-xs px-3 py-1.5 rounded font-bold transition-colors ${
+                            emp.isActive 
+                              ? 'text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200' 
+                              : 'text-green-700 hover:text-green-800 bg-green-50 hover:bg-green-100 border border-green-200'
+                          }`}
+                        >
+                          {emp.isActive ? 'تعطيل' : 'تفعيل'}
+                        </button>
+                      </form>
+                      <DeleteEmployeeButton
+                        employeeId={emp.id}
+                        employeeName={emp.name}
+                        onDelete={handleDelete}
+                      />
+                      <form action={handleRevoke} className="inline-block">
+                        <input type="hidden" name="targetId" value={emp.id} />
+                        <button
+                          type="submit"
+                          className="text-xs text-zinc-600 hover:text-zinc-800 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 px-3 py-1.5 rounded font-bold transition-colors"
+                        >
+                          إلغاء الجلسات
+                        </button>
+                      </form>
+                    </>
+                  )}
                   <Link
                     href={`/admin/employees?action=edit&id=${emp.id}`}
-                    className="text-xs text-[#2d3623] bg-[var(--color-ivory-200)] hover:bg-[var(--color-champagne-200)] px-4 py-1.5 rounded font-bold transition-colors"
+                    className="text-xs text-[#2d3623] bg-[var(--color-ivory-200)] hover:bg-[var(--color-champagne-200)] px-4 py-1.5 rounded font-bold transition-colors border border-[var(--color-ivory-300,#e5e0d3)]"
                   >
                     تعديل
                   </Link>

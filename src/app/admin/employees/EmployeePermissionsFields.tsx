@@ -66,7 +66,7 @@ export function EmployeePermissionsFields({
         </select>
       </div>
 
-      <fieldset className="rounded-xl border border-zinc-200 p-4">
+      <fieldset className="rounded-xl border border-zinc-200 p-4 md:col-span-2">
         <legend className="px-2 text-sm font-bold text-zinc-800">الأقسام المسموح بها</legend>
         <p className="mb-3 text-xs leading-relaxed text-zinc-500">
           تم تحديد الأقسام الافتراضية للدور. يمكنك إضافة أو إزالة أي قسم قبل الحفظ.
