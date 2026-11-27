@@ -40,6 +40,7 @@ import {
   disbursePartnerPayoutAction,
   updateEmployeePayAgreementAction,
   updatePartnerShareRulesAction,
+  updateProfitSettingsAction,
   recordCashDepositAction,
   recordBankOpeningBalanceAction,
   recordCashOpeningBalanceAction,
@@ -48,6 +49,7 @@ import type {
   ProfitsKPIs,
   EmployeePayrollCard,
   PartnerSummaryCard,
+  ProfitSettings,
 } from '@/lib/profits/profits-service';
 
 import {
@@ -68,6 +70,7 @@ interface Props {
   balances: { bankFils: number; cashFils: number };
   hasOpeningBalance: boolean;
   hasCashOpeningBalance: boolean;
+  initialProfitSettings: ProfitSettings;
   ledgerFilters: { from: string; to: string; receiver: string; method: string };
 }
 
@@ -83,6 +86,7 @@ export default function ProfitsClientTabs({
   balances,
   hasOpeningBalance,
   hasCashOpeningBalance,
+  initialProfitSettings,
   ledgerFilters,
 }: Props) {
   const router = useRouter();
@@ -224,6 +228,12 @@ export default function ProfitsClientTabs({
   const [depositRequestKey, setDepositRequestKey] = useState(() => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`);
   const [openingBalanceInput, setOpeningBalanceInput] = useState('');
   const [cashOpeningBalanceInput, setCashOpeningBalanceInput] = useState('');
+  const [profitSettings, setProfitSettings] = useState<ProfitSettings>(initialProfitSettings);
+  const [profitSettingsModal, setProfitSettingsModal] = useState(false);
+  const [reservePercentageInput, setReservePercentageInput] = useState(String(initialProfitSettings.reservePercentage));
+  const [defaultCourierCostInput, setDefaultCourierCostInput] = useState((initialProfitSettings.defaultCourierCostFils / 1000).toFixed(3));
+  const [defaultEmployeeWeeklyRateInput, setDefaultEmployeeWeeklyRateInput] = useState((initialProfitSettings.defaultEmployeeWeeklyRateFils / 1000).toFixed(3));
+  const [defaultEmployeeWeeklyHoursInput, setDefaultEmployeeWeeklyHoursInput] = useState(String(initialProfitSettings.defaultEmployeeWeeklyHours));
   const [ledgerFrom, setLedgerFrom] = useState(ledgerFilters.from);
   const [ledgerTo, setLedgerTo] = useState(ledgerFilters.to);
   const [ledgerReceiver, setLedgerReceiver] = useState(ledgerFilters.receiver);
@@ -236,6 +246,14 @@ export default function ProfitsClientTabs({
     setPartners(initialPartners);
     setLedger(initialLedger);
   }, [initialKpis, initialEmployees, initialPartners, initialLedger]);
+
+  useEffect(() => {
+    setProfitSettings(initialProfitSettings);
+    setReservePercentageInput(String(initialProfitSettings.reservePercentage));
+    setDefaultCourierCostInput((initialProfitSettings.defaultCourierCostFils / 1000).toFixed(3));
+    setDefaultEmployeeWeeklyRateInput((initialProfitSettings.defaultEmployeeWeeklyRateFils / 1000).toFixed(3));
+    setDefaultEmployeeWeeklyHoursInput(String(initialProfitSettings.defaultEmployeeWeeklyHours));
+  }, [initialProfitSettings]);
 
   useEffect(() => {
     if (initialFrom !== undefined) setFromDate(initialFrom || '');
@@ -369,7 +387,7 @@ export default function ProfitsClientTabs({
       const res = await updateEmployeePayAgreementAction(editAgreementModal.employeeId, {
         baseRateFils,
         contractType: editAgreementModal.contractType,
-        weeklyAgreedHours: Number(editAgreementModal.weeklyAgreedHours) || 20,
+        weeklyAgreedHours: Number(editAgreementModal.weeklyAgreedHours),
         notes: editAgreementModal.notes,
       });
 
@@ -410,6 +428,45 @@ export default function ProfitsClientTabs({
     });
   };
 
+  const handleSaveProfitSettings = async () => {
+    const reservePercentage = Number(reservePercentageInput);
+    const defaultCourierCostFils = Math.round(Number(defaultCourierCostInput) * 1000);
+    const defaultEmployeeWeeklyRateFils = Math.round(Number(defaultEmployeeWeeklyRateInput) * 1000);
+    const defaultEmployeeWeeklyHours = Number(defaultEmployeeWeeklyHoursInput);
+    if (!Number.isFinite(reservePercentage) || reservePercentage < 0 || reservePercentage > 100) {
+      alert('نسبة الاحتياطي يجب أن تكون بين 0 و100%.');
+      return;
+    }
+    if (!Number.isInteger(defaultCourierCostFils) || defaultCourierCostFils < 0) {
+      alert('أدخل تكلفة توصيل افتراضية صحيحة.');
+      return;
+    }
+    if (!Number.isInteger(defaultEmployeeWeeklyRateFils) || defaultEmployeeWeeklyRateFils <= 0) {
+      alert('أدخل راتباً أسبوعياً افتراضياً صحيحاً.');
+      return;
+    }
+    if (!Number.isInteger(defaultEmployeeWeeklyHours) || defaultEmployeeWeeklyHours <= 0 || defaultEmployeeWeeklyHours > 168) {
+      alert('أدخل ساعات عمل أسبوعية افتراضية صحيحة.');
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await updateProfitSettingsAction({
+        reservePercentage,
+        defaultCourierCostFils,
+        defaultEmployeeWeeklyRateFils,
+        defaultEmployeeWeeklyHours,
+      });
+      if (result.success) {
+        setProfitSettings(result.settings);
+        setProfitSettingsModal(false);
+        window.location.reload();
+      } else {
+        alert(result.error || 'تعذر تحديث إعدادات الأرباح.');
+      }
+    });
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* 1. Header & Primary Action Button */}
@@ -423,11 +480,18 @@ export default function ProfitsClientTabs({
               رَواق | الأرباح وتوزيع المستحقات
             </h1>
           </div>
-          <p className="text-xs text-stone-500 mt-1">
-            مركز حساب أرباح رَواق الصافية، صرف رواتب الموظفين الأسبوعية، وحوكمة توزيعات الشركاء 50/50
-          </p>
+            <p className="text-xs text-stone-500 mt-1">
+             مركز الأرباح المرتبط بالحركات المالية والطلبات والرواتب وتوزيعات الشركاء من قاعدة البيانات
+           </p>
         </div>
-
+         <button
+           type="button"
+           onClick={() => setProfitSettingsModal(true)}
+           className="flex items-center justify-center gap-2 rounded-xl bg-stone-100 px-3 py-2 text-xs font-bold text-stone-700 transition hover:bg-stone-200"
+         >
+           <Settings className="h-4 w-4" />
+           إعدادات الأرباح
+         </button>
 
       </div>
 
@@ -636,7 +700,7 @@ export default function ProfitsClientTabs({
             {filsToDisplay(kpis.proposedDistributionFils)}
           </div>
           <p className="text-[11px] text-stone-400 mt-1">
-            بعد حجز احتياطي 20% ومقيدة بالسيولة • انقر للعرض
+            بعد حجز احتياطي {profitSettings.reservePercentage}% ومقيدة بالسيولة • انقر للعرض
           </p>
         </div>
       </div>
@@ -681,7 +745,7 @@ export default function ProfitsClientTabs({
           }`}
         >
           <Building2 className="w-4 h-4" />
-          <span>توزيع أرباح الشركاء (50% / 50%)</span>
+          <span>توزيع أرباح الشركاء ({partners.map((partner) => `${partner.sharePercentage}%`).join(' / ') || 'من DB'})</span>
         </button>
 
         <button
@@ -735,7 +799,7 @@ export default function ProfitsClientTabs({
                 <div className="flex flex-col">
                   <span>− أجور شركة التوصيل والخدمات اللوجستية</span>
                   <span className="text-[11px] text-stone-400">
-                    مستحقة لشركة التوصيل بواقع 2.00 د.أ / طلب (محجوبة عن المحل وتفاصيل المنصة)
+                       مستحقة لشركة التوصيل بواقع {filsToDisplay(profitSettings.defaultCourierCostFils)} / طلب عند غياب التكلفة الفعلية
                   </span>
                 </div>
                 <span className="font-mono whitespace-nowrap shrink-0" dir="ltr">
@@ -783,7 +847,7 @@ export default function ProfitsClientTabs({
               </div>
 
               <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 p-3 rounded-2xl bg-purple-50 text-purple-900 font-bold border border-purple-200">
-                <span>− الاحتياطي التشغيلي الداخلي للمنصة (20%)</span>
+                <span>− الاحتياطي التشغيلي الداخلي للمنصة ({profitSettings.reservePercentage}%)</span>
                 <span className="font-mono whitespace-nowrap shrink-0" dir="ltr">
                   -{filsToDisplay(kpis.internalReserveFils)}
                 </span>
@@ -793,7 +857,7 @@ export default function ProfitsClientTabs({
                 <div>
                   <span className="block text-sm">الأرباح النهائية المقترحة للتوزيع</span>
                   <span className="text-[10px] text-stone-300 font-normal">
-                    مقيدة بالسيولة الحرة • 50% لكل شريك
+                    مقيدة بالسيولة الحرة • {partners.map((partner) => `${partner.sharePercentage}%`).join(' / ') || 'حسب نسب DB'} للشركاء
                   </span>
                 </div>
                 <span className="font-mono text-lg sm:text-base font-black text-amber-300 whitespace-nowrap" dir="ltr">
@@ -826,14 +890,14 @@ export default function ProfitsClientTabs({
               </div>
 
               <div className="flex justify-between items-center gap-2">
-                <span className="text-stone-500">حصة الشريك الأول (50%):</span>
+                 <span className="text-stone-500">حصة {partners[0]?.partnerName || 'الشريك الأول'} ({partners[0]?.sharePercentage ?? 0}%):</span>
                 <span className="font-mono font-bold text-stone-900 whitespace-nowrap" dir="ltr">
                   {filsToDisplay(kpis.partner1ShareFils)}
                 </span>
               </div>
 
               <div className="flex justify-between items-center gap-2">
-                <span className="text-stone-500">حصة الشريك الثاني (50%):</span>
+                 <span className="text-stone-500">حصة {partners[1]?.partnerName || 'الشريك الثاني'} ({partners[1]?.sharePercentage ?? 0}%):</span>
                 <span className="font-mono font-bold text-stone-900 whitespace-nowrap" dir="ltr">
                   {filsToDisplay(kpis.partner2ShareFils)}
                 </span>
@@ -899,7 +963,7 @@ export default function ProfitsClientTabs({
                             employeeName: emp.name,
                             baseRateJod: (emp.baseRateFils / 1000).toFixed(3),
                             contractType: emp.contractType || 'PART_TIME',
-                            weeklyAgreedHours: emp.weeklyAgreedHours || 20,
+                            weeklyAgreedHours: emp.weeklyAgreedHours,
                             notes: emp.notes || '',
                           })
                         }
@@ -1272,6 +1336,82 @@ export default function ProfitsClientTabs({
       {/* ======================================================== */}
       {/* MODALS */}
       {/* ======================================================== */}
+
+      {/* 0. Modal: Profit Settings */}
+      {profitSettingsModal && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 backdrop-blur-xs sm:items-center sm:p-4">
+          <div className="w-full max-w-lg space-y-4 rounded-t-3xl border border-stone-200 bg-white p-5 shadow-2xl sm:rounded-3xl">
+            <div className="flex items-center justify-between border-b border-stone-100 pb-3">
+              <div>
+                <h3 className="flex items-center gap-2 text-sm font-extrabold text-stone-900">
+                  <Settings className="h-5 w-5 text-[#3F4832]" />
+                  إعدادات احتساب الأرباح
+                </h3>
+                <p className="mt-1 text-[11px] text-stone-500">هذه القيم محفوظة في قاعدة البيانات وتؤثر على الحسابات الجديدة.</p>
+              </div>
+              <button type="button" onClick={() => setProfitSettingsModal(false)} className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-700">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="space-y-1 text-xs font-bold text-stone-700">
+                نسبة الاحتياطي التشغيلي (%)
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  value={reservePercentageInput}
+                  onChange={(event) => setReservePercentageInput(event.target.value)}
+                  className="w-full rounded-xl border border-stone-300 bg-stone-50 px-3 py-2.5 font-mono text-sm font-normal text-stone-900 outline-none focus:border-[#3F4832]"
+                />
+              </label>
+              <label className="space-y-1 text-xs font-bold text-stone-700">
+                تكلفة التوصيل الافتراضية (د.أ)
+                <input
+                  type="number"
+                  min="0"
+                  step="0.001"
+                  value={defaultCourierCostInput}
+                  onChange={(event) => setDefaultCourierCostInput(event.target.value)}
+                  className="w-full rounded-xl border border-stone-300 bg-stone-50 px-3 py-2.5 font-mono text-sm font-normal text-stone-900 outline-none focus:border-[#3F4832]"
+                />
+              </label>
+              <label className="space-y-1 text-xs font-bold text-stone-700">
+                راتب الموظف الأسبوعي الافتراضي (د.أ)
+                <input
+                  type="number"
+                  min="0.001"
+                  step="0.001"
+                  value={defaultEmployeeWeeklyRateInput}
+                  onChange={(event) => setDefaultEmployeeWeeklyRateInput(event.target.value)}
+                  className="w-full rounded-xl border border-stone-300 bg-stone-50 px-3 py-2.5 font-mono text-sm font-normal text-stone-900 outline-none focus:border-[#3F4832]"
+                />
+              </label>
+              <label className="space-y-1 text-xs font-bold text-stone-700">
+                ساعات الموظف الأسبوعية الافتراضية
+                <input
+                  type="number"
+                  min="1"
+                  max="168"
+                  step="1"
+                  value={defaultEmployeeWeeklyHoursInput}
+                  onChange={(event) => setDefaultEmployeeWeeklyHoursInput(event.target.value)}
+                  className="w-full rounded-xl border border-stone-300 bg-stone-50 px-3 py-2.5 font-mono text-sm font-normal text-stone-900 outline-none focus:border-[#3F4832]"
+                />
+              </label>
+            </div>
+
+            <div className="flex flex-col-reverse gap-2 border-t border-stone-100 pt-3 sm:flex-row sm:justify-end">
+              <button type="button" onClick={() => setProfitSettingsModal(false)} className="rounded-xl bg-stone-100 px-4 py-2.5 text-xs font-bold text-stone-700 hover:bg-stone-200">إلغاء</button>
+              <button type="button" onClick={handleSaveProfitSettings} disabled={isPending} className="rounded-xl bg-[#3F4832] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#2d3424] disabled:opacity-50">
+                {isPending ? 'جاري الحفظ...' : 'حفظ إعدادات الأرباح'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 1. Modal: Disburse Salary Payment */}
       {salaryModal && (

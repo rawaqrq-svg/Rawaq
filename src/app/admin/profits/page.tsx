@@ -30,7 +30,7 @@ export default async function ProfitsPage({
   };
   const ledgerFrom = parseLedgerDate(params.ledgerFrom);
   const ledgerTo = parseLedgerDate(params.ledgerTo);
-  const [kpis, employees, partners, ledger, ledgerEmployees, balances, hasOpeningBalance, hasCashOpeningBalance] = await Promise.all([
+  const [kpis, employees, partners, ledger, ledgerEmployees, balances, hasOpeningBalance, hasCashOpeningBalance, profitSettings] = await Promise.all([
     ProfitsService.getProfitsKPIs(fromDate, toDate),
     ProfitsService.getEmployeePayrollList(),
     ProfitsService.getPartnersSummary(fromDate, toDate),
@@ -39,6 +39,7 @@ export default async function ProfitsPage({
     ProfitsService.getFundBalances(),
     prisma.financialTransaction.findUnique({ where: { businessEventKey: 'bank-opening-balance:initial' }, select: { id: true } }),
     prisma.financialTransaction.findUnique({ where: { businessEventKey: 'cash-opening-balance:initial' }, select: { id: true } }),
+    ProfitsService.getProfitSettings(),
   ]);
 
   return (
@@ -62,6 +63,7 @@ export default async function ProfitsPage({
             balances={balances}
             hasOpeningBalance={Boolean(hasOpeningBalance)}
             hasCashOpeningBalance={Boolean(hasCashOpeningBalance)}
+            initialProfitSettings={profitSettings}
             ledgerFilters={{ from: params.ledgerFrom || '', to: params.ledgerTo || '', receiver: params.receiver || '', method: params.method || '' }}
           />
         </div>

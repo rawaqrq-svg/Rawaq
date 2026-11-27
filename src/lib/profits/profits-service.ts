@@ -22,6 +22,20 @@ export interface ProfitsKPIs {
   partner2ShareFils: number;
 }
 
+export interface ProfitSettings {
+  reservePercentage: number;
+  defaultCourierCostFils: number;
+  defaultEmployeeWeeklyRateFils: number;
+  defaultEmployeeWeeklyHours: number;
+}
+
+const DEFAULT_PROFIT_SETTINGS: ProfitSettings = {
+  reservePercentage: 20,
+  defaultCourierCostFils: 2000,
+  defaultEmployeeWeeklyRateFils: 50000,
+  defaultEmployeeWeeklyHours: 20,
+};
+
 export interface EmployeePayrollCard {
   employeeId: string;
   name: string;
@@ -69,10 +83,85 @@ export interface PartnerSummaryCard {
 }
 
 export class ProfitsService {
+  static async getProfitSettings(): Promise<ProfitSettings> {
+    const row = await prisma.siteSettings.findUnique({ where: { key: 'profit_settings' } });
+    if (!row) return DEFAULT_PROFIT_SETTINGS;
+
+    try {
+      const value = JSON.parse(row.value) as Partial<ProfitSettings>;
+      const reservePercentage = Number(value.reservePercentage);
+      const defaultCourierCostFils = Number(value.defaultCourierCostFils);
+      const defaultEmployeeWeeklyRateFils = Number(value.defaultEmployeeWeeklyRateFils ?? DEFAULT_PROFIT_SETTINGS.defaultEmployeeWeeklyRateFils);
+      const defaultEmployeeWeeklyHours = Number(value.defaultEmployeeWeeklyHours ?? DEFAULT_PROFIT_SETTINGS.defaultEmployeeWeeklyHours);
+      if (!Number.isFinite(reservePercentage) || reservePercentage < 0 || reservePercentage > 100) {
+        return DEFAULT_PROFIT_SETTINGS;
+      }
+      if (!Number.isInteger(defaultCourierCostFils) || defaultCourierCostFils < 0) {
+        return DEFAULT_PROFIT_SETTINGS;
+      }
+      if (!Number.isInteger(defaultEmployeeWeeklyRateFils) || defaultEmployeeWeeklyRateFils <= 0) {
+        return DEFAULT_PROFIT_SETTINGS;
+      }
+      if (!Number.isInteger(defaultEmployeeWeeklyHours) || defaultEmployeeWeeklyHours <= 0) {
+        return DEFAULT_PROFIT_SETTINGS;
+      }
+      return { reservePercentage, defaultCourierCostFils, defaultEmployeeWeeklyRateFils, defaultEmployeeWeeklyHours };
+    } catch {
+      return DEFAULT_PROFIT_SETTINGS;
+    }
+  }
+
+  static async updateProfitSettings(
+    input: ProfitSettings,
+    employeeId: string,
+  ): Promise<ProfitSettings> {
+    if (!Number.isFinite(input.reservePercentage) || input.reservePercentage < 0 || input.reservePercentage > 100) {
+      throw new Error('نسبة الاحتياطي يجب أن تكون بين 0 و100%.');
+    }
+    if (!Number.isInteger(input.defaultCourierCostFils) || input.defaultCourierCostFils < 0 || input.defaultCourierCostFils > 1_000_000) {
+      throw new Error('تكلفة التوصيل الافتراضية غير صحيحة.');
+    }
+    if (!Number.isInteger(input.defaultEmployeeWeeklyRateFils) || input.defaultEmployeeWeeklyRateFils <= 0 || input.defaultEmployeeWeeklyRateFils > 10_000_000) {
+      throw new Error('الراتب الأسبوعي الافتراضي غير صحيح.');
+    }
+    if (!Number.isInteger(input.defaultEmployeeWeeklyHours) || input.defaultEmployeeWeeklyHours <= 0 || input.defaultEmployeeWeeklyHours > 168) {
+      throw new Error('ساعات العمل الأسبوعية الافتراضية غير صحيحة.');
+    }
+
+    const key = 'profit_settings';
+    const value: ProfitSettings = {
+      reservePercentage: input.reservePercentage,
+      defaultCourierCostFils: input.defaultCourierCostFils,
+      defaultEmployeeWeeklyRateFils: input.defaultEmployeeWeeklyRateFils,
+      defaultEmployeeWeeklyHours: input.defaultEmployeeWeeklyHours,
+    };
+
+    await prisma.$transaction(async (tx) => {
+      const before = await tx.siteSettings.findUnique({ where: { key } });
+      await tx.siteSettings.upsert({
+        where: { key },
+        update: { value: JSON.stringify(value) },
+        create: { key, value: JSON.stringify(value) },
+      });
+      await tx.auditLog.create({
+        data: {
+          employeeId,
+          action: 'PROFIT_SETTINGS_UPDATED',
+          entityType: 'SiteSettings',
+          entityId: key,
+          details: JSON.stringify({ before: before?.value || null, after: value }),
+        },
+      });
+    });
+
+    return value;
+  }
+
   /**
    * 1. احتساب المؤشرات المالية الرئيسية (KPIs)
    */
   static async getProfitsKPIs(fromDate?: Date, toDate?: Date): Promise<ProfitsKPIs> {
+    const profitSettings = await this.getProfitSettings();
     const periodFilter = fromDate || toDate ? {
       createdAt: { ...(fromDate ? { gte: fromDate } : {}), ...(toDate ? { lte: toDate } : {}) },
     } : {};
@@ -122,7 +211,7 @@ export class ProfitsService {
     const batchedOrders = new Map<string, typeof deliveredOrders>();
     let courierCostsFils = 0;
     for (const order of deliveredOrders) {
-      if (!order.deliveryBatchId) courierCostsFils += order.actualDeliveryCost ?? 2000;
+      if (!order.deliveryBatchId) courierCostsFils += order.actualDeliveryCost ?? profitSettings.defaultCourierCostFils;
       else batchedOrders.set(order.deliveryBatchId, [...(batchedOrders.get(order.deliveryBatchId) || []), order]);
     }
     if (batchedOrders.size) {
@@ -131,7 +220,7 @@ export class ProfitsService {
         const orders = batchedOrders.get(batch.id) || [];
         courierCostsFils += batch.tariffEvaluatedAt
           ? (batch.carrierTariffCostFils ?? 0)
-          : orders.reduce((sum, order) => sum + (order.actualDeliveryCost ?? 2000), 0);
+          : orders.reduce((sum, order) => sum + (order.actualDeliveryCost ?? profitSettings.defaultCourierCostFils), 0);
       }
     }
     const captainEarningsFils = deliveredOrders.reduce((sum, order) => sum + (order.deliveryAssignment?.captainEarning ?? 0), 0);
@@ -173,9 +262,9 @@ export class ProfitsService {
     const estimatedNetProfitFils =
       platformGrossMarginFils - courierCostsFils - captainEarningsFils - operatingExpensesFils - accruedSalariesFils;
 
-    // 7. الاحتياطي التشغيلي الداخلي (20%)
+    // 7. الاحتياطي التشغيلي الداخلي حسب إعدادات DB
     const internalReserveFils =
-      estimatedNetProfitFils > 0 ? Math.round(estimatedNetProfitFils * 0.2) : 0;
+      estimatedNetProfitFils > 0 ? Math.round(estimatedNetProfitFils * (profitSettings.reservePercentage / 100)) : 0;
 
     // 8. الربح القابل للتوزيع دفترياً
     const distributableProfitFils = Math.max(0, estimatedNetProfitFils - internalReserveFils);
@@ -274,7 +363,7 @@ export class ProfitsService {
    * 2. إدارة رواتب الموظفين مع اتفاقيات العمل والأسبوع الجاري
    */
   static async getEmployeePayrollList(): Promise<EmployeePayrollCard[]> {
-    const [employees, partnerRules] = await Promise.all([
+    const [employees, partnerRules, profitSettings] = await Promise.all([
       prisma.employee.findMany({
         where: { isActive: true },
         include: {
@@ -293,6 +382,7 @@ export class ProfitsService {
       prisma.partnerShareRule.findMany({
         where: { isActive: true },
       }),
+      this.getProfitSettings(),
     ]);
 
     const now = new Date();
@@ -310,18 +400,18 @@ export class ProfitsService {
     const cards: EmployeePayrollCard[] = [];
 
     for (const emp of employees) {
-      // إذا لم يكن لدى الموظف اتفاقية راتب سابقة، ننشئ اتفاقية افتراضية بـ 50 د.أ أسبوعياً
+      // إذا لم يكن لدى الموظف اتفاقية راتب سابقة، ننشئها من إعدادات الأرباح المحفوظة في DB
       let agreement = emp.payAgreements[0];
       if (!agreement) {
         agreement = await prisma.employeePayAgreement.create({
           data: {
             employeeId: emp.id,
             payCycle: 'WEEKLY',
-            baseRateFils: 50000, // 50.000 JOD
+            baseRateFils: profitSettings.defaultEmployeeWeeklyRateFils,
             currency: 'JOD',
             contractType: 'PART_TIME',
-            weeklyAgreedHours: 20,
-            notes: 'الاتفاقية الافتراضية المعتمدة لرَواق (50 د.أ أسبوعياً)',
+            weeklyAgreedHours: profitSettings.defaultEmployeeWeeklyHours,
+            notes: 'الاتفاقية الافتراضية المعتمدة من إعدادات الأرباح',
           },
         });
       }
@@ -376,7 +466,7 @@ export class ProfitsService {
         payCycle: agreement.payCycle,
         baseRateFils: agreement.baseRateFils,
         contractType: agreement.contractType,
-        weeklyAgreedHours: agreement.weeklyAgreedHours || 20,
+        weeklyAgreedHours: agreement.weeklyAgreedHours ?? profitSettings.defaultEmployeeWeeklyHours,
         partnerSharePercentage: linkedPartner ? linkedPartner.sharePercentage : null,
         notes: agreement.notes,
         currentPeriod: {
@@ -893,7 +983,10 @@ export class ProfitsService {
     adminEmployeeId: string,
     notes?: string
   ) {
-    const kpis = await this.getProfitsKPIs(periodFrom, periodTo);
+    const [kpis, profitSettings] = await Promise.all([
+      this.getProfitsKPIs(periodFrom, periodTo),
+      this.getProfitSettings(),
+    ]);
     const ref = `PCLOSE-${periodFrom.getFullYear()}-${(periodFrom.getMonth() + 1).toString().padStart(2, '0')}-${Date.now().toString().slice(-4)}`;
 
     return await prisma.profitClose.create({
@@ -908,7 +1001,7 @@ export class ProfitsService {
         operatingExpensesFils: kpis.operatingExpensesFils,
         staffSalariesFils: kpis.accruedSalariesFils,
         netProfitFils: kpis.estimatedNetProfitFils,
-        reservePercentage: 20,
+        reservePercentage: profitSettings.reservePercentage,
         internalReserveFils: kpis.internalReserveFils,
         distributableProfitFils: kpis.distributableProfitFils,
         safeLiquidCashFils: kpis.safeLiquidCashFils,

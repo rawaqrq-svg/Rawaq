@@ -13,6 +13,27 @@ export async function getProfitsOverviewAction(fromDateStr?: string, toDateStr?:
   return await ProfitsService.getProfitsKPIs(fromDate, toDate);
 }
 
+export async function getProfitSettingsAction() {
+  await requirePermission('section:financials');
+  return await ProfitsService.getProfitSettings();
+}
+
+export async function updateProfitSettingsAction(input: {
+  reservePercentage: number;
+  defaultCourierCostFils: number;
+  defaultEmployeeWeeklyRateFils: number;
+  defaultEmployeeWeeklyHours: number;
+}) {
+  const session = await requirePermission('manage:financials');
+  try {
+    const settings = await ProfitsService.updateProfitSettings(input, session.employeeId);
+    revalidatePath('/admin/profits');
+    return { success: true as const, settings };
+  } catch (error: any) {
+    return { success: false as const, error: error.message || 'تعذر تحديث إعدادات الأرباح.' };
+  }
+}
+
 export async function getEmployeePayrollAction() {
   await requirePermission('section:financials');
   return await ProfitsService.getEmployeePayrollList();
