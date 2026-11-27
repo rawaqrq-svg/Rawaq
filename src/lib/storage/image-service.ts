@@ -29,14 +29,13 @@ async function supabaseFetch(input: RequestInfo | URL, init?: RequestInit): Prom
 
   for (let attempt = 1; attempt <= SUPABASE_FETCH_ATTEMPTS; attempt++) {
     try {
+      const headers = new Headers(init?.headers);
+      // Avoid reusing a broken socket between serverless invocations.
+      headers.set('connection', 'close');
       return await fetch(input, {
         ...init,
         signal: init?.signal || AbortSignal.timeout(SUPABASE_FETCH_TIMEOUT_MS),
-        headers: {
-          ...(init?.headers || {}),
-          // Avoid reusing a broken socket between serverless invocations.
-          connection: 'close',
-        },
+        headers,
       });
     } catch (error) {
       lastError = error;
